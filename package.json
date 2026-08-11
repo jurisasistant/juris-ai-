@@ -1,0 +1,26 @@
+{
+  "name": "jurisai-bharat-legal-assistant",
+  "version": "5.0.0",
+  "description": "Indian Constitution & Bharatiya Legal AI Assistant Web App with Groq Llama-3.3-70B-Versatile Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "legal-ai",
+    "indian-constitution",
+    "bharatiya-nyaya-sanhita",
+    "bns-2023",
+    "groq",
+    "llama-3-3-70b",
+    "legal-tech"
+  ],
+  "author": "JurisAI Bharat",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

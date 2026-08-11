@@ -1,0 +1,13 @@
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Environment secrets (NEVER commit your real .env API keys to public GitHub!)
+.env
+.env.local
+.env.production
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
