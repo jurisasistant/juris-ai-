@@ -7,32 +7,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  /* Core Ultra-Minimal Slate & Muted Platinum/Champagne Palette */
-  --bg-primary: #0A0D14;
-  --bg-surface: #111520;
-  --bg-surface-elevated: #171C2B;
+  /* Vercel Geist System — Stark Black-on-White / Dark Developer Platform Aesthetic (ZERO PURPLE) */
+  --bg-primary: #0a0a0a;          /* Vercel dark canvas #0a0a0a */
+  --bg-surface: #121212;          /* Vercel dark surface #121212 */
+  --bg-surface-elevated: #171717; /* Vercel ink elevated #171717 */
   
-  /* Glass Recipe (Subtle, Refined & Highly Readable) */
-  --bg-glass: rgba(255, 255, 255, 0.04);
-  --bg-glass-hover: rgba(255, 255, 255, 0.07);
-  --bg-glass-active: rgba(255, 255, 255, 0.10);
-  --border-glass: rgba(255, 255, 255, 0.08);
-  --border-glass-light: rgba(255, 255, 255, 0.04);
+  /* Hairline Border Recipe (1px Hairline #262626 / #ebebeb) */
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-hover: rgba(255, 255, 255, 0.06);
+  --bg-glass-active: rgba(255, 255, 255, 0.09);
+  --border-glass: rgba(255, 255, 255, 0.12);      /* 1px Hairline */
+  --border-glass-light: rgba(255, 255, 255, 0.07);
 
-  /* Typography Colors (Silky Matte White & Slate) */
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-inverse: #0A0D14;
+  /* Monochrome Typography Ladder (#ffffff -> #a1a1a1 -> #666666) */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1a1;
+  --text-muted: #666666;
+  --text-inverse: #0a0a0a;
 
-  /* Refined Muted Champagne Gold & Cool Indigo Legal Accents */
-  --accent-gold: #C6A86B;
-  --accent-gold-hover: #D6B87C;
-  --accent-gold-light: rgba(198, 168, 107, 0.12);
-  --accent-indigo: #6384C6;
-  --accent-indigo-light: rgba(99, 132, 198, 0.12);
+  /* Stark Monochrome Accent System (ZERO PURPLE, ZERO SATURATED GOLD) */
+  --accent-gold: #ffffff;
+  --accent-gold-hover: #e5e5e5;
+  --accent-gold-light: rgba(255, 255, 255, 0.08);
+  --accent-indigo: #e5e5e5;
+  --accent-indigo-light: rgba(255, 255, 255, 0.08);
   
-  --success: #34D399;
+  --success: #10B981;
   --success-bg: rgba(52, 211, 153, 0.12);
   --warning: #FBBF24;
   --warning-bg: rgba(251, 191, 36, 0.12);
@@ -57,29 +57,29 @@
 }
 
 [data-theme="light"] {
-  --bg-primary: #F8FAFC;
-  --bg-surface: #FFFFFF;
-  --bg-surface-elevated: #F1F5F9;
+  --bg-primary: #fafafa;          /* Vercel canvas #fafafa */
+  --bg-surface: #ffffff;          /* Vercel elevated #ffffff */
+  --bg-surface-elevated: #f2f2f2; /* Vercel hairline-soft #f2f2f2 */
 
-  --bg-glass: rgba(255, 255, 255, 0.85);
-  --bg-glass-hover: rgba(255, 255, 255, 0.95);
-  --bg-glass-active: rgba(255, 255, 255, 1);
-  --border-glass: rgba(0, 0, 0, 0.08);
-  --border-glass-light: rgba(0, 0, 0, 0.04);
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-glass-hover: #f2f2f2;
+  --bg-glass-active: #ebebeb;
+  --border-glass: #ebebeb;        /* Vercel 1px hairline #ebebeb */
+  --border-glass-light: #f2f2f2;
 
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  --text-inverse: #FFFFFF;
+  --text-primary: #171717;        /* Vercel Ink #171717 */
+  --text-secondary: #4d4d4d;      /* Geist body grey */
+  --text-muted: #8f8f8f;          /* Geist mute grey */
+  --text-inverse: #ffffff;
 
-  --accent-gold: #A6841E;
-  --accent-gold-hover: #8C6D15;
-  --accent-gold-light: rgba(166, 132, 30, 0.12);
-  --accent-indigo: #3B5F9E;
-  --accent-indigo-light: rgba(59, 95, 158, 0.12);
+  --accent-gold: #171717;         /* Stark black CTA pill in light mode */
+  --accent-gold-hover: #333333;
+  --accent-gold-light: rgba(0, 0, 0, 0.06);
+  --accent-indigo: #4d4d4d;
+  --accent-indigo-light: rgba(0, 0, 0, 0.06);
 
-  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.08);
+  --shadow-glass: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.08);
 }
 
 /* Base Style & Resets */
