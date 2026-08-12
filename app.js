@@ -2131,8 +2131,23 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
     const speakBtn = document.createElement('button');
     speakBtn.className = 'msg-action-btn';
     speakBtn.innerHTML = `🔊 Read Aloud`;
+
+    const stopBtn = document.createElement('button');
+    stopBtn.className = 'msg-action-btn';
+    stopBtn.innerHTML = `⏹️ Stop`;
+    stopBtn.style.display = 'none';
+    stopBtn.style.color = 'var(--error)';
+
     speakBtn.addEventListener('click', () => {
-      speakText(bubbleDiv.innerText);
+      speakText(bubbleDiv.innerText, speakBtn, stopBtn);
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      speakBtn.innerHTML = `🔊 Read Aloud`;
+      stopBtn.style.display = 'none';
     });
 
     const printOpinionBtn = document.createElement('button');
@@ -2158,6 +2173,7 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
 
     actionsBar.appendChild(copyBtn);
     actionsBar.appendChild(speakBtn);
+    actionsBar.appendChild(stopBtn);
     actionsBar.appendChild(printOpinionBtn);
     actionsBar.appendChild(counterArgBtn);
     actionsBar.appendChild(casesBtn);
@@ -2209,13 +2225,27 @@ if ('speechSynthesis' in window) {
   };
 }
 
-function speakText(text) {
+function speakText(text, speakBtn = null, stopBtn = null) {
   if (!('speechSynthesis' in window)) {
     alert('Speech synthesis is not supported in this browser.');
     return;
   }
+
+  // Handle Pause / Resume toggle if speech is currently active
+  if (window.speechSynthesis.speaking) {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      if (speakBtn) speakBtn.innerHTML = `⏸️ Pause`;
+      return;
+    } else {
+      window.speechSynthesis.pause();
+      if (speakBtn) speakBtn.innerHTML = `▶️ Resume`;
+      return;
+    }
+  }
+
   window.speechSynthesis.cancel();
-  const cleanText = text.replace(/⚠️|📑|⚖️|📋|🏛️|🇮🇳|§|✦|●/g, '').slice(0, 800);
+  const cleanText = text.replace(/⚠️|📑|⚖️|📋|🏛️|🇮🇳|§|✦|●/g, '').slice(0, 1200);
   const utterance = new SpeechSynthesisUtterance(cleanText);
   
   // Enforce Indian English ('en-IN') or Hindi ('hi-IN') locale
@@ -2229,6 +2259,19 @@ function speakText(text) {
   
   utterance.rate = 0.95; // Slightly measured rate for clear Indian legal diction
   utterance.pitch = 1.0;
+
+  if (speakBtn) speakBtn.innerHTML = `⏸️ Pause`;
+  if (stopBtn) stopBtn.style.display = 'inline-flex';
+
+  utterance.onend = () => {
+    if (speakBtn) speakBtn.innerHTML = `🔊 Read Aloud`;
+    if (stopBtn) stopBtn.style.display = 'none';
+  };
+  utterance.onerror = () => {
+    if (speakBtn) speakBtn.innerHTML = `🔊 Read Aloud`;
+    if (stopBtn) stopBtn.style.display = 'none';
+  };
+
   window.speechSynthesis.speak(utterance);
 }
 
