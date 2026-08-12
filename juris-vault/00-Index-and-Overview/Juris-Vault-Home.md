@@ -1,12 +1,27 @@
-# 🇮🇳 Juris-Vault Home: Bharatiya Samvidhan & 76-Node Legal RAG Brain
-*An interconnected 76-Node Obsidian Vault & AI RAG Brain for Indian Constitutional Law, Bharatiya Sanhitas (BNS/BNSS/BSA), and Supreme Court Bench Precedents.*
+# 🇮🇳 Juris-Vault Home: Bharatiya Samvidhan & 91-Node Legal RAG Brain
+*An interconnected 91-Node Obsidian Vault & AI RAG Brain for Indian Constitutional Law, Bharatiya Sanhitas (BNS/BNSS/BSA), and Supreme Court Bench Precedents.*
 **Designed & Developed with ❤️ by sakshamfit**
 
 ---
 
 ## 🧭 Master Navigation & Knowledge Nodes
 
-### 📜 Part 1: Constitution of India (Bharatiya Samvidhan — 11 Nodes)
+### 📜 Part 1: Constitution of India & TNDALU Constitutional Law I (26 Nodes)
+* [[TNDALU-Unit-1-Preamble-and-Salient-Features]] — *In re Berubari Union 1960, SR Bommai 1994.*
+* [[TNDALU-Unit-2-Union-Territory-and-Citizenship-Art-1-to-11]] — *Articles 1–4 & Citizenship Act 1955.*
+* [[TNDALU-Unit-3-Article-12-State-and-Instrumentalities]] — *Ajay Hasia & Pradeep Kumar Biswas.*
+* [[TNDALU-Unit-3-Article-13-Severability-Eclipse-Waiver]] — *Doctrines of Severability, Eclipse, and Waiver.*
+* [[TNDALU-Unit-3-Article-14-Classification-vs-Arbitrariness]] — *Reasonable classification & E.P. Royappa arbitrariness.*
+* [[TNDALU-Unit-3-Article-15-and-16-Affirmative-Action-and-Reservations]] — *Indra Sawhney Mandal Bench 50% cap.*
+* [[TNDALU-Unit-3-Article-17-and-18-Untouchability-and-Titles]] — *Balaji Raghavan Bharat Ratna ruling.*
+* [[TNDALU-Unit-4-Article-19-Six-Freedoms-and-Press]] — *Romesh Thappar, Bennett Coleman, Shreya Singhal.*
+* [[TNDALU-Unit-4-Article-20-Ex-Post-Facto-Double-Jeopardy-Self-Incrimination]] — *Selvi narco-analysis ruling.*
+* [[TNDALU-Unit-4-Article-21-Due-Process-and-Derivative-Rights]] — *Maneka Gandhi, Olga Tellis, Puttaswamy.*
+* [[TNDALU-Unit-4-Article-22-Arrest-Safeguards-and-Preventive-Detention]] — *D.K. Basu Guidelines & 24-hour remand.*
+* [[TNDALU-Unit-4-Article-23-and-24-Against-Exploitation]] — *Asiad Workers Case & Sivakasi Child Labour Case.*
+* [[TNDALU-Unit-5-Article-25-to-28-Freedom-of-Religion]] — *Shirur Mutt, Sabarimala, Bijoe Emmanuel National Anthem Case.*
+* [[TNDALU-Unit-5-Article-29-and-30-Minority-Educational-Rights]] — *T.M.A. Pai Foundation 11-Judge Bench.*
+* [[TNDALU-Unit-5-Article-32-226-PIL-and-DPSP]] — *PIL locus standi & Minerva Mills harmonious construction.*
 * [[Article-12-Definition-of-State]] — *Definition of State under Part III; Ajay Hasia / Pradeep Kumar Biswas.*
 * [[Article-13-Judicial-Review-and-Eclipse]] — *Doctrines of Severability, Eclipse, and Judicial Review.*
 * [[Article-14-Equality-Before-Law]] — *Doctrine of reasonable classification and non-arbitrariness.*
