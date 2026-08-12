@@ -554,6 +554,188 @@ const KNOWLEDGE_BASE_ARTICLES = [
       'Implement an automated intake process to fulfill Data Subject Access Requests (DSARs) within 30 calendar days.'
     ],
     askAIPrompt: 'What are the mandatory clauses required in a GDPR Article 28 Data Processing Agreement (DPA)?'
+  },
+
+  // ==================== EXPANDED INDIAN RAG VAULT AUTHORITIES (30 NODES) ====================
+  {
+    id: 'kb-in-const-art12-state',
+    title: 'Constitution of India Article 12: Definition of "State" under Part III',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 12', 'Ajay Hasia Test', 'Pradeep Kumar Biswas'],
+    summary: 'What entities qualify as "State" or "other authorities" amenable to Writ Jurisdiction under Part III Fundamental Rights.',
+    executiveSummary: 'Article 12 defines "the State" for Part III Fundamental Rights to include the Government and Parliament of India, State Legislatures, local authorities, and "other authorities". Under the Ajay Hasia (1981) and Pradeep Kumar Biswas (2002) tests, any instrumentality or agency under deep and pervasive state control is amenable to writ jurisdiction.',
+    governingStatutes: `
+      * **Constitution of India Article 12:** Definition of State including local or other authorities within the territory of India or under the control of the Government of India.
+      * **Article 13(2):** Prohibition against State enacting laws abridging Part III rights.
+    `,
+    landmarkPrecedents: `
+      * **Ajay Hasia v. Khalid Mujib (SC Constitution Bench 1981):** Established the 6-factor test for determining whether a corporation or society is an instrumentality of State.
+      * **Pradeep Kumar Biswas v. Indian Institute of Chemical Biology (SC 7-Judge Bench 2002):** Reaffirmed that financial, functional, and administrative state dominance makes an entity "State".
+    `,
+    complianceChecklist: [
+      'Evaluate whether the entity is financially supported by the government or performs a sovereign public duty.',
+      'If an entity qualifies as State under Article 12, it cannot act arbitrarily and is bound by Article 14 equality rules.'
+    ],
+    askAIPrompt: 'What is the Ajay Hasia and Pradeep Kumar Biswas test for determining whether an entity is "State" under Article 12 of the Indian Constitution?'
+  },
+  {
+    id: 'kb-in-const-art20-protection',
+    title: 'Constitution of India Article 20: Protection in Conviction (Double Jeopardy & Self-Incrimination)',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 20(1), 20(2), 20(3)', 'Selvi v. State of Karnataka'],
+    summary: 'Inviolable criminal safeguards: prohibition on ex-post facto laws, double jeopardy, and self-incrimination.',
+    executiveSummary: 'Article 20 guarantees three inviolable criminal protections: (1) prohibition against retrospective criminal laws, (2) prohibition against double jeopardy (prosecuted and punished twice for the same offense), and (3) protection against self-incrimination. In Selvi v. State of Karnataka (2010), the Supreme Court ruled that involuntary narco-analysis and lie-detector tests violate Article 20(3) and Article 21.',
+    governingStatutes: `
+      * **Constitution of India Article 20(1):** No ex-post facto criminal law or enhanced retrospective punishment.
+      * **Article 20(2):** No person shall be prosecuted and punished for the same offense more than once.
+      * **Article 20(3):** No person accused of any offense shall be compelled to be a witness against himself.
+    `,
+    landmarkPrecedents: `
+      * **Selvi v. State of Karnataka (SC 3-Judge Bench 2010):** Involuntary administration of narco-analysis, polygraph, and brain-mapping violates Article 20(3) and mental privacy under Article 21.
+    `,
+    complianceChecklist: [
+      'Ensure no accused is compelled to testify against themselves during police interrogation.',
+      'Verify that criminal penalties are not applied retrospectively to acts committed prior to statute enactment.'
+    ],
+    askAIPrompt: 'Explain the three protections under Article 20 of the Indian Constitution and the Supreme Court ruling in Selvi v. State of Karnataka (2010).'
+  },
+  {
+    id: 'kb-in-const-art22-arrest',
+    title: 'Constitution of India Article 22: Arrest Safeguards & 24-Hour Magistrate Remand',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 22(1) & 22(2)', 'D.K. Basu Guidelines', 'BNSS 2023 Sec. 58'],
+    summary: 'Fundamental Rights upon arrest: right to be informed of grounds, right to counsel, and mandatory 24-hour Magistrate presentation.',
+    executiveSummary: 'Article 22 protects arrested persons by requiring immediate notification of the grounds of arrest, the right to consult a lawyer of choice, and mandatory production before the nearest Judicial Magistrate within 24 hours of arrest. The D.K. Basu (1997) Supreme Court guidelines enforce these rights to prevent custodial torture.',
+    governingStatutes: `
+      * **Constitution of India Article 22(1):** Right to be informed of grounds of arrest and right to be defended by a legal practitioner.
+      * **Constitution of India Article 22(2):** Mandatory production before Judicial Magistrate within 24 hours.
+      * **BNSS 2023 Section 58:** Codified requirement of 24-hour presentation before Magistrate.
+    `,
+    landmarkPrecedents: `
+      * **D.K. Basu v. State of West Bengal (SC 1997):** Laid down 11 mandatory arrest guidelines including name tags, memo of arrest, and station diary entries.
+    `,
+    complianceChecklist: [
+      'Prepare a signed Memo of Arrest attested by a witness immediately upon taking an accused into custody.',
+      'Ensure production before a Judicial Magistrate within 24 hours without fail.'
+    ],
+    askAIPrompt: 'What are the constitutional rights of an arrested person under Article 22 of the Constitution of India and the D.K. Basu guidelines?'
+  },
+  {
+    id: 'kb-in-sc-lalita-kumari-fir',
+    title: 'Lalita Kumari v. Govt. of U.P. (2014): Mandatory FIR & Zero FIR',
+    category: 'Criminal Law (BNS/BNSS)',
+    categoryCode: 'criminal',
+    jurisdiction: 'IN',
+    statutes: ['BNSS 2023 Section 173', 'CrPC Section 154', 'Zero FIR Rules'],
+    summary: 'Constitution Bench ruling mandating compulsory FIR registration if a cognizable offense is disclosed, without police discretion.',
+    executiveSummary: 'In Lalita Kumari v. Govt. of U.P. (2014), a 5-Judge Constitution Bench ruled unanimously that registration of a First Information Report (FIR) is mandatory under old CrPC 154 (now BNSS 2023 Section 173) if the complaint discloses a cognizable offense. Police cannot conduct a preliminary inquiry to test veracity before registering an FIR.',
+    governingStatutes: `
+      * **BNSS 2023 Section 173:** Compulsory registration of FIR and electronic e-FIR.
+      * **Zero FIR Rule:** Police must register an FIR irrespective of territorial jurisdiction and transfer it to the concerned police station.
+    `,
+    landmarkPrecedents: `
+      * **Lalita Kumari v. Govt. of U.P. (SC 5-Judge Constitution Bench 2014):** Authoritative precedent prohibiting police refusal in cognizable offenses.
+    `,
+    complianceChecklist: [
+      'Demand immediate FIR registration under BNSS Section 173 whenever a cognizable offense occurs.',
+      'If police refuse on jurisdictional grounds, invoke the Zero FIR mandate.'
+    ],
+    askAIPrompt: 'What did the 5-Judge Bench rule in Lalita Kumari v. Govt of UP (2014) regarding mandatory FIR registration and Zero FIR?'
+  },
+  {
+    id: 'kb-in-sc-satender-antil-bail',
+    title: 'Satender Kumar Antil v. CBI (2022): Bail Reform Guidelines',
+    category: 'Criminal Law (BNS/BNSS)',
+    categoryCode: 'criminal',
+    jurisdiction: 'IN',
+    statutes: ['BNSS 2023 Section 480', 'BNSS 2023 Section 479', 'Article 21 Right to Life'],
+    summary: 'Authoritative Supreme Court ruling reinforcing that "Bail is the rule, jail is the exception" and categorizing offenses for speedy bail.',
+    executiveSummary: 'In Satender Kumar Antil v. CBI (2022), the Supreme Court laid down structured guidelines for bail adjudication to combat undertrial overcrowding. It established Category A to D offenses, directing that for offenses punishable up to 7 years where the accused cooperated, bail applications must be decided without mechanical remand.',
+    governingStatutes: `
+      * **BNSS 2023 Section 480:** Special powers of High Court and Sessions Court regarding regular bail.
+      * **BNSS 2023 Section 479:** Maximum undertrial detention; mandatory release of first-time offenders after serving one-third of maximum sentence.
+    `,
+    landmarkPrecedents: `
+      * **Satender Kumar Antil v. CBI (SC 2022):** Landmark bail categorization benchmark.
+      * **Gurbaksh Singh Sibbia (SC 1980):** Fundamental liberty principles governing bail discretion.
+    `,
+    complianceChecklist: [
+      'Identify whether the offense falls under Category A (up to 7 years) to demand expeditious bail without remand.',
+      'Verify whether undertrial detention has exceeded one-third of maximum sentence under BNSS Section 479.'
+    ],
+    askAIPrompt: 'What are the bail categories and guidelines laid down by the Supreme Court in Satender Kumar Antil v. CBI (2022)?'
+  },
+  {
+    id: 'kb-in-bns-sec113-terrorist-act',
+    title: 'BNS 2023 Section 113: Terrorist Act in General Penal Code',
+    category: 'Criminal Law (BNS/BNSS)',
+    categoryCode: 'criminal',
+    jurisdiction: 'IN',
+    statutes: ['BNS 2023 Section 113', 'BNS 2023 Section 111', 'UAPA Principles'],
+    summary: 'First statutory codification of Terrorist Act in the general criminal code, punishable with death or life imprisonment.',
+    executiveSummary: 'Section 113 of the Bharatiya Nyaya Sanhita (BNS 2023) defines a Terrorist Act as any act done with intent to threaten the unity, integrity, sovereignty, or security of India, or to strike terror in the people using explosives, biological/chemical weapons, or cyber warfare. Punishable with death or life imprisonment if death results.',
+    governingStatutes: `
+      * **BNS 2023 Section 113(1):** Comprehensive definition of terrorist acts including cyber warfare and economic disruption.
+      * **BNS 2023 Section 113(2):** Punishable with death or imprisonment for life if death results; otherwise 5 years to life.
+    `,
+    landmarkPrecedents: `
+      * **State of Maharashtra v. Vishwanath Maranna Shetty (SC):** Requires continuing unlawful syndicate activity or terror intent.
+    `,
+    complianceChecklist: [
+      'Distinguish between ordinary public order offenses and statutory Terrorist Acts under Section 113.',
+      'Observe specialized procedural remand and investigation rules.'
+    ],
+    askAIPrompt: 'How does BNS 2023 Section 113 define a Terrorist Act, and what are the statutory penalties?'
+  },
+  {
+    id: 'kb-in-cpc-res-judicata-sec11',
+    title: 'CPC 1908 Section 11: Res Judicata & Finality of Litigation',
+    category: 'Dispute Resolution',
+    categoryCode: 'disputes',
+    jurisdiction: 'IN',
+    statutes: ['CPC 1908 Section 11', 'Article 14 Equality', 'Daryao v. State of UP'],
+    summary: 'A matter directly and substantially judged by a competent court cannot be relitigated between the same parties.',
+    executiveSummary: 'Section 11 of the Code of Civil Procedure 1908 embodies the principle of Res Judicata: no court shall try any suit or issue which has already been directly and substantially decided in a former suit between the same parties. In Daryao v. State of UP (SC 1961), the Supreme Court held that Res Judicata applies equally to Writ Petitions under Articles 32 and 226.',
+    governingStatutes: `
+      * **CPC 1908 Section 11:** Statutory prohibition against second trial on decided issues.
+      * **Public Policy:** Enforces interest reipublicae ut sit finis litium (there should be an end to litigation).
+    `,
+    landmarkPrecedents: `
+      * **Daryao v. State of UP (SC Constitution Bench 1961):** Res Judicata bars subsequent writ petition on same cause of action after dismissal on merits.
+    `,
+    complianceChecklist: [
+      'Verify whether the former judgment was delivered on merits by a court of competent jurisdiction.',
+      'Ensure all grounds of attack or defense are raised in the first proceeding to avoid Constructive Res Judicata.'
+    ],
+    askAIPrompt: 'What is the doctrine of Res Judicata under Section 11 of the Civil Procedure Code (CPC 1908), and does it apply to Writ Petitions?'
+  },
+  {
+    id: 'kb-in-stamp-act-sec35-nn-global',
+    title: 'Indian Stamp Act Section 35: Inadmissibility & NN Global SC Bench',
+    category: 'Real Estate & Leases',
+    categoryCode: 'realestate',
+    jurisdiction: 'IN',
+    statutes: ['Indian Stamp Act 1899 Sec. 35', 'Registration Act 1908 Sec. 49', 'NN Global Mercantile SC Bench'],
+    summary: 'Why unstamped or under-stamped agreements are inadmissible in evidence, and how the 7-Judge Bench resolved arbitration enforceability.',
+    executiveSummary: 'Under Section 35 of the Indian Stamp Act 1899, no instrument chargeable with duty can be admitted in evidence for any purpose unless duly stamped. In N.N. Global Mercantile v. Indo Unique Flame (SC 7-Judge Bench 2023), the Supreme Court ruled that while an arbitration agreement is separable, stamp duty defects on the substantive agreement must be cured by impounding and payment of duty/penalty before enforcement.',
+    governingStatutes: `
+      * **Indian Stamp Act 1899 Section 35:** Inadmissibility of unstamped instruments; curable by payment of 10x penalty.
+      * **Registration Act 1908 Section 49:** Unregistered documents inadmissible to affect immovable property.
+    `,
+    landmarkPrecedents: `
+      * **NN Global Mercantile v. Indo Unique Flame (SC 7-Judge Constitution Bench 2023):** Harmonized Stamp Act inadmissibility with Arbitration Act separability.
+    `,
+    complianceChecklist: [
+      'Ensure all commercial agreements and leases are printed on requisite Non-Judicial Stamp Paper.',
+      'If an unstamped agreement is produced in court, cure the defect immediately via impounding under Section 33.'
+    ],
+    askAIPrompt: 'What did the 7-Judge Constitution Bench rule in N.N. Global Mercantile (2023) regarding unstamped arbitration agreements?'
   }
 ];
 
