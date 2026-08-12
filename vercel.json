@@ -1,12 +1,11 @@
 {
   "version": 2,
   "name": "jurisai-bharat",
-  "functions": {
-    "api/chat.js": {
-      "memory": 1024,
-      "maxDuration": 30
-    }
-  },
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat.js" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
