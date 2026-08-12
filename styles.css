@@ -82,6 +82,29 @@
   --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.08);
 }
 
+/* Bright Mode: Top Written Section is White with Yellow Strip in Background */
+[data-theme="light"] .top-navbar {
+  background: linear-gradient(180deg, #facc15 0%, #facc15 6px, #ffffff 6px, #ffffff 100%) !important;
+  background-color: #ffffff !important;
+  border-top: 4px solid #facc15 !important;
+  border-bottom: 1px solid #ebebeb !important;
+}
+
+[data-theme="light"] .page-title {
+  background: linear-gradient(90deg, #fef08a 0%, #fef08a 6px, #ffffff 6px, #ffffff 100%);
+  background-color: #ffffff;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  border-left: 4px solid #eab308;
+  color: #171717;
+}
+
+[data-theme="light"] .chat-persona-toolbar {
+  background: #ffffff !important;
+  border-top: 3px solid #facc15 !important;
+  border-bottom: 1px solid #ebebeb !important;
+}
+
 /* Base Style & Resets */
 * {
   box-sizing: border-box;
