@@ -2180,15 +2180,55 @@ function formatLegalMarkdown(text) {
     .replace(/\n/g, ' ');
 }
 
+// --- Indian English / Hindi Synthetic Voice Selector for Kittu AI ---
+let cachedIndianVoice = null;
+function getIndianVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+  const currentLang = localStorage.getItem('jurisai_language') || 'en';
+
+  // 1. First priority: Exact match for Indian English (en-IN) or Hindi (hi-IN)
+  let voice = voices.find(v => v.lang === 'en-IN' || v.lang === 'en_IN' || v.lang === 'en-in' ||
+                               v.lang === 'hi-IN' || v.lang === 'hi_IN' || v.lang === 'hi-in');
+  
+  // 2. Second priority: Match by popular Indian Voice names (Google India, Neerja, Prabhat, Rishi, Veena, Lekha, Swara)
+  if (!voice) {
+    voice = voices.find(v => {
+      const name = v.name.toLowerCase();
+      return name.includes('india') || name.includes('hindi') || name.includes('neerja') ||
+             name.includes('prabhat') || name.includes('rishi') || name.includes('veena') ||
+             name.includes('lekha') || name.includes('swara');
+    });
+  }
+  return voice || null;
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    cachedIndianVoice = getIndianVoice();
+  };
+}
+
 function speakText(text) {
   if (!('speechSynthesis' in window)) {
     alert('Speech synthesis is not supported in this browser.');
     return;
   }
   window.speechSynthesis.cancel();
-  const cleanText = text.replace(/⚠️|📑|⚖️|📋|🏛️|🇮🇳/g, '').slice(0, 800);
+  const cleanText = text.replace(/⚠️|📑|⚖️|📋|🏛️|🇮🇳|§|✦|●/g, '').slice(0, 800);
   const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.rate = 1.0;
+  
+  // Enforce Indian English ('en-IN') or Hindi ('hi-IN') locale
+  utterance.lang = (localStorage.getItem('jurisai_language') === 'hi') ? 'hi-IN' : 'en-IN';
+  
+  const indianVoice = getIndianVoice() || cachedIndianVoice;
+  if (indianVoice) {
+    utterance.voice = indianVoice;
+    utterance.lang = indianVoice.lang;
+  }
+  
+  utterance.rate = 0.95; // Slightly measured rate for clear Indian legal diction
+  utterance.pitch = 1.0;
   window.speechSynthesis.speak(utterance);
 }
 
