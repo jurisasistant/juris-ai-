@@ -310,7 +310,7 @@ body {
 }
 .nav-link.active .nav-badge {
   background-color: var(--accent-gold);
-  color: #fff;
+  color: var(--text-inverse);
   border-color: var(--accent-gold);
 }
 
@@ -492,7 +492,7 @@ body {
 
 .btn-primary {
   background: var(--accent-gold);
-  color: #080B12;
+  color: var(--text-inverse);
   border: none;
   padding: 0.6rem 1.2rem;
   border-radius: var(--radius-md);
@@ -1018,7 +1018,7 @@ body {
 
 .send-btn {
   background: var(--accent-gold);
-  color: #080B12;
+  color: var(--text-inverse);
   border: none;
   width: 42px;
   height: 42px;
@@ -1236,7 +1236,7 @@ body {
 
 .btn-kb-ask-ai {
   background: var(--accent-gold);
-  color: #080B12;
+  color: var(--text-inverse);
   border: none;
   padding: 0.45rem 0.95rem;
   border-radius: 8px;
@@ -1768,7 +1768,7 @@ body {
   letter-spacing: 0.02em;
 }
 .sakshamfit-badge span {
-  color: #fff;
+  color: var(--text-primary);
 }
 .sakshamfit-badge:hover {
   box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
@@ -2125,7 +2125,7 @@ body {
 }
 .persona-btn.active, .language-btn.active {
   background: var(--accent-gold);
-  color: #080B12;
+  color: var(--text-inverse);
   border-color: var(--accent-gold);
 }
 
@@ -2289,7 +2289,7 @@ body {
 .btn-ai-action-special:hover {
   background: rgba(99, 132, 198, 0.3);
   border-color: #60A5FA;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* ==========================================================================
@@ -2414,7 +2414,7 @@ body {
 }
 .mode-toggle-btn.active {
   background: var(--accent-gold);
-  color: #080B12;
+  color: var(--text-inverse);
   font-weight: 700;
 }
 
@@ -2488,8 +2488,8 @@ body {
   bottom: 24px;
   right: 24px;
   background: var(--accent-gold);
-  color: #080B12;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--text-inverse);
+  border: 1px solid var(--border-glass);
   border-radius: 99px;
   padding: 0.75rem 1.35rem;
   font-size: 14px;
