@@ -945,129 +945,144 @@ You asked about **${val.old}** / **${val.newSection}** under Indian Law.
 
   // 1. Indian Constitution: Fundamental Rights, Articles 14, 19, 21, Basic Structure, Puttaswamy, Maneka Gandhi
   if (lower.includes('constitution') || lower.includes('fundamental right') || lower.includes('article 14') || lower.includes('article 19') || lower.includes('article 21') || lower.includes('puttaswamy') || lower.includes('maneka gandhi') || lower.includes('basic structure')) {
-    return `### 📑 Constitutional Analysis: Fundamental Rights & Supreme Court Precedents
-You inquired about constitutional protections under **${jurName}**. Under the Constitution of India (Bharatiya Samvidhan), Part III Fundamental Rights protect citizens and individuals against arbitrary State action.
+    return `### 💡 Plain-English Summary (What This Means for You)
+Under the **Constitution of India (Bharatiya Samvidhan)**, you have fundamental rights that protect you from unfair or arbitrary actions by the government or public authorities. Your life, liberty, privacy, and freedom of speech cannot be taken away without a fair and just legal reason.
 
-### ⚖️ Constitutional Framework & Supreme Court Benches (Bharat)
-* **The Golden Triangle (Articles 14, 19, & 21):**
-  1. **Article 14 (Equality before Law):** Forbids class legislation and state arbitrariness. Any state action must satisfy the doctrine of reasonable classification.
-  2. **Article 19(1)(a) (Freedom of Speech & Expression):** Protected subject only to reasonable restrictions under Art. 19(2) (sovereignty, public order, defamation). Reaffirmed in *Shreya Singhal v. Union of India (2015)*.
-  3. **Article 21 (Right to Life, Personal Liberty & Privacy):** Expanded by *Maneka Gandhi v. Union of India (1978)* to require that any statutory procedure depriving liberty must be **"just, fair, and reasonable."**
-* **Right to Privacy (*Justice K.S. Puttaswamy v. Union of India*, 9-Judge Bench 2017):** Unanimously ruled that the Right to Privacy is an intrinsic Fundamental Right under Article 21. Any state restriction must satisfy: (a) Legality, (b) Legitimate State Aim, and (c) Proportionality.
-* **Basic Structure Doctrine (*Kesavananda Bharati v. State of Kerala*, 1973):** Parliament's amending power under Article 368 cannot alter or destroy the basic structure of the Constitution (including judicial review and fundamental rights).
+### 📜 What the Law Says (Acts & Sections)
+* **Article 14 (Equality Before Law):** The government must treat everyone equally and cannot make arbitrary rules.
+* **Article 19(1)(a) (Freedom of Speech):** You have the right to express your views freely, subject only to reasonable restrictions for national security or public order.
+* **Article 21 (Right to Life & Privacy):** No one can deprive you of your personal liberty or privacy unless the legal procedure is **"just, fair, and reasonable"** (*Maneka Gandhi v. Union of India, 1978*).
 
-### 📋 Recommended Procedural Steps
-1. **Verify State Action (Article 12):** Ensure the entity infringing rights is a government body, instrument of State, or performing a public duty.
-2. **Invoke Constitutional Remedy:** If Fundamental Rights are breached, you have the direct constitutional right to file a **Writ Petition** in the Supreme Court (Art. 32) or High Court (Art. 226).
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+* **Justice K.S. Puttaswamy v. Union of India (2017 9-Judge Bench):** The Supreme Court unanimously ruled that **Privacy is a Fundamental Right** under Article 21. Any government restriction on your privacy must be legal, necessary, and proportionate.
+
+### ✅ What You Should Do Next (Action Plan)
+1. **Check if a Government Body is Involved:** Constitutional fundamental rights apply primarily against government bodies or public authorities (Article 12).
+2. **Request Information / File RTI:** Ask for official written orders or grounds before complying with arbitrary actions.
+3. **Approach the High Court or Supreme Court:** If your fundamental rights are violated, you have the direct constitutional right to file a **Writ Petition** under Article 226 (High Court) or Article 32 (Supreme Court).
 
 <div class="legal-caution-box">
-  <strong>⚠️ Bharatiya Constitutional Disclaimer:</strong> This AI analysis synthesizes Supreme Court of India constitutional jurisprudence. Always consult a Senior Advocate or constitutional lawyer for writ filings.
+  <strong>⚠️ Kittu AI Note:</strong> This is a simple explanation of Indian constitutional rights. Always consult a Senior Advocate for High Court or Supreme Court writ petitions.
 </div>`;
   }
 
   // 2. Constitutional Writs: Article 32 & 226
   if (lower.includes('writ') || lower.includes('article 32') || lower.includes('article 226') || lower.includes('habeas corpus') || lower.includes('mandamus') || lower.includes('certiorari') || lower.includes('quo warranto')) {
-    return `### 📑 Constitutional Analysis: Writ Petitions & Judicial Review (Art. 32 / 226)
-You asked about constitutional writ remedies under the **Constitution of India**. Writ jurisdiction is an inviolable basic feature of the Bharatiya Constitution (*L. Chandra Kumar v. Union of India, 1997*).
+    return `### 💡 Plain-English Summary (What This Means for You)
+A **Writ Petition** is a direct constitutional remedy. If a government authority or police officer violates your rights, refuses to do their statutory duty, or detains someone illegally, you can ask a High Court or the Supreme Court to issue an immediate binding order against them.
 
-### ⚖️ The 5 Constitutional Writs in India
-* **1. Habeas Corpus ("To have the body"):** Issued to release a person from illegal or arbitrary police detention. Can be filed by any person on behalf of the detained citizen.
-* **2. Mandamus ("We Command"):** Issued to a public authority or government official compelling them to perform a mandatory statutory duty that they have refused to perform.
-* **3. Certiorari ("To be Certified"):** Issued by the High Court or Supreme Court to quash an order passed by an inferior court, tribunal, or administrative authority acting without jurisdiction or violating natural justice.
-* **4. Prohibition:** Issued to stop an inferior tribunal from proceeding in a matter outside its legal jurisdiction.
-* **5. Quo Warranto ("By what authority?"):** Issued to challenge the illegal appointment or holding of a public office by an unqualified person.
+### 📜 The 5 Constitutional Writs (In Simple Words)
+* **1. Habeas Corpus ("Bring the person"):** Used when someone is illegally arrested or detained by police without legal grounds.
+* **2. Mandamus ("We command"):** Orders a government officer or department to do their mandatory statutory duty that they have unlawfully refused to do.
+* **3. Certiorari ("To cancel an order"):** Cancels an unfair or illegal order passed by a tribunal, administrative officer, or lower court.
+* **4. Prohibition:** Stops a lower tribunal from handling a matter outside its legal authority.
+* **5. Quo Warranto:** Challenges an unqualified person who is illegally occupying a public office.
 
-### 📋 Practical Writ Filing Procedure
-1. **Supreme Court (Article 32):** Direct remedy exclusively for infringement of Part III Fundamental Rights.
-2. **High Court (Article 226):** Broader jurisdiction—can be filed both for Fundamental Rights and for "any other purpose" (e.g., administrative arbitrariness or statutory violations).
-3. **Drafting Essentials:** State clear facts, annex impugned government orders, and verify affidavit compliance.
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+* **L. Chandra Kumar v. Union of India (1997 7-Judge Bench):** The Supreme Court ruled that the right to approach High Courts (Article 226) and the Supreme Court (Article 32) is an **inviolable basic feature** of the Constitution that Parliament can never take away.
+
+### ✅ What You Should Do Next (Action Plan)
+1. **Choose the Right Court:** File under **Article 226 in your High Court** for both Fundamental Rights and general administrative arbitrariness, or **Article 32 in the Supreme Court** strictly for Fundamental Rights.
+2. **Collect Official Evidence:** Attach copies of the illegal order, police memo, or correspondence.
+3. **Engage an Advocate on Record (AOR):** Writ pleadings require verification and formal affidavits under High Court / Supreme Court rules.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Legal Caution:</strong> High Courts may require exhausting alternative statutory appellate remedies before entertaining Article 226 writ petitions unless fundamental rights are infringed.
+  <strong>⚠️ Kittu AI Note:</strong> High Courts generally prefer that you try regular departmental appeals first unless there is a direct fundamental rights violation.
 </div>`;
   }
 
   // 3. Bharatiya Nyaya Sanhita (BNS 2023), BNSS 2023, BSA 2023 vs. IPC/CrPC/Evidence Act
   if (lower.includes('bns') || lower.includes('bnss') || lower.includes('bsa') || lower.includes('bharatiya nyaya') || lower.includes('ipc') || lower.includes('crpc') || lower.includes('criminal law') || lower.includes('evidence') || lower.includes('fir')) {
-    return `### 📑 Legal Summary: Bharatiya Nyaya Sanhita (BNS 2023) & Criminal Transition
-You asked about India's criminal law framework. Effective July 1, 2024, India replaced the colonial IPC 1860, CrPC 1973, and Evidence Act 1872 with the **Bharatiya Nyaya Sanhita (BNS 2023)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS 2023)**, and **Bharatiya Sakshya Adhiniyam (BSA 2023)**.
+    return `### 💡 Plain-English Summary (What This Means for You)
+Effective **July 1, 2024**, India replaced its old colonial criminal laws (IPC 1860, CrPC 1973, and Evidence Act 1872) with three modern **Bharatiya Sanhitas**. These new laws introduce electronic FIR filing, strict investigation timelines, and new protections for victims.
 
-### ⚖️ Key Innovations & Statutory Changes (Bharat)
-* **BNS 2023 Offense Restructuring:**
-  1. **Section 111 (Organized Crime):** Specific stringent penalties for economic syndicates and cybercrime.
-  2. **Section 152 (Acts Endangering Sovereignty):** Replaces old IPC Section 124A (Sedition) with targeted offenses against armed rebellion and secession.
-  3. **Community Service:** Introduced for the first time as a formal statutory punishment for minor offenses.
-* **BNSS 2023 Procedural Timelines:** Allows electronic FIR (e-FIR) registration, mandates police preliminary inquiry within 14 days, and requires mandatory videography of search and seizure.
-* **BSA 2023 Sections 61 & 63 (Electronic Evidence):** Digital server records, hash values, and emails are now recognized as **primary evidence** without requiring old Section 65B secondary certificates.
+### 📜 What the Law Says (Acts & Sections)
+* **BNS 2023 Section 111 (Organized Crime):** Specific statutory penalties for organized syndicates, cybercrime, and economic offenses.
+* **BNS 2023 Section 152 (Sovereignty Protection):** The old colonial sedition law (IPC 124A) is repealed. Section 152 penalizes acts endangering India's sovereignty or armed rebellion.
+* **BNSS 2023 Section 173 (e-FIR & Registration):** You can now file an FIR electronically via portal or email. Police must conduct preliminary inquiries in specific offenses within 14 days.
+* **BSA 2023 Section 63 (Electronic Evidence):** Digital records (emails, server logs, WhatsApp, CCTV) are now **primary evidence**, making digital proof much easier to submit in court.
 
-### 📋 Action Plan for Criminal Complaints / Defense
-1. **Cite BNS Sections:** Use BNS 2023 statutory numbering in all FIR filings and criminal notices.
-2. **Preserve Digital Hash Records:** Ensure electronic evidence maintains verifiable custody logs under BSA Section 63.
-3. **Check Police Remand Timelines:** Observe BNSS 2023 limits on police custody and default bail rights.
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+* **Arnesh Kumar v. State of Bihar (2014):** Now statutory law under **BNSS Section 35**—police cannot automatically arrest you for offenses punishable up to 7 years without issuing a written **Notice of Appearance** first.
+
+### ✅ What You Should Do Next (Action Plan)
+1. **Use New BNS / BNSS Sections:** In all police complaints or notices filed after July 1, 2024, cite the new BNS/BNSS section numbers.
+2. **Preserve Digital Evidence:** Save original email files, server hash values, or screenshots to satisfy BSA 2023 Section 63 requirements.
+3. **Check Arrest Notice Rules:** If police contact you regarding a complaint under 7 years punishment, request an official BNSS Section 35 Notice of Appearance.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Bharatiya Criminal Law Caution:</strong> Criminal procedure under BNSS 2023 involves strict statutory timelines. Always retain a criminal defense advocate for court appearances.
+  <strong>⚠️ Kittu AI Note:</strong> Criminal procedure under BNSS 2023 involves strict deadlines. Retain a criminal defense advocate for police or court proceedings.
 </div>`;
   }
 
   // 4. Indian Contract Act Section 27, Non-Competes, Liquidated Damages Section 74
   if (lower.includes('non-compete') || lower.includes('section 27') || lower.includes('contract act') || lower.includes('compete') || lower.includes('liquidated damages') || lower.includes('section 74')) {
-    return `### 📑 Legal Summary: Indian Contract Act 1872 (Section 27 & 74)
-You asked about restraint of trade and non-compete enforceability under **${jurName}** contract law. India enforces a strict statutory ban on post-resignation trade restraints.
+    return `### 💡 Plain-English Summary (What This Means for You)
+In India, an employer **cannot legally stop you from working for a competitor or starting your own business after you resign**. Any non-compete clause that tries to restrict your job after your employment ends is completely **void and illegal** under Indian law.
 
-### ⚖️ Statutory Enforceability Standards (Bharat)
+### 📜 What the Law Says (Acts & Sections)
 * **Section 27 of Indian Contract Act 1872:** *"Every agreement by which anyone is restrained from exercising a lawful profession, trade or business of any kind, is to that extent void."*
-* **Supreme Court Precedents (*Niranjan Shankar Golikari, 1967* & *Percept D'Mark v. Zaheer Khan, 2006*):**
-  1. Restrictive covenants restricting competition **during** the active term of employment are valid and enforceable.
-  2. Any non-compete clause restricting an employee **after** termination or resignation is completely void under Section 27, regardless of how reasonable the duration or geography appears.
-* **Section 74 (Liquidated Damages & *Fateh Chand v. Balkishan Dass*):** A stipulated penalty figure in a contract acts as a ceiling; Indian courts award only actual reasonable compensation proved by the aggrieved party.
+* **Section 74 (Liquidated Damages):** A penalty figure named in a contract is only a maximum ceiling; Indian courts will award only actual reasonable compensation proved.
 
-### 📋 Recommended Drafting Strategy (India)
-1. **Remove Post-Termination Non-Competes:** Instead, insert robust **Non-Disclosure of Trade Secrets** and **Non-Solicitation of Employees/Clients** clauses which are legally valid.
-2. **Specify Garden Leave / Notice Periods:** Protect client transitions during paid notice periods rather than post-exit bans.
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+* **Percept D'Mark v. Zaheer Khan (2006 Supreme Court):** The Supreme Court reaffirmed that **post-termination non-competes are void under Section 27**, no matter how reasonable the duration or geography appears.
+* **Niranjan Shankar Golikari (1967):** Confirmed that non-competes are valid **only during** your active employment term, not after you leave.
+
+### ✅ What You Should Do Next (Action Plan)
+1. **Do Not Fear Post-Exit Non-Competes:** If an employer threatens an injunction over a post-resignation non-compete, Indian High Courts will dismiss it under Section 27.
+2. **Respect Confidentiality & Trade Secrets:** Employers *can* legally enforce **Non-Disclosure of Trade Secrets** and **Non-Solicitation of Clients/Employees** clauses.
+3. **Serve Notice Periods Legally:** Adhere to agreed Garden Leave or paid notice periods during your active employment contract.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Indian Contract Caution:</strong> Attempting to enforce a post-termination non-compete via injunction in an Indian High Court will be dismissed under Section 27.
+  <strong>⚠️ Kittu AI Note:</strong> While non-competes are void after leaving, never download or take confidential company files prior to resignation.
 </div>`;
   }
 
   // 5. India DPDP Act 2023, GDPR, Privacy
   if (lower.includes('dpdp') || lower.includes('privacy') || lower.includes('gdpr') || lower.includes('data protection') || lower.includes('consent') || lower.includes('cert-in')) {
-    return `### 📑 Legal Summary: India DPDP Act 2023 & Data Protection
-You asked about data privacy compliance under **${jurName}** law. India’s **Digital Personal Data Protection Act 2023 (DPDP Act)** establishes strict statutory rules for Data Fiduciaries and Data Principals.
+    return `### 💡 Plain-English Summary (What This Means for You)
+India's **Digital Personal Data Protection Act 2023 (DPDP Act)** gives you strong control over your personal information. Companies cannot collect, use, or share your personal data without your clear, affirmative consent, and you have the right to demand deletion of your data at any time.
 
-### ⚖️ Statutory Framework (DPDP Act 2023 — Bharat)
-* **Affirmative Consent (Section 6):** Consent must be free, specific, informed, unconditional, and capable of withdrawal at any time. Must be provided in English or any Eighth Schedule Indian language.
-* **Security Safeguards & Breach Notice (Section 8):** Data Fiduciaries must implement reasonable technical safeguards to protect personal data.
-* **Statutory Fines (Schedule):** The Data Protection Board of India can impose penalties up to **₹250 crore** for failure to prevent a personal data breach or protect child data.
-* **CERT-In Cyber Rules (2022):** Mandatory requirement to report cybersecurity incidents to CERT-In within **6 hours** of discovery.
+### 📜 What the Law Says (Acts & Sections)
+* **Affirmative Consent (Section 6):** Your consent must be free, specific, informed, and capable of withdrawal at any time in English or any Indian language.
+* **Security Safeguards (Section 8):** Companies must protect personal data against breaches.
+* **Statutory Fines (Schedule):** The Data Protection Board of India can impose penalties up to **₹250 crore** on companies that fail to protect user data.
+* **CERT-In Cyber Rules (2022):** Companies must report cybersecurity breaches within **6 hours** of discovery.
 
-### 📋 Practical Compliance Steps
-1. **Bilingual Privacy Notice:** Update website privacy policies to offer clear consent withdrawal options.
-2. **Execute Vendor Contracts:** Sign explicit Data Processor agreements with cloud and AI hosting vendors.
-3. **Establish Breach Protocol:** Set up automated logs to comply with CERT-In 6-hour reporting rules.
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+* **Justice K.S. Puttaswamy v. Union of India (2017 9-Judge Bench):** Declared the **Right to Privacy** a Fundamental Right under Article 21, establishing that data collection must always be lawful and proportionate.
+
+### ✅ What You Should Do Next (Action Plan)
+1. **Provide Clear Opt-Outs:** If you run a business, ensure your website offers simple consent withdrawal links.
+2. **Sign Vendor DPAs:** Require cloud and AI hosting vendors to sign explicit Data Processing Agreements.
+3. **Submit Erasure Notices:** As a citizen, you can send a formal DPDP Act Right to Erasure notice to any company's Data Protection Officer to permanently delete your data.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Privacy Compliance Notice:</strong> DPDP Act 2023 penalties apply per breach event. Ensure data fiduciary governance is audited annually.
+  <strong>⚠️ Kittu AI Note:</strong> DPDP Act statutory fines apply per breach event. Regularly audit data security practices.
 </div>`;
   }
 
   // 6. POSH Act 2013, Workplace Harassment, Vishaka Guidelines
   if (lower.includes('posh') || lower.includes('harassment') || lower.includes('vishaka') || lower.includes('icc') || lower.includes('internal complaints')) {
-    return `### 📑 Legal Summary: POSH Act 2013 & Workplace Gender Equality (India)
-You asked about workplace sexual harassment compliance under **${jurName}** law. The **POSH Act 2013** and Supreme Court *Vishaka Guidelines (1997)* mandate zero tolerance and compulsory institutional redressal.
+    return `### 💡 Plain-English Summary (What This Means for You)
+India enforces **zero tolerance for sexual harassment in workplaces**. Under the **POSH Act 2013**, every organization with 10 or more employees must set up an **Internal Complaints Committee (ICC)** to investigate complaints quickly and fairly.
 
-### ⚖️ Statutory & Constitutional Mandates (Bharat)
-* **Mandatory ICC Constitution (Section 4):** Every employer with 10 or more employees MUST constitute an **Internal Complaints Committee (ICC)** presided over by a senior woman employee, with at least 50% women members and 1 independent legal/NGO expert.
+### 📜 What the Law Says (Acts & Sections)
+* **Mandatory ICC (Section 4):** The committee must be headed by a senior woman employee, have at least 50% women members, and include 1 independent external legal or NGO expert.
+* **Inquiry Timeline (Section 11 & 13):** The ICC inquiry must be completed within **90 calendar days**, and action taken within 60 days thereafter.
 * **Penalties for Default (Section 26):** Failure to constitute an ICC triggers an immediate fine up to **₹50,000**, with double fines and business license cancellation for repeat offenses.
-* **Constitutional Backing:** Upholds Fundamental Rights under Articles 14 (Equality), 15 (Non-Discrimination), and 21 (Right to Work with Dignity).
 
-### 📋 Action Plan for Organizations
-1. **Publish ICC Details:** Prominently display ICC committee member names and contact details on workplace notice boards and website (*Aureliano Fernandes SC directive 2023*).
-2. **Annual Report Filing:** Submit the annual POSH compliance report to the District Officer by January 31 each year.
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+* **Vishaka v. State of Rajasthan (1997 Supreme Court):** The Supreme Court laid down landmark constitutional guidelines declaring workplace harassment a direct violation of gender equality (Article 14) and dignity (Article 21).
+* **Aureliano Fernandes v. State of Goa (2023):** Supreme Court ordered all public and private entities to verify and publish their ICC member names and contact details online.
+
+### ✅ What You Should Do Next (Action Plan)
+1. **Publish Your ICC Details:** Display ICC committee member names and emails prominently on notice boards and your website.
+2. **Submit Annual Returns:** File the mandatory annual POSH compliance report to the District Officer by January 31 each year.
+3. **Conduct Annual Training:** Hold annual awareness workshops for employees and orientation for ICC members.
 
 <div class="legal-caution-box">
-  <strong>⚠️ POSH Caution:</strong> Employers are strictly liable for statutory compliance under POSH Act 2013 regardless of company size.
+  <strong>⚠️ Kittu AI Note:</strong> Employers are strictly liable for statutory compliance under the POSH Act 2013 regardless of company size.
 </div>`;
   }
 
@@ -2016,8 +2031,13 @@ async function sendChatMessage(userText) {
 // --- Direct Groq Cloud API Helper (llama-3.3-70b-versatile) ---
 async function callGroqCloudAPI(prompt, jurisdictionCode, history = []) {
   const systemPrompt = `You are Kittu (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant powered by Groq Llama-3.3-70B-Versatile. Designed & developed with SakshamFit.
-Always prioritize the Constitution of India (Bharatiya Samvidhan), Fundamental Rights (Articles 14, 19, 21), Writs (Art 32/226), BNS 2023, BNSS 2023, BSA 2023, Indian Contract Act Section 27, and DPDP Act 2023. Substantiate legal reasoning with landmark Supreme Court of India precedents.
-If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets you conversationally, respond warmly and naturally without generating legal Markdown headers. Only structure formal legal consultations using Markdown headers when an actual legal question is asked.`;
+Always explain Indian legal concepts in simple, easy-to-understand language so any user can understand their rights clearly. Avoid dense legalese or confusing Latin jargon without a plain-English translation.
+When answering legal questions, structure your reply cleanly:
+### 💡 Plain-English Summary (What This Means for You)
+### 📜 What the Law Says (Acts & Sections)
+### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
+### ✅ Practical Action Plan (What You Should Do Next)
+If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets you conversationally, respond warmly and naturally without generating legal Markdown headers.`;
 
   const messages = [
     { role: 'system', content: `${systemPrompt}\n\nACTIVE USER JURISDICTION: ${jurisdictionCode}` },
