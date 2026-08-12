@@ -1200,6 +1200,17 @@ Here is an analysis of your query under **${jurName}** constitutional and statut
   <strong>⚠️ Important Advocate Note:</strong> Kittu is an AI legal research assistant providing preliminary legal information. Always consult a qualified Advocate on Record (AOR) for formal legal representation.
 </div>`;
 
+  const personaMode = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
+  if (personaMode === 'student') {
+    baseResp = isHi ? `### 🎓 विधि छात्र (Law Student) केस ब्रीफ व सार\nभारतीय संविधान और नए BNS/BNSS/BSA कानून के तहत इस विषय का परीक्षा विश्लेषण:\n\n### 📜 मुख्य बेयर एक्ट प्रावधान\n* संबंधित संवैधानिक अनुच्छेद व धाराएं।\n\n### 🏛️ रेशियो डेसीडेंडी (निर्णय का आधार)\n* सुप्रीम कोर्ट द्वारा स्थापित सिद्धांत।\n\n### 📝 परीक्षा और मौखिक परीक्षा (Viva) के प्रमुख प्रश्न\n1. इस सिद्धांत का मुख्य आधार क्या है?\n2. ऐतिहासिक केस कौन से हैं?` :
+               isHinglish ? `### 🎓 Law Student Case Brief & Overview\nIndian Constitution aur naye BNS/BNSS/BSA laws ke under is topic ka exam notes analysis:\n\n### 📜 Core Bare Act Provisions\n* Applicable constitutional articles aur BNS sections.\n\n### 🏛️ Ratio Decidendi (Court Ne Aisa Kyun Rule Kiya)\n* Supreme Court ka binding ratio under Article 141.\n\n### 📝 Top 3 Exam & Viva Questions to Remember\n1. What is the ratio decidendi of this landmark case?\n2. How does the new Bharatiya Sanhita alter the old colonial code?` :
+               `### 🎓 Law Student Case Brief & Overview\nExam notes and ratio analysis under the Constitution of India and BNS/BNSS 2023:\n\n### 📜 Core Bare Act Provisions\n* Governing constitutional articles and statutory sections.\n\n### 🏛️ Ratio Decidendi (Why the Court Ruled This Way)\n* Binding legal rationale established by the Supreme Court.\n\n### 📝 Top 3 Exam & Viva Questions to Remember\n1. What is the core ratio decidendi of this precedent?\n2. How do the new Bharatiya Sanhitas modify the colonial IPC/CrPC provisions?`;
+  } else if (personaMode === 'business') {
+    baseResp = isHi ? `### 💡 कमर्शियल जोखिम सारांश (Commercial Risk Summary)\nव्यापारिक अनुबंध, कंपनी कानून 2013, और DPDP Act 2023 के तहत जोखिम मूल्यांकन:\n\n### 📜 कॉर्पोरेट और अनुबंध कानून मानक\n* भारतीय अनुबंध अधिनियम (Section 27 & 74) व कंपनी कानून अनुपालन।\n\n### 🏛️ सुप्रीम कोर्ट प्रवर्तन निर्णय\n* न्यायालय द्वारा निर्धारित कमर्शियल और मध्यस्थता (Arbitration) मानक।\n\n### ✅ कार्यकारी कार्य योजना (Risk Mitigation Plan)\n1. लिखित अनुबंध और स्टाम्प ड्यूटी अनुपालन सुनिश्चित करें।\n2. धारा 27 के तहत अवैध प्रतिबंधों से बचें।` :
+               isHinglish ? `### 💡 Commercial Risk Summary (Hinglish)\nCommercial contracts, Companies Act 2013, aur DPDP Act 2023 ke under corporate risk assessment:\n\n### 📜 Corporate & Contract Law Standards\n* Indian Contract Act (Sec 27 & 74) aur corporate governance rules.\n\n### 🏛️ Supreme Court Enforcement Precedents\n* Binding commercial arbitration aur liability standards.\n\n### ✅ Executive Action Plan & Mitigation Steps\n1. Proper stamp duty aur agreement registration check karein.\n2. Post-exit non-compete clauses (Sec 27) par depend na karein.` :
+               `### 💡 Commercial Risk Summary\nExecutive risk assessment under commercial contracts, Companies Act 2013, and DPDP Act 2023:\n\n### 📜 Corporate & Contract Law Standards\n* Governing provisions under Indian Contract Act 1872 (Sec 27 & 74) and corporate compliance.\n\n### 🏛️ Supreme Court Enforcement Precedents\n* Authoritative benchmarks on arbitration and commercial liability.\n\n### ✅ Executive Action Plan & Mitigation Steps\n1. Verify stamp duty compliance under the Indian Stamp Act 1899.\n2. Restructure non-competes into enforceable trade secret NDA covenants.`;
+  }
+
   if (AppState.researchMode === 'deep') {
     return `### ⚖️ DEEP RESEARCH MEMO • SOURCE-FIRST SYNTHESIS
 <div style="margin-bottom:0.8rem;">
@@ -1998,6 +2009,7 @@ function initChatEngine() {
       btn.classList.add('active');
       const persona = btn.getAttribute('data-persona');
       localStorage.setItem('jurisai_advocate_mode', persona || 'senior_advocate');
+      applyPersonaAndLanguageUI();
     });
   });
 
@@ -2008,17 +2020,22 @@ function initChatEngine() {
       btn.classList.add('active');
       const lang = btn.getAttribute('data-lang');
       localStorage.setItem('jurisai_language', lang || 'en');
-      applyLanguageUI(lang || 'en');
+      applyPersonaAndLanguageUI();
     });
   });
 
-  // Apply initial saved language on load
+  // Apply initial saved language & persona on load
   const savedLang = localStorage.getItem('jurisai_language') || 'en';
+  const savedPersona = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
   langBtns.forEach((b) => {
     if (b.getAttribute('data-lang') === savedLang) b.classList.add('active');
     else b.classList.remove('active');
   });
-  applyLanguageUI(savedLang);
+  personaBtns.forEach((b) => {
+    if (b.getAttribute('data-persona') === savedPersona || (savedPersona === 'senior_advocate' && b.getAttribute('data-persona') === 'advocate')) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+  applyPersonaAndLanguageUI();
 
   if (chatForm) {
     chatForm.addEventListener('submit', (e) => {
@@ -2070,8 +2087,10 @@ function initChatEngine() {
   }
 }
 
-// --- Bilingual I18N UI Translation Engine (English / हिन्दी / Hinglish) ---
-function applyLanguageUI(lang) {
+// --- Bilingual I18N UI & Persona Customization Engine (English / हिन्दी / Hinglish + 4 Personas) ---
+function applyPersonaAndLanguageUI() {
+  const lang = localStorage.getItem('jurisai_language') || 'en';
+  const persona = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
   const isHi = lang === 'hi';
   const isHinglish = lang === 'hinglish';
 
@@ -2079,30 +2098,128 @@ function applyLanguageUI(lang) {
   const wSub = document.querySelector('.welcome-subtitle');
   const textarea = document.getElementById('chat-input-textarea');
 
+  // Customize Welcome Title & Subtitle according to Persona and Language
   if (wTitle) {
-    wTitle.textContent = isHi ? "किट्टू से भारतीय कानून के बारे में पूछें।" : 
-                         isHinglish ? "Ask Kittu about Indian Law (Hinglish)." : 
-                         "Ask Kittu about Indian Law.";
+    if (persona === 'student') {
+      wTitle.textContent = isHi ? "किट्टू AI • LLB और ज्यूडिशियरी स्टडी पार्टनर" :
+                           isHinglish ? "Kittu AI • LLB aur Judiciary Exam Copilot" :
+                           "Kittu AI • LLB & Judiciary Exam Partner";
+    } else if (persona === 'citizen') {
+      wTitle.textContent = isHi ? "किट्टू AI से जानें अपने अधिकार" :
+                           isHinglish ? "Kittu AI se Jaanein Apne Kanooni Adhikar" :
+                           "Know Your Rights with Kittu AI";
+    } else if (persona === 'business') {
+      wTitle.textContent = isHi ? "किट्टू AI • कॉर्पोरेट और कमर्शियल लीगल सलाहकार" :
+                           isHinglish ? "Kittu AI • General Counsel aur Corporate Copilot" :
+                           "Kittu AI • General Counsel & Corporate";
+    } else {
+      wTitle.textContent = isHi ? "किट्टू से भारतीय कानून के बारे में पूछें।" : 
+                           isHinglish ? "Kittu AI se Bharatiya Kanoon ke baare me puchein." : 
+                           "Ask Kittu about Indian Law.";
+    }
   }
 
   if (wSub) {
-    wSub.textContent = isHi ? "भारतीय संविधान, BNS/BNSS 2023 आपराधिक कानून, और सुप्रीम कोर्ट के फैसलों के लिए आपका विश्वसनीय कानूनी AI सहायक।" :
-                       isHinglish ? "Aapka trusted AI Legal Assistant for Indian Constitution, BNS/BNSS 2023, Contract Act, aur Supreme Court landmark judgments." :
-                       "Your authoritative AI assistant for Indian Constitutional jurisprudence, BNS/BNSS 2023 criminal law, Section 27 Contract Act, and Supreme Court precedent research.";
+    if (persona === 'student') {
+      wSub.textContent = isHi ? "भारतीय संविधान, नए BNS/BNSS/BSA कानून, सुप्रीम कोर्ट के ऐतिहासिक केस ब्रीफ, और परीक्षा तैयारी के लिए आपका LLB व ज्यूडिशियरी स्टडी पार्टनर।" :
+                         isHinglish ? "LLB aur Judiciary Exams ke liye Bharatiya Samvidhan, naye criminal laws, landmark SC case briefs, aur viva preparation ka smart study partner." :
+                         "Your study copilot for mastering the Constitution of India, BNS/BNSS/BSA codes, landmark Supreme Court case briefs, ratio decidendi, and viva revision.";
+    } else if (persona === 'citizen') {
+      wSub.textContent = isHi ? "भारतीय नागरिक अधिकार, पुलिस गिरफ्तारी से बचाव, RTI आवेदन, उपभोक्ता अधिकार, और कानूनी सहायता के लिए आपका सरल हिंदी मार्गदर्शक।" :
+                         isHinglish ? "Aam nagrik ke rights, police arrest rules, RTI application, consumer protection, aur daily legal remedy samjhne ka simple Hinglish guide." :
+                         "Your friendly plain-English guide to Indian citizen rights, police arrest rules, RTI applications, consumer protection, and everyday legal remedies.";
+    } else if (persona === 'business') {
+      wSub.textContent = isHi ? "कमर्शियल अनुबंध जोखिम, कंपनी कानून 2013, DPDP Act 2023 प्राइवेसी नियम, और व्यापारिक विवाद समाधान के लिए आपका कॉर्पोरेट लीगल AI सलाहकार।" :
+                         isHinglish ? "Commercial contracts risk, Companies Act compliance, DPDP Act 2023 privacy rules, aur corporate disputes resolve karne ka General Counsel AI copilot." :
+                         "Your General Counsel AI copilot for commercial contract risk mitigation, Companies Act compliance, DPDP Act 2023 privacy rules, and corporate dispute resolution.";
+    } else {
+      wSub.textContent = isHi ? "भारतीय संविधान, BNS/BNSS 2023 आपराधिक कानून, और सुप्रीम कोर्ट के फैसलों के लिए आपका विश्वसनीय कानूनी AI सहायक।" :
+                         isHinglish ? "Aapka trusted AI Legal Assistant for Indian Constitution, BNS/BNSS 2023, Contract Act, aur Supreme Court landmark judgments." :
+                         "Your authoritative AI assistant for Indian Constitutional jurisprudence, BNS/BNSS 2023 criminal law, Section 27 Contract Act, and Supreme Court precedent research.";
+    }
   }
 
   if (textarea) {
-    textarea.placeholder = isHi ? "कानूनी प्रश्न पूछें, धारा बताएं, या कोई भी विषय लिखें (जैसे 'Article 21', 'BNS 103')..." :
-                           isHinglish ? "Apna legal question ya section type karein (e.g. 'Article 21', 'BNS 103')..." :
-                           "Ask Kittu a legal question, cite a statute, or type any section (e.g. 'Article 21', 'BNS 103')...";
+    if (persona === 'student') {
+      textarea.placeholder = isHi ? "केस ब्रीफ, परीक्षा प्रश्न, या किसी धारा का स्पष्टीकरण मांगें (जैसे 'Puttaswamy case brief')..." :
+                             isHinglish ? "Case brief, viva question ya section explanation puchein (e.g. 'Puttaswamy case brief')..." :
+                             "Ask for a case brief, exam revision note, or section explanation (e.g. 'Puttaswamy case brief')...";
+    } else if (persona === 'citizen') {
+      textarea.placeholder = isHi ? "अपने अधिकार से जुड़ा कोई भी सरल प्रश्न पूछें (जैसे 'पुलिस रोके तो क्या करें?', 'RTI कैसे लगाएं?')..." :
+                             isHinglish ? "Apne adhikar ya police arrest ke baare me simple sawaal puchein (e.g. 'RTI kaise file karein?')..." :
+                             "Ask a simple question about your rights (e.g. 'What if police stops me?', 'How to file RTI?')...";
+    } else if (persona === 'business') {
+      textarea.placeholder = isHi ? "कमर्शियल अनुबंध, कंपनी कानून, या DPDP Act 2023 के बारे में पूछें..." :
+                             isHinglish ? "Commercial contracts, non-compete validity, ya DPDP Act fines ke baare me puchein..." :
+                             "Ask about contracts, company compliance, or commercial law (e.g. 'Section 27 non-competes')...";
+    } else {
+      textarea.placeholder = isHi ? "कानूनी प्रश्न पूछें, धारा बताएं, या कोई भी विषय लिखें (जैसे 'Article 21', 'BNS 103')..." :
+                             isHinglish ? "Apna legal sawaal puchein, koi section likhein (e.g. 'Article 21', 'BNS 103')..." :
+                             "Ask Kittu a legal question, cite a statute, or type any section (e.g. 'Article 21', 'BNS 103')...";
+    }
+  }
+
+  // Update 5 Quick Resource Pills according to Persona
+  const pills = document.querySelectorAll('.quick-resource-pills .resource-pill');
+  if (pills && pills.length >= 5) {
+    if (persona === 'student') {
+      pills[0].textContent = isHi ? "🎓 केस ब्रीफ: Puttaswamy" : isHinglish ? "🎓 Case Brief: Puttaswamy" : "🎓 Case Brief: Puttaswamy";
+      pills[0].setAttribute('data-query', "Give me a complete law student case brief of Justice K.S. Puttaswamy v. Union of India (2017): Facts, Issues, Judgment, and Ratio Decidendi.");
+      pills[1].textContent = isHi ? "🎓 परीक्षा टेबल: IPC vs BNS" : isHinglish ? "🎓 Exam Table: IPC vs BNS" : "🎓 Exam Table: IPC vs BNS";
+      pills[1].setAttribute('data-query', "Create an exam revision table comparing old IPC 1860 sections with new BNS 2023 sections.");
+      pills[2].textContent = isHi ? "🎓 केस ब्रीफ: Maneka Gandhi" : isHinglish ? "🎓 Case Brief: Maneka Gandhi" : "🎓 Case Brief: Maneka Gandhi";
+      pills[2].setAttribute('data-query', "Give me a law student case brief of Maneka Gandhi v. Union of India (1978) on Article 21 due process.");
+      pills[3].textContent = isHi ? "🎓 Viva Q&A: Basic Structure" : isHinglish ? "🎓 Viva Q&A: Basic Structure" : "🎓 Viva Q&A: Basic Structure";
+      pills[3].setAttribute('data-query', "What are the top 5 exam and viva questions on the Basic Structure Doctrine in Kesavananda Bharati?");
+      pills[4].textContent = isHi ? "🎓 केस ब्रीफ: Shreya Singhal" : isHinglish ? "🎓 Case Brief: Shreya Singhal" : "🎓 Case Brief: Shreya Singhal";
+      pills[4].setAttribute('data-query', "Give me a law student case brief of Shreya Singhal v. Union of India (2015) on Article 19(1)(a) freedom of speech.");
+    } else if (persona === 'citizen') {
+      pills[0].textContent = isHi ? "👤 गिरफ्तारी में मेरे अधिकार" : isHinglish ? "👤 Arrest me Mere Rights" : "👤 My Arrest Rights (BNSS)";
+      pills[0].setAttribute('data-query', "What are my fundamental rights if police stop or arrest me under Article 22 and BNSS 2023?");
+      pills[1].textContent = isHi ? "👤 RTI कैसे लगाएं" : isHinglish ? "👤 RTI Kaise Lagayein" : "👤 How to File RTI";
+      pills[1].setAttribute('data-query', "How do I file an RTI application under the Right to Information Act 2005 step by step?");
+      pills[2].textContent = isHi ? "👤 चेक बाउंस मार्गदर्शक" : isHinglish ? "👤 Cheque Bounce Guide" : "👤 Cheque Bounce Guide";
+      pills[2].setAttribute('data-query', "What should I do if someone gave me a cheque that bounced under Section 138 NI Act?");
+      pills[3].textContent = isHi ? "👤 किरायेदार के अधिकार" : isHinglish ? "👤 Tenant ke Adhikar" : "👤 Landlord & Tenant Rights";
+      pills[3].setAttribute('data-query', "What are my rights if a landlord refuses to return my security deposit?");
+      pills[4].textContent = isHi ? "👤 उपभोक्ता शिकायत" : isHinglish ? "👤 Consumer Complaint" : "👤 Consumer Complaint Portal";
+      pills[4].setAttribute('data-query', "How do I file a consumer complaint on the E-Daakhil portal for defective goods?");
+    } else if (persona === 'business') {
+      pills[0].textContent = isHi ? "🧑‍💼 नॉन-कंपीट वैधता (Sec 27)" : isHinglish ? "🧑‍💼 Non-Compete Validity" : "🧑‍💼 Non-Compete Enforceability";
+      pills[0].setAttribute('data-query', "Why are post-termination employee non-compete clauses void under Section 27 of the Indian Contract Act?");
+      pills[1].textContent = isHi ? "🧑‍💼 DPDP Act 2023 नियम" : isHinglish ? "🧑‍💼 DPDP Act 2023 Rules" : "🧑‍💼 DPDP Act 2023 Compliance";
+      pills[1].setAttribute('data-query', "What are the mandatory consent rules and ₹250 crore penalty triggers under India's DPDP Act 2023?");
+      pills[2].textContent = isHi ? "🧑‍💼 अनुबंध हर्जाना (Sec 74)" : isHinglish ? "🧑‍💼 Liquidated Damages (Sec 74)" : "🧑‍💼 Liquidated Damages (Sec 74)";
+      pills[2].setAttribute('data-query', "How should we structure liquidated damages under Section 74 of the Indian Contract Act to ensure enforceability?");
+      pills[3].textContent = isHi ? "🧑‍💼 डायरेक्टर के दायित्व" : isHinglish ? "🧑‍💼 Directors Fiduciary Duties" : "🧑‍💼 Companies Act Directors Duties";
+      pills[3].setAttribute('data-query', "What are the statutory fiduciary duties of a Director under Section 166 of the Companies Act 2013?");
+      pills[4].textContent = isHi ? "🧑‍💼 चेक रिकवरी (Sec 138)" : isHinglish ? "🧑‍💼 Cheque Bounce Recovery" : "🧑‍💼 Section 138 Cheque Recovery";
+      pills[4].setAttribute('data-query', "What is the statutory 30-day notice timeline for recovering money under Section 138 of the Negotiable Instruments Act?");
+    } else {
+      pills[0].textContent = isHi ? "§ संविधान (Samvidhan)" : isHinglish ? "§ Samvidhan (Constitution)" : "§ Constitution (Samvidhan)";
+      pills[0].setAttribute('data-query', "Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & Puttaswamy ruling.");
+      pills[1].textContent = isHi ? "§ BNS 2023 (अपराध कानून)" : isHinglish ? "§ BNS 2023 (Offenses)" : "§ BNS 2023 (Offenses)";
+      pills[1].setAttribute('data-query', "What are the key changes in Bharatiya Nyaya Sanhita (BNS 2023) replacing IPC 1860?");
+      pills[2].textContent = isHi ? "§ BNSS 2023 (प्रक्रिया)" : isHinglish ? "§ BNSS 2023 (Procedure)" : "§ BNSS 2023 (Procedure)";
+      pills[2].setAttribute('data-query', "Explain BNSS 2023 e-FIR registration and Arnesh Kumar police arrest notice rules.");
+      pills[3].textContent = isHi ? "§ BSA 2023 (साक्ष्य कानून)" : isHinglish ? "§ BSA 2023 (Evidence)" : "§ BSA 2023 (Evidence)";
+      pills[3].setAttribute('data-query', "How does Bharatiya Sakshya Adhiniyam (BSA 2023 Section 63) change electronic evidence?");
+      pills[4].textContent = isHi ? "§ सुप्रीम कोर्ट केस लॉ" : isHinglish ? "§ Supreme Court Case Law" : "§ Supreme Court Case Law";
+      pills[4].setAttribute('data-query', "Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973).");
+    }
   }
 
   // Update sidebar links
   const navTexts = document.querySelectorAll('.sidebar-nav .nav-text');
   const hiNames = [
     "किट्टू एआई सहायक", "संविधान एक्सप्लोरर", "बीएनएस / भारतीय कानून", "उच्चतम न्यायालय निर्णय", 
-    "अनुसंधान वर्कस्पेस", "सुरक्षित निर्णय", "कानूनी दस्तावेज़ विश्लेषक", "कानूनी दस्तावेज़ निर्माता", 
+    "अनुसंधान वर्कस्पेस", "सुरक्षित निर्णय", "दस्तावेज़ विश्लेषक", "कानूनी दस्तावेज़ निर्माता", 
     "सूचना का अधिकार (RTI)", "एआई इंजन सेटिंग्स"
+  ];
+  const hinglishNames = [
+    "Kittu AI Assistant", "Samvidhan Explorer", "Naye BNS / BNSS Laws", "Supreme Court Judgments", 
+    "Research Workspaces", "Saved Bookmarks", "Document Risk Analyzer", "Agreement Builder", 
+    "RTI & Kanooni Adhikar", "AI Engine Settings"
   ];
   const enNames = [
     "Kittu AI Assistant", "Constitution Explorer", "BNS / BNSS / BSA", "Case Law Precedents", 
@@ -2112,15 +2229,18 @@ function applyLanguageUI(lang) {
 
   navTexts.forEach((el, idx) => {
     if (isHi && hiNames[idx]) el.textContent = hiNames[idx];
+    else if (isHinglish && hinglishNames[idx]) el.textContent = hinglishNames[idx];
     else if (enNames[idx]) el.textContent = enNames[idx];
   });
 
   // Update mobile bottom nav
   const mobileNavs = document.querySelectorAll('.mobile-bottom-nav span:not([style])');
   const hiMobile = ["संविधान", "किट्टू AI", "सुरक्षित", "विश्लेषक", "RTI"];
+  const hinglishMobile = ["Samvidhan", "Kittu AI", "Saved", "Analyzer", "RTI"];
   const enMobile = ["Samvidhan", "Kittu AI", "Saved", "Analyzer", "RTI"];
   mobileNavs.forEach((el, idx) => {
     if (isHi && hiMobile[idx]) el.textContent = hiMobile[idx];
+    else if (isHinglish && hinglishMobile[idx]) el.textContent = hinglishMobile[idx];
     else if (enMobile[idx]) el.textContent = enMobile[idx];
   });
 }
