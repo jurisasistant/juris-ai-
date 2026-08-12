@@ -1970,13 +1970,77 @@ body {
     min-width: 100%;
   }
 
-  /* Fluid Mobile Modals */
-  .modal-content, .modal-content.kb-drawer-content, .cmd-palette-container {
-    width: calc(100vw - 20px) !important;
-    max-height: 84vh;
-    padding: 1.25rem 1rem !important;
-    margin: 10px;
-    border-radius: 16px;
+  /* ==========================================================================
+     MOBILE-FIRST APP EXPERIENCE & NATIVE OS UPGRADES (v6.5)
+     ========================================================================== */
+  
+  /* Native iOS/Android Bottom Sheet Modals (Requirement 20) */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal-content, .modal-content.kb-drawer-content {
+    width: 100vw !important;
+    max-height: 88vh;
+    padding: 1.5rem 1.25rem env(safe-area-inset-bottom, 16px) !important;
+    margin: 0;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: none;
+    animation: slideUpBottomSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUpBottomSheet {
+    from { transform: translateY(100%); opacity: 0.8; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .bottom-sheet-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: var(--border-glass);
+    border-radius: 99px;
+    margin: 0 auto 1.25rem auto;
+  }
+
+  /* Full-Screen Mobile Legal Search (Requirement 10) */
+  .cmd-modal-overlay.active {
+    align-items: flex-start;
+    padding: 0;
+  }
+  .cmd-palette-container {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    border: none;
+    padding: env(safe-area-inset-top, 16px) 1rem env(safe-area-inset-bottom, 16px) !important;
+  }
+
+  /* Minimum 44px × 44px Touch Targets & Active Tap Feedback (Requirement 9 & 15) */
+  .statute-pill, .case-pill, .authority-badge, .verify-badge, .resource-pill {
+    min-height: 40px;
+    padding: 0.45rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+  }
+  .btn-primary, .btn-secondary, .btn-danger, .msg-action-btn, .btn-ai-action-special, .nav-link, .mobile-nav-btn {
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-primary:active, .btn-secondary:active, .btn-danger:active, .msg-action-btn:active, .btn-ai-action-special:active, .resource-pill:active, .mobile-nav-btn:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+
+  /* Sticky Mobile AI Composer above Keyboard (Requirement 7 & 8) */
+  .chat-input-wrapper {
+    position: sticky;
+    bottom: 0;
+    z-index: 80;
+    padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 8px));
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-glass);
   }
 
   .modal-title {

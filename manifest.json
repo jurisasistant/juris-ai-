@@ -1,0 +1,24 @@
+{
+  "name": "JurisAI Bharat — Indian Constitutional & Legal AI Assistant",
+  "short_name": "JurisAI Bharat",
+  "description": "Premium Indian legal-tech AI research platform trained on the Constitution of India, BNS/BNSS/BSA 2023, and Central Acts.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#080B12",
+  "theme_color": "#080B12",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://cdn.jsdelivr.net/gh/lucide-icons/lucide/icons/scale.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/gh/lucide-icons/lucide/icons/scale.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
