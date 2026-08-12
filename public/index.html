@@ -145,11 +145,8 @@
           </div>
           <span style="color: var(--accent-gold); font-size: 11px; font-weight: 700;">CHANGE</span>
         </div>
-        <div class="sidebar-footer-text">
-          JurisAI Bharat v5.5 &bull; Samvidhan Edition
-        </div>
-        <div class="sidebar-sakshamfit-text">
-          Made with ❤️ by <strong>sakshamfit</strong>
+        <div class="sidebar-sakshamfit-text" style="font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.4;">
+          🇮🇳 Made with ❤️ by <strong>sakshamfit</strong> • JurisAI Bharat Enterprise v6.0
         </div>
       </div>
     </aside>
@@ -163,15 +160,15 @@
           <button class="menu-toggle-btn" id="menu-toggle-btn" title="Toggle Sidebar">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
-          <div class="page-title" id="navbar-page-title">Kittu AI Legal Assistant & Constitutional Research</div>
+          <div class="page-title" id="navbar-page-title">Kittu AI Legal Assistant</div>
         </div>
 
         <div class="navbar-right">
           <!-- Command Palette Button (⌘K / Ctrl+K) -->
-          <button class="cmd-palette-btn" id="open-cmd-palette-btn" title="Press ⌘K or Ctrl+K to open global legal search">
+          <button class="cmd-palette-btn" id="open-cmd-palette-btn" title="Press ⌘K or Ctrl+K to open search">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <span>🔍</span>
-              <span>Global Legal Search...</span>
+              <span>Search...</span>
             </div>
             <span class="cmd-shortcut-badge">⌘K</span>
           </button>
@@ -222,14 +219,12 @@
             <!-- Explain Like I'm... Persona & Language Selector Toolbar (MVP Feature 6 & 18) -->
             <div class="chat-persona-toolbar">
               <div class="persona-group">
-                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">EXPLAIN LIKE I'M:</span>
                 <button class="persona-btn active" data-persona="advocate">👨‍⚖️ Advocate</button>
                 <button class="persona-btn" data-persona="student">🎓 Law Student</button>
                 <button class="persona-btn" data-persona="citizen">👤 Citizen</button>
                 <button class="persona-btn" data-persona="business">🧑‍💼 Business</button>
               </div>
               <div class="language-group">
-                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">LANGUAGE:</span>
                 <button class="language-btn active" data-lang="en">English</button>
                 <button class="language-btn" data-lang="hi">हिन्दी</button>
                 <button class="language-btn" data-lang="hinglish">Hinglish</button>
@@ -242,7 +237,7 @@
               <div class="chat-welcome" id="chat-welcome-screen">
                 <span class="welcome-badge">🇮🇳 KITTU • BHARATIYA LEGAL RESEARCH AI</span>
                 <h1 class="welcome-title">Ask Kittu about Indian Law.</h1>
-                <p class="welcome-subtitle">Your authoritative AI assistant for Indian Constitutional jurisprudence, BNS/BNSS 2023 criminal law, Section 27 Contract Act, and Supreme Court precedent research.</p>
+                <p class="welcome-subtitle">AI assistant for Indian Constitutional law, BNS/BNSS 2023, and Supreme Court research.</p>
                 
                 <!-- Quick Resource Pills -->
                 <div class="quick-resource-pills">
@@ -251,25 +246,6 @@
                   <button class="resource-pill" data-query="Explain BNSS 2023 e-FIR registration and Arnesh Kumar police arrest notice rules.">§ BNSS 2023 (Procedure)</button>
                   <button class="resource-pill" data-query="How does Bharatiya Sakshya Adhiniyam (BSA 2023 Section 63) change electronic evidence?">§ BSA 2023 (Evidence)</button>
                   <button class="resource-pill" data-query="Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973).">§ Supreme Court Case Law</button>
-                </div>
-                
-                <div class="prompt-grid">
-                  <div class="prompt-card" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & the Puttaswamy Privacy ruling.">
-                    <span class="prompt-card-category">Constitutional Law</span>
-                    <span class="prompt-card-text">Fundamental Rights (Art. 14, 19, 21) & Supreme Court Puttaswamy Privacy Bench</span>
-                  </div>
-                  <div class="prompt-card" data-prompt="What are the 5 Constitutional Writs under Article 32 & 226 of the Indian Constitution, and when can Mandamus be filed?">
-                    <span class="prompt-card-category">Constitutional Writs</span>
-                    <span class="prompt-card-text">Writ Petitions under Article 32 (Supreme Court) & Article 226 (High Court)</span>
-                  </div>
-                  <div class="prompt-card" data-prompt="How does the Bharatiya Nyaya Sanhita (BNS 2023) and Bharatiya Sakshya Adhiniyam (BSA 2023) change criminal law & electronic evidence in India?">
-                    <span class="prompt-card-category">New Criminal Laws</span>
-                    <span class="prompt-card-text">Bharatiya Nyaya Sanhita (BNS 2023) & Electronic Evidence under BSA 2023</span>
-                  </div>
-                  <div class="prompt-card" data-prompt="Why is a post-termination employee non-compete clause void under Section 27 of the Indian Contract Act 1872?">
-                    <span class="prompt-card-category">Indian Contract Act</span>
-                    <span class="prompt-card-text">Section 27 Restraint of Trade & Enforceability of Non-Competes in India</span>
-                  </div>
                 </div>
               </div>
 
@@ -291,8 +267,7 @@
                 </div>
               </form>
               <div class="input-footer-info">
-                <span>⚡ Powered by Kittu AI (Groq Llama-3.3-70B) &bull; Made with sakshamfit</span>
-                <span>Press Enter to send &bull; Shift + Enter for new line</span>
+                <span>⚡ Powered by Kittu AI • Made with ❤️ by sakshamfit</span>
               </div>
             </div>
 

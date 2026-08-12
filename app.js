@@ -2121,21 +2121,21 @@ function applyPersonaAndLanguageUI() {
 
   if (wSub) {
     if (persona === 'student') {
-      wSub.textContent = isHi ? "भारतीय संविधान, नए BNS/BNSS/BSA कानून, सुप्रीम कोर्ट के ऐतिहासिक केस ब्रीफ, और परीक्षा तैयारी के लिए आपका LLB व ज्यूडिशियरी स्टडी पार्टनर।" :
-                         isHinglish ? "LLB aur Judiciary Exams ke liye Bharatiya Samvidhan, naye criminal laws, landmark SC case briefs, aur viva preparation ka smart study partner." :
-                         "Your study copilot for mastering the Constitution of India, BNS/BNSS/BSA codes, landmark Supreme Court case briefs, ratio decidendi, and viva revision.";
+      wSub.textContent = isHi ? "भारतीय संविधान, BNS कानून, और केस ब्रीफ के लिए आपका स्टडी पार्टनर।" :
+                         isHinglish ? "Samvidhan, BNS laws, aur landmark SC case briefs ka study copilot." :
+                         "Study copilot for Indian Constitution, BNS/BNSS codes, and case briefs.";
     } else if (persona === 'citizen') {
-      wSub.textContent = isHi ? "भारतीय नागरिक अधिकार, पुलिस गिरफ्तारी से बचाव, RTI आवेदन, उपभोक्ता अधिकार, और कानूनी सहायता के लिए आपका सरल हिंदी मार्गदर्शक।" :
-                         isHinglish ? "Aam nagrik ke rights, police arrest rules, RTI application, consumer protection, aur daily legal remedy samjhne ka simple Hinglish guide." :
-                         "Your friendly plain-English guide to Indian citizen rights, police arrest rules, RTI applications, consumer protection, and everyday legal remedies.";
+      wSub.textContent = isHi ? "नागरिक अधिकार, पुलिस गिरफ्तारी से बचाव, और RTI के लिए आपका मार्गदर्शक।" :
+                         isHinglish ? "Apne rights, police rules, aur RTI samjhne ka simple guide." :
+                         "Plain-English guide to Indian citizen rights, police arrest rules, and RTI.";
     } else if (persona === 'business') {
-      wSub.textContent = isHi ? "कमर्शियल अनुबंध जोखिम, कंपनी कानून 2013, DPDP Act 2023 प्राइवेसी नियम, और व्यापारिक विवाद समाधान के लिए आपका कॉर्पोरेट लीगल AI सलाहकार।" :
-                         isHinglish ? "Commercial contracts risk, Companies Act compliance, DPDP Act 2023 privacy rules, aur corporate disputes resolve karne ka General Counsel AI copilot." :
-                         "Your General Counsel AI copilot for commercial contract risk mitigation, Companies Act compliance, DPDP Act 2023 privacy rules, and corporate dispute resolution.";
+      wSub.textContent = isHi ? "कमर्शियल अनुबंध, कंपनी कानून, और DPDP Act के लिए आपका कॉर्पोरेट सलाहकार।" :
+                         isHinglish ? "Contracts, Companies Act, aur DPDP Act compliance ka corporate copilot." :
+                         "Corporate copilot for commercial contracts, Companies Act, and DPDP Act compliance.";
     } else {
-      wSub.textContent = isHi ? "भारतीय संविधान, BNS/BNSS 2023 आपराधिक कानून, और सुप्रीम कोर्ट के फैसलों के लिए आपका विश्वसनीय कानूनी AI सहायक।" :
-                         isHinglish ? "Aapka trusted AI Legal Assistant for Indian Constitution, BNS/BNSS 2023, Contract Act, aur Supreme Court landmark judgments." :
-                         "Your authoritative AI assistant for Indian Constitutional jurisprudence, BNS/BNSS 2023 criminal law, Section 27 Contract Act, and Supreme Court precedent research.";
+      wSub.textContent = isHi ? "भारतीय संविधान, BNS/BNSS 2023, और सुप्रीम कोर्ट के फैसलों के लिए आपका AI सहायक।" :
+                         isHinglish ? "Indian Constitution, BNS/BNSS 2023, aur Supreme Court judgments ke liye AI assistant." :
+                         "AI assistant for Indian Constitutional law, BNS/BNSS 2023, and Supreme Court research.";
     }
   }
 
