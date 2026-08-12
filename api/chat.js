@@ -45,6 +45,9 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -57,8 +60,12 @@ module.exports = async (req, res) => {
   try {
     const { message, jurisdiction = 'IN', history = [], model = 'llama-3.3-70b-versatile', temperature = 0.2, advocateMode = 'senior_advocate' } = req.body;
 
-    if (!message) {
-      return res.status(400).json({ error: 'Message text is required.' });
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ error: 'Valid message text is required.' });
+    }
+
+    if (message.length > 5000) {
+      return res.status(400).json({ error: 'Message payload exceeds maximum allowed length (5000 characters).' });
     }
 
     const groqApiKey = process.env.GROQ_API_KEY;
