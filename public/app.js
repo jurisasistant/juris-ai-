@@ -2140,23 +2140,9 @@ function applyPersonaAndLanguageUI() {
   }
 
   if (textarea) {
-    if (persona === 'student') {
-      textarea.placeholder = isHi ? "केस ब्रीफ, परीक्षा प्रश्न, या किसी धारा का स्पष्टीकरण मांगें (जैसे 'Puttaswamy case brief')..." :
-                             isHinglish ? "Case brief, viva question ya section explanation puchein (e.g. 'Puttaswamy case brief')..." :
-                             "Ask for a case brief, exam revision note, or section explanation (e.g. 'Puttaswamy case brief')...";
-    } else if (persona === 'citizen') {
-      textarea.placeholder = isHi ? "अपने अधिकार से जुड़ा कोई भी सरल प्रश्न पूछें (जैसे 'पुलिस रोके तो क्या करें?', 'RTI कैसे लगाएं?')..." :
-                             isHinglish ? "Apne adhikar ya police arrest ke baare me simple sawaal puchein (e.g. 'RTI kaise file karein?')..." :
-                             "Ask a simple question about your rights (e.g. 'What if police stops me?', 'How to file RTI?')...";
-    } else if (persona === 'business') {
-      textarea.placeholder = isHi ? "कमर्शियल अनुबंध, कंपनी कानून, या DPDP Act 2023 के बारे में पूछें..." :
-                             isHinglish ? "Commercial contracts, non-compete validity, ya DPDP Act fines ke baare me puchein..." :
-                             "Ask about contracts, company compliance, or commercial law (e.g. 'Section 27 non-competes')...";
-    } else {
-      textarea.placeholder = isHi ? "कानूनी प्रश्न पूछें, धारा बताएं, या कोई भी विषय लिखें (जैसे 'Article 21', 'BNS 103')..." :
-                             isHinglish ? "Apna legal sawaal puchein, koi section likhein (e.g. 'Article 21', 'BNS 103')..." :
-                             "Ask Kittu a legal question, cite a statute, or type any section (e.g. 'Article 21', 'BNS 103')...";
-    }
+    textarea.placeholder = isHi ? "कुछ लिखें..." :
+                           isHinglish ? "Kuch likhein..." :
+                           "Type something...";
   }
 
   // Update 5 Quick Resource Pills according to Persona
