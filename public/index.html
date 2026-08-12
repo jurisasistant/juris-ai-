@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>JurisAI Bharat — Indian Constitutional & Legal AI Research Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Subtle Disclaimer Banner -->
+  <div class="disclaimer-banner" id="app-disclaimer-banner">
+    <div>
+      <span><strong>🇮🇳 JurisAI Bharat Notice:</strong> AI research workspace trained on the Constitution of India, BNS/BNSS 2023, and Central Acts.</span>
+      <a id="open-disclaimer-link">Read Terms</a>
+    </div>
+    <button class="disclaimer-close" id="close-disclaimer-banner" title="Dismiss Notice">✕</button>
+  </div>
+
+  <div class="app-container">
+
+    <!-- Compact Sidebar Navigation -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="logo-container">
+          <div class="logo-icon">⚖️</div>
+          <span class="logo-text">JurisAI <span style="color: var(--accent-gold);">Bharat</span></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Research Workspace</div>
+
+        <a class="nav-link active" data-view="chat-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </span>
+          <span class="nav-text">Kittu AI Assistant</span>
+          <span class="nav-badge">Kittu 70B</span>
+        </a>
+
+        <a class="nav-link" data-view="const-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </span>
+          <span class="nav-text">Constitution Explorer</span>
+          <span class="nav-badge">Samvidhan</span>
+        </a>
+
+        <a class="nav-link" data-view="sanhita-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </span>
+          <span class="nav-text">BNS / BNSS / BSA</span>
+          <span class="nav-badge">New Laws</span>
+        </a>
+
+        <a class="nav-link" data-view="knowledge-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </span>
+          <span class="nav-text">Case Law Precedents</span>
+          <span class="nav-badge">32 Statutes</span>
+        </a>
+
+        <a class="nav-link" data-view="graph-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </span>
+          <span class="nav-text">Legal Node Graph</span>
+          <span class="nav-badge">Obsidian</span>
+        </a>
+
+        <a class="nav-link" data-view="drafting-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+          </span>
+          <span class="nav-text">Legal Drafting Suite</span>
+          <span class="nav-badge">AI Draft</span>
+        </a>
+
+        <a class="nav-link" data-view="workspace-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </span>
+          <span class="nav-text">Research Workspaces</span>
+          <span class="nav-badge">Projects</span>
+        </a>
+
+        <a class="nav-link" data-view="saved-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          </span>
+          <span class="nav-text">Saved & History</span>
+          <span class="nav-badge" id="saved-count-badge">0</span>
+        </a>
+
+        <div class="nav-section-title">Legal Tools Suite</div>
+        
+        <a class="nav-link" data-view="analyzer-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </span>
+          <span class="nav-text">Document Analyzer</span>
+          <span class="nav-badge">Risk AI</span>
+        </a>
+
+        <a class="nav-link" data-view="generator-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+          </span>
+          <span class="nav-text">Document Builder</span>
+        </a>
+
+        <a class="nav-link" data-view="rights-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </span>
+          <span class="nav-text">RTI & Statutory FAQ</span>
+        </a>
+
+        <div class="nav-section-title">Configuration</div>
+
+        <a class="nav-link" id="open-settings-btn">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </span>
+          <span class="nav-text">AI Engine Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="jurisdiction-box" id="jurisdiction-switcher" title="Click to cycle legal jurisdiction">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="current-jurisdiction-flag" style="font-size: 1.15rem;">🇮🇳</span>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">JURISDICTION</div>
+              <div id="current-jurisdiction-name" style="font-weight: 700; color: var(--text-primary); font-size: 13px;">IN (India — Bharat)</div>
+            </div>
+          </div>
+          <span style="color: var(--accent-gold); font-size: 11px; font-weight: 700;">CHANGE</span>
+        </div>
+        <div class="sidebar-footer-text">
+          JurisAI Bharat v5.5 &bull; Samvidhan Edition
+        </div>
+        <div class="sidebar-sakshamfit-text">
+          Made with ❤️ by <strong>sakshamfit</strong>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <main class="main-wrapper">
+
+      <!-- Top Navigation Bar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="menu-toggle-btn" id="menu-toggle-btn" title="Toggle Sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="page-title" id="navbar-page-title">Kittu AI Legal Assistant & Constitutional Research</div>
+        </div>
+
+        <div class="navbar-right">
+          <!-- Command Palette Button (⌘K / Ctrl+K) -->
+          <button class="cmd-palette-btn" id="open-cmd-palette-btn" title="Press ⌘K or Ctrl+K to open global legal search">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span>🔍</span>
+              <span>Global Legal Search...</span>
+            </div>
+            <span class="cmd-shortcut-badge">⌘K</span>
+          </button>
+
+          <!-- As-of-Date Legal Research Selector (MVP Feature 6) -->
+          <div class="as-of-date-pill" title="Research statutory position as of selected date">
+            <span>📅</span>
+            <select id="as-of-date-select">
+              <option value="2026-08-11">As of: 11 Aug 2026</option>
+              <option value="2024-07-01">As of: 1 July 2024</option>
+              <option value="2023-08-11">As of: 11 Aug 2023</option>
+              <option value="2017-08-24">As of: 24 Aug 2017</option>
+            </select>
+          </div>
+
+          <div class="status-pill" title="Powered by Groq Llama-3.3-70B-Versatile">
+            <span class="status-dot"></span>
+            <span>Kittu AI Active</span>
+          </div>
+          <button class="btn-icon" id="theme-toggle-btn" title="Toggle Dark / Light Theme">
+            <span id="theme-icon-display"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- ======================================================================
+           VIEW 1: AI RESEARCH WORKSPACE (#chat-view) — Design System Section 7 & 8
+           ====================================================================== -->
+      <section class="view-section active" id="chat-view">
+        <div class="chat-container">
+
+          <!-- Left Chat Sessions Sidebar -->
+          <div class="chat-sidebar">
+            <div class="chat-sidebar-header">
+              <span style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Research Sessions</span>
+              <div style="display: flex; gap: 0.4rem;">
+                <button class="btn-secondary" id="new-chat-btn" style="padding: 0.35rem 0.7rem; font-size: 12px;">+ New</button>
+                <button class="btn-danger" id="clear-chat-btn" style="padding: 0.35rem 0.65rem; font-size: 12px;" title="Clear History">Clear</button>
+              </div>
+            </div>
+            <div class="history-list" id="chat-history-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Main Chat Panel -->
+          <div class="chat-main">
+            <!-- Explain Like I'm... Persona & Language Selector Toolbar (MVP Feature 6 & 18) -->
+            <div class="chat-persona-toolbar">
+              <div class="persona-group">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">EXPLAIN LIKE I'M:</span>
+                <button class="persona-btn active" data-persona="advocate">👨‍⚖️ Advocate</button>
+                <button class="persona-btn" data-persona="student">🎓 Law Student</button>
+                <button class="persona-btn" data-persona="citizen">👤 Citizen</button>
+                <button class="persona-btn" data-persona="business">🧑‍💼 Business</button>
+              </div>
+              <div class="language-group">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">LANGUAGE:</span>
+                <button class="language-btn active" data-lang="en">English</button>
+                <button class="language-btn" data-lang="hi">हिन्दी</button>
+                <button class="language-btn" data-lang="hinglish">Hinglish</button>
+              </div>
+            </div>
+
+            <div class="chat-messages-area" id="chat-messages-area">
+              
+              <!-- Clean Home Greeting (Section 7 Spec) -->
+              <div class="chat-welcome" id="chat-welcome-screen">
+                <span class="welcome-badge">🇮🇳 KITTU • BHARATIYA LEGAL RESEARCH AI</span>
+                <h1 class="welcome-title">Ask Kittu about Indian Law.</h1>
+                <p class="welcome-subtitle">Your authoritative AI assistant for Indian Constitutional jurisprudence, BNS/BNSS 2023 criminal law, Section 27 Contract Act, and Supreme Court precedent research.</p>
+                
+                <!-- Quick Resource Pills -->
+                <div class="quick-resource-pills">
+                  <button class="resource-pill" data-query="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & Puttaswamy ruling.">§ Constitution (Samvidhan)</button>
+                  <button class="resource-pill" data-query="What are the key changes in Bharatiya Nyaya Sanhita (BNS 2023) replacing IPC 1860?">§ BNS 2023 (Offenses)</button>
+                  <button class="resource-pill" data-query="Explain BNSS 2023 e-FIR registration and Arnesh Kumar police arrest notice rules.">§ BNSS 2023 (Procedure)</button>
+                  <button class="resource-pill" data-query="How does Bharatiya Sakshya Adhiniyam (BSA 2023 Section 63) change electronic evidence?">§ BSA 2023 (Evidence)</button>
+                  <button class="resource-pill" data-query="Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973).">§ Supreme Court Case Law</button>
+                </div>
+                
+                <div class="prompt-grid">
+                  <div class="prompt-card" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & the Puttaswamy Privacy ruling.">
+                    <span class="prompt-card-category">Constitutional Law</span>
+                    <span class="prompt-card-text">Fundamental Rights (Art. 14, 19, 21) & Supreme Court Puttaswamy Privacy Bench</span>
+                  </div>
+                  <div class="prompt-card" data-prompt="What are the 5 Constitutional Writs under Article 32 & 226 of the Indian Constitution, and when can Mandamus be filed?">
+                    <span class="prompt-card-category">Constitutional Writs</span>
+                    <span class="prompt-card-text">Writ Petitions under Article 32 (Supreme Court) & Article 226 (High Court)</span>
+                  </div>
+                  <div class="prompt-card" data-prompt="How does the Bharatiya Nyaya Sanhita (BNS 2023) and Bharatiya Sakshya Adhiniyam (BSA 2023) change criminal law & electronic evidence in India?">
+                    <span class="prompt-card-category">New Criminal Laws</span>
+                    <span class="prompt-card-text">Bharatiya Nyaya Sanhita (BNS 2023) & Electronic Evidence under BSA 2023</span>
+                  </div>
+                  <div class="prompt-card" data-prompt="Why is a post-termination employee non-compete clause void under Section 27 of the Indian Contract Act 1872?">
+                    <span class="prompt-card-category">Indian Contract Act</span>
+                    <span class="prompt-card-text">Section 27 Restraint of Trade & Enforceability of Non-Competes in India</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Chat Input Composer -->
+            <div class="chat-input-wrapper">
+              <!-- Deep Research vs. Instant Answer Mode Toggle (MVP Feature 1) -->
+              <div class="research-mode-toggle">
+                <button type="button" class="mode-toggle-btn active" data-mode="instant">⚡ Instant Answer</button>
+                <button type="button" class="mode-toggle-btn" data-mode="deep">⚖️ Deep Research Mode</button>
+              </div>
+              <form id="chat-form">
+                <div class="chat-input-box">
+                  <textarea class="chat-textarea" id="chat-input-textarea" placeholder="Ask Kittu a legal question, cite a statute, or type any section (e.g. 'Article 21', 'BNS 103')..." rows="2"></textarea>
+                  <button type="submit" class="send-btn" title="Send Question">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                </div>
+              </form>
+              <div class="input-footer-info">
+                <span>⚡ Powered by Kittu AI (Groq Llama-3.3-70B) &bull; Made with sakshamfit</span>
+                <span>Press Enter to send &bull; Shift + Enter for new line</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 2: UNIFIED PRECEDENTS & LAW LIBRARY (#knowledge-view)
+           ====================================================================== -->
+      <section class="view-section" id="knowledge-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>🏛️</span>
+              <span>Indian Constitution & Bharatiya Law Library</span>
+            </div>
+            <div class="knowledge-stats-badge" id="kb-active-count-display">
+              32 Verified Legal & Constitutional Authorities
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Authoritative synthesis of the <strong>Constitution of India (Bharatiya Samvidhan)</strong>, Fundamental Rights (Articles 14, 19, 21), Constitutional Writs (Art. 32/226), the new <strong>Bharatiya Nyaya Sanhita (BNS 2023)</strong>, Contract Act Section 27, and DPDP Act 2023.
+          </p>
+        </div>
+
+        <!-- Filter and Search Bar -->
+        <div class="knowledge-controls-bar">
+          <div class="knowledge-search-input-wrapper">
+            <span>🔍</span>
+            <input type="text" class="knowledge-search-input" id="kb-search-input" placeholder="Search Bharatiya statutes, Supreme Court benches, or articles (e.g. 'Puttaswamy', 'Article 32', 'BNS 2023', 'POSH')...">
+          </div>
+
+          <div class="knowledge-jurisdiction-filters">
+            <span style="font-size:11px; color:var(--text-muted); font-weight:700; margin-right:0.35rem;">JURISDICTIONS:</span>
+            <button class="jur-filter-pill active" data-jur="IN">🇮🇳 INDIA (BHARAT)</button>
+            <button class="jur-filter-pill" data-jur="ALL">🌐 ALL</button>
+            <button class="jur-filter-pill" data-jur="US">🇺🇸 US</button>
+            <button class="jur-filter-pill" data-jur="UK">🇬🇧 UK</button>
+            <button class="jur-filter-pill" data-jur="EU">🇪🇺 EU</button>
+          </div>
+        </div>
+
+        <!-- Category Sub-Navigation Tabs -->
+        <div class="knowledge-category-tabs" style="margin-top: 1rem;">
+          <button class="k-tab-btn active" data-category="all">All Authorities</button>
+          <button class="k-tab-btn" data-category="constitution">🇮🇳 Bharatiya Samvidhan (Constitution)</button>
+          <button class="k-tab-btn" data-category="criminal">BNS / BNSS / BSA (Criminal Law)</button>
+          <button class="k-tab-btn" data-category="contracts">Indian Contract & Companies Act</button>
+          <button class="k-tab-btn" data-category="privacy">DPDP Act & Privacy</button>
+          <button class="k-tab-btn" data-category="realestate">Stamp Duty & Registration Leases</button>
+          <button class="k-tab-btn" data-category="disputes">Arbitration & NI Act (Cheque Bounce)</button>
+        </div>
+
+        <!-- Professional Knowledge Base Cards Grid -->
+        <div class="knowledge-grid" id="kb-articles-grid">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3A: CONSTITUTION OF INDIA (SAMVIDHAN) EXPLORER (#const-view) — MVP Feature 4
+           ====================================================================== -->
+      <section class="view-section" id="const-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>📜</span>
+              <span>Constitution of India (Bharatiya Samvidhan) Explorer</span>
+            </div>
+            <div class="knowledge-stats-badge">
+              395+ Articles • 12 Schedules
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Browse constitutional Parts, Chapters, and Schedules. Explore Fundamental Rights, Writ Jurisdiction under Articles 32 & 226, and the Basic Structure Doctrine. Click any Article to ask Kittu AI for Supreme Court jurisprudence.
+          </p>
+        </div>
+
+        <div class="const-grid" id="const-explorer-grid">
+          <div class="const-part-card">
+            <div class="const-part-header">PART III • ARTICLES 12–35</div>
+            <div class="const-part-title">Fundamental Rights (The Golden Triangle)</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Article 14 (Equality before Law & Non-arbitrariness), Article 19(1)(a)/(g) (Freedom of Speech, Assembly & Profession), and Article 21 (Protection of Life, Personal Liberty & Privacy under Maneka Gandhi & Puttaswamy).</p>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & Puttaswamy ruling.">🤖 Ask Kittu About Part III</button>
+            </div>
+          </div>
+
+          <div class="const-part-card">
+            <div class="const-part-header">PART III • ARTICLES 32 & 226</div>
+            <div class="const-part-title">Constitutional Writs & Judicial Review</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">The heart and soul of the Constitution. Direct enforcement of Fundamental Rights before the Supreme Court (Art. 32) and High Courts (Art. 226) via Habeas Corpus, Mandamus, Certiorari, Prohibition, and Quo Warranto.</p>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="What are the 5 Constitutional Writs under Article 32 & 226 of the Indian Constitution, and when can Mandamus be filed?">🤖 Ask Kittu About Writs</button>
+            </div>
+          </div>
+
+          <div class="const-part-card">
+            <div class="const-part-header">ARTICLE 368 • CONSTITUTIONAL AMENDMENTS</div>
+            <div class="const-part-title">Basic Structure Doctrine & Amending Power</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Parliament's power to amend the Constitution under Article 368 is subject to the inviolable Basic Structure Doctrine established in Kesavananda Bharati v. State of Kerala (1973 13-Judge Bench).</p>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973).">🤖 Ask Kittu About Basic Structure</button>
+            </div>
+          </div>
+
+          <div class="const-part-card">
+            <div class="const-part-header">PART IV & IV-A • ARTICLES 36–51A</div>
+            <div class="const-part-title">Directive Principles & Fundamental Duties</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Governance obligations of the State (welfare, living wage, equal pay, free legal aid under Art. 39A) and the 11 Fundamental Duties of citizens under Article 51A.</p>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain the relationship between Directive Principles of State Policy (DPSP) and Fundamental Rights in Indian constitutional law.">🤖 Ask Kittu About DPSP</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3B: BNS / BNSS / BSA EXPLORER & COMPARATIVE LAW TABLE (#sanhita-view) — MVP Feature 5 & 17
+           ====================================================================== -->
+      <section class="view-section" id="sanhita-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>⚖️</span>
+              <span>Bharatiya Criminal Sanhitas: Old vs. New Law Comparator</span>
+            </div>
+            <div class="knowledge-stats-badge">
+              Effective July 1, 2024
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Side-by-side comparative mapping between colonial criminal codes (IPC 1860, CrPC 1973, Evidence Act 1872) and the three new Bharatiya Sanhitas (BNS 2023, BNSS 2023, BSA 2023).
+          </p>
+        </div>
+
+        <div class="comparative-table-container">
+          <table class="comparative-table">
+            <thead>
+              <tr>
+                <th>Old Section (Colonial Code)</th>
+                <th>New Bharatiya Section</th>
+                <th>Offense / Procedural Subject</th>
+                <th>Key Statutory & Precedent Changes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="comparative-old-pill">IPC Section 420</span></td>
+                <td><span class="comparative-new-pill">BNS Section 318(4)</span></td>
+                <td><strong>Cheating & Property Deception</strong></td>
+                <td>Restructured economic fraud and cheating offenses with imprisonment up to 7 years.</td>
+              </tr>
+              <tr>
+                <td><span class="comparative-old-pill">IPC Section 302</span></td>
+                <td><span class="comparative-new-pill">BNS Section 103</span></td>
+                <td><strong>Punishment for Murder (Homicide)</strong></td>
+                <td>Sub-section (2) introduces specific statutory punishment for mob lynching and hate crimes.</td>
+              </tr>
+              <tr>
+                <td><span class="comparative-old-pill">IPC Section 124A</span></td>
+                <td><span class="comparative-new-pill">BNS Section 152</span></td>
+                <td><strong>Sedition ➔ Sovereignty Protection</strong></td>
+                <td>Colonial sedition is repealed. Section 152 targets secessionist acts, armed rebellion, and subversive acts.</td>
+              </tr>
+              <tr>
+                <td><span class="comparative-old-pill">CrPC Section 154</span></td>
+                <td><span class="comparative-new-pill">BNSS Section 173</span></td>
+                <td><strong>FIR Registration & e-FIR</strong></td>
+                <td>Allows electronic FIR (e-FIR) registration and mandates preliminary inquiry in specific offenses within 14 days.</td>
+              </tr>
+              <tr>
+                <td><span class="comparative-old-pill">CrPC Section 41A</span></td>
+                <td><span class="comparative-new-pill">BNSS Section 35</span></td>
+                <td><strong>Notice of Appearance before Police</strong></td>
+                <td>Codified Arnesh Kumar v. State of Bihar Supreme Court rules—mandating written notice for offenses under 7 years.</td>
+              </tr>
+              <tr>
+                <td><span class="comparative-old-pill">CrPC Section 438</span></td>
+                <td><span class="comparative-new-pill">BNSS Section 482</span></td>
+                <td><strong>Anticipatory Bail Protection</strong></td>
+                <td>Statutory protection for individuals apprehending arrest (*Sushila Aggarwal v. State SC 5-Judge Bench*).</td>
+              </tr>
+              <tr>
+                <td><span class="comparative-old-pill">Evidence Act Sec. 65B</span></td>
+                <td><span class="comparative-new-pill">BSA Section 61 & 63</span></td>
+                <td><strong>Electronic & Digital Evidence</strong></td>
+                <td>Server logs, emails, WhatsApp, and digital hash values recognized as primary evidence (*Arjun Panditrao Khotkar*).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3C-1: INTERACTIVE CONSTITUTIONAL & PRECEDENT NODE GRAPH (#graph-view)
+           Obsidian Vault Integration & WikiLink Graph Visualization
+           ====================================================================== -->
+      <section class="view-section" id="graph-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>🕸️</span>
+              <span>Constitutional & Precedent Node Graph (Obsidian Vault)</span>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <a href="juris-vault-obsidian.zip" download="juris-vault-obsidian.zip" class="btn-primary" style="text-decoration:none;">
+                <span>📥 Download Obsidian Vault (.zip)</span>
+              </a>
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Visualizing the interconnected neural network of Indian Law. Every Constitutional Article connects to its Supreme Court benches, BNS/BNSS statutory codes, and commercial precedents. Click any node to explore its linked [[WikiLinks]] and authoritative ratio.
+          </p>
+        </div>
+
+        <div class="graph-canvas-container">
+          <div class="graph-nodes-grid" id="graph-nodes-grid">
+            <div class="node-circle-card hub active" data-node="art21">
+              <span>📜</span>
+              <span>Article 21 (Life & Privacy)</span>
+            </div>
+            <div class="node-circle-card" data-node="putt">
+              <span>🏛️</span>
+              <span>Puttaswamy (2017 9-Judge)</span>
+            </div>
+            <div class="node-circle-card" data-node="maneka">
+              <span>🏛️</span>
+              <span>Maneka Gandhi (1978)</span>
+            </div>
+            <div class="node-circle-card" data-node="dpdp">
+              <span>🔒</span>
+              <span>DPDP Act 2023</span>
+            </div>
+            <div class="node-circle-card hub" data-node="art14">
+              <span>📜</span>
+              <span>Article 14 (Equality)</span>
+            </div>
+            <div class="node-circle-card" data-node="vishaka">
+              <span>🏛️</span>
+              <span>Vishaka Guidelines (1997)</span>
+            </div>
+            <div class="node-circle-card" data-node="posh">
+              <span>💼</span>
+              <span>POSH Act 2013</span>
+            </div>
+            <div class="node-circle-card hub" data-node="art19">
+              <span>📜</span>
+              <span>Article 19(1)(a) (Speech)</span>
+            </div>
+            <div class="node-circle-card" data-node="shreya">
+              <span>🏛️</span>
+              <span>Shreya Singhal (2015)</span>
+            </div>
+            <div class="node-circle-card" data-node="bns152">
+              <span>⚖️</span>
+              <span>BNS 152 (Sovereignty)</span>
+            </div>
+            <div class="node-circle-card hub" data-node="sec27">
+              <span>💼</span>
+              <span>Contract Act Section 27</span>
+            </div>
+            <div class="node-circle-card" data-node="golikari">
+              <span>🏛️</span>
+              <span>Niranjan Golikari (1967)</span>
+            </div>
+            <div class="node-circle-card hub" data-node="basic">
+              <span>🏛️</span>
+              <span>Basic Structure Doctrine</span>
+            </div>
+            <div class="node-circle-card" data-node="kesavananda">
+              <span>🏛️</span>
+              <span>Kesavananda Bharati (1973)</span>
+            </div>
+          </div>
+
+          <!-- Interactive Node Information Box -->
+          <div class="node-connections-box" id="node-info-display">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+              <span style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase;">🕸️ ACTIVE NODE • [[Article-21-Right-to-Life-and-Privacy]]</span>
+              <span style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">OBSIDIAN VAULT LINK</span>
+            </div>
+            <div style="font-size:18px; font-weight:700; color:var(--text-primary);">Article 21: Right to Life, Personal Liberty & Privacy</div>
+            <p style="font-size:14px; color:var(--text-secondary); margin:0.6rem 0;">No person shall be deprived of his life or personal liberty except according to procedure established by law. Reinterpreted in Maneka Gandhi (1978) to mandate just, fair, and reasonable procedure.</p>
+            <div style="margin-top:0.85rem; font-size:13px; color:var(--accent-gold);">
+              <strong>🔗 Connected [[WikiLinks]]:</strong>
+              <span class="statute-pill">[[Puttaswamy-Right-to-Privacy-2017]]</span>
+              <span class="statute-pill">[[Maneka-Gandhi-v-Union-of-India-1978]]</span>
+              <span class="statute-pill">[[DPDP-Act-2023-Digital-Personal-Data-Protection]]</span>
+              <span class="statute-pill">[[BNSS-2023-Section-35-Arrest-Notice]]</span>
+            </div>
+            <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Explain how Article 21 connects to Maneka Gandhi, Puttaswamy, and the DPDP Act 2023 under Indian constitutional law.">🤖 Open Connected Nodes in Kittu AI</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3C-2: AUTOMATED LEGAL DRAFTING SUITE (#drafting-view)
+           ====================================================================== -->
+      <section class="view-section" id="drafting-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>🖋️</span>
+              <span>Automated Legal Drafting & Notice Suite</span>
+            </div>
+            <div class="knowledge-stats-badge">
+              6 Statutory Formats
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Draft statutory notices, RTI applications, and constitutional pleadings formatted to Indian High Court and Central Act conventions. Include mandatory statutory disclaimers before service.
+          </p>
+        </div>
+
+        <div class="generator-layout">
+          <div class="generator-form-panel">
+            <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+              <span>📝</span>
+              <span>Select Statutory Draft</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Drafting Template Type</label>
+              <select class="form-select" id="drafting-template-select">
+                <option value="rti">🇮🇳 RTI Application under Section 6(1) of RTI Act 2005</option>
+                <option value="ni138">🇮🇳 Section 138 Cheque Bounce Statutory Demand Notice</option>
+                <option value="writ_draft">🇮🇳 Constitutional Writ Petition Notice (Article 226 / 32)</option>
+                <option value="posh_comp">🇮🇳 POSH Act 2013 Internal Complaints Committee (ICC) Complaint</option>
+                <option value="dpdp_erase">🇮🇳 DPDP Act 2023 Article 17 Right to Erasure Notice</option>
+                <option value="cpc80">🇮🇳 Section 80 CPC Notice against Government Authority</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Applicant / Sender Name & Address</label>
+              <input type="text" class="form-input draft-input" id="draft-sender" value="Rajesh Sharma, 404 Elm Street, New Delhi, India">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Respondent / Public Authority Name</label>
+              <input type="text" class="form-input draft-input" id="draft-recipient" value="Public Information Officer (PIO) / Alpha Enterprises Ltd">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Subject Matter / Reference Number</label>
+              <input type="text" class="form-input draft-input" id="draft-subject" value="Request for Certified Copies of Public Tender / Overdue Debt ₹5,00,000">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Date of Notice / Application</label>
+              <input type="text" class="form-input draft-input" id="draft-date" value="August 2, 2026">
+            </div>
+          </div>
+
+          <div class="document-preview-panel">
+            <div class="panel-header">
+              <span style="font-size: 14px; font-weight: 700; color: var(--text-primary);">📄 Statutory Draft Live Preview</span>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn-secondary" id="copy-draft-btn">📋 Copy Draft</button>
+                <button class="btn-primary" onclick="window.print();">🖨️ Print / Save PDF</button>
+              </div>
+            </div>
+            <div class="preview-paper" id="drafting-preview-paper">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3C: RESEARCH WORKSPACES & EXPORT SUITE (#workspace-view) — MVP Feature 9 & 25
+           ====================================================================== -->
+      <section class="view-section" id="workspace-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>📁</span>
+              <span>Legal Research Workspaces & Project Memos</span>
+            </div>
+            <div class="knowledge-stats-badge">
+              3 Active Projects
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Organize complex legal matters into structured workspaces. Group research questions, saved citations, statutes, and AI conclusions, then export formal legal opinions as PDF, DOCX, or Markdown.
+          </p>
+        </div>
+
+        <div class="workspaces-grid">
+          <div class="workspace-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="workspace-folder-icon">📁</span>
+              <span style="font-size:11px; font-weight:700; color:var(--success);">ACTIVE PROJECT</span>
+            </div>
+            <div style="font-size:18px; font-weight:700; color:var(--text-primary);">Executive Contract Dispute</div>
+            <div class="workspace-tree">
+              ├── Question: Section 27 non-compete validity<br>
+              ├── Case: Niranjan Shankar Golikari (1967)<br>
+              ├── Case: Percept D'Mark v. Zaheer Khan (2006)<br>
+              └── AI Note: Post-resignation restraints void in India
+            </div>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-read" style="flex:1; justify-content:center;" onclick="window.print();">🖨️ Export PDF / Memo</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Analyze the enforceability of a non-compete clause in an employment contract under Section 27 of the Indian Contract Act 1872.">🤖 Open in Chat</button>
+            </div>
+          </div>
+
+          <div class="workspace-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="workspace-folder-icon">📁</span>
+              <span style="font-size:11px; font-weight:700; color:var(--success);">ACTIVE PROJECT</span>
+            </div>
+            <div style="font-size:18px; font-weight:700; color:var(--text-primary);">Constitutional Privacy & DPDP Act</div>
+            <div class="workspace-tree">
+              ├── Question: Article 21 Privacy & proportionality<br>
+              ├── Case: Justice K.S. Puttaswamy (2017)<br>
+              ├── Statute: DPDP Act 2023 Section 6 & 8<br>
+              └── AI Note: Consent withdrawal & ₹250Cr penalty
+            </div>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-read" style="flex:1; justify-content:center;" onclick="window.print();">🖨️ Export PDF / Memo</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & the Puttaswamy Privacy ruling.">🤖 Open in Chat</button>
+            </div>
+          </div>
+
+          <div class="workspace-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="workspace-folder-icon">📁</span>
+              <span style="font-size:11px; font-weight:700; color:var(--warning);">PENDING REVIEW</span>
+            </div>
+            <div style="font-size:18px; font-weight:700; color:var(--text-primary);">Cheque Bounce Debt Recovery</div>
+            <div class="workspace-tree">
+              ├── Question: 30-day statutory notice timeline<br>
+              ├── Statute: NI Act Section 138 & 143A<br>
+              ├── Case: Dashrath Rupsingh Rathod (2014)<br>
+              └── AI Note: 20% interim compensation order
+            </div>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <button class="btn-kb-read" style="flex:1; justify-content:center;" onclick="window.print();">🖨️ Export PDF / Memo</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="What is the step-by-step statutory procedure and timeline to file a Cheque Bounce case under Section 138 of the Negotiable Instruments Act in India?">🤖 Open in Chat</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3D: SAVED RESEARCH & HISTORY DASHBOARD (#saved-view)
+           ====================================================================== -->
+      <section class="view-section" id="saved-view">
+        <div class="knowledge-header">
+          <div class="knowledge-title-row">
+            <div class="knowledge-title-main">
+              <span>⭐</span>
+              <span>Saved Legal Research & Bookmarks</span>
+            </div>
+            <div class="knowledge-stats-badge" id="saved-total-display">
+              0 Saved Items
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 15px;">
+            Your bookmarked constitutional authorities, saved Supreme Court precedents, and exported legal memos. Click any saved item to reopen in the research workspace.
+          </p>
+        </div>
+
+        <div class="dashboard-grid" id="saved-dashboard-stats">
+          <div class="dash-stat-card">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--text-muted);">SAVED PRECEDENTS</div>
+              <div class="dash-stat-val" id="stat-saved-cases">0</div>
+            </div>
+            <span style="font-size:24px;">🏛️</span>
+          </div>
+          <div class="dash-stat-card">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--text-muted);">SAVED AI CONSULTATIONS</div>
+              <div class="dash-stat-val" id="stat-saved-chats">0</div>
+            </div>
+            <span style="font-size:24px;">💬</span>
+          </div>
+          <div class="dash-stat-card">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--text-muted);">VERIFIED CENTRAL ACTS</div>
+              <div class="dash-stat-val">32</div>
+            </div>
+            <span style="font-size:24px;">📜</span>
+          </div>
+        </div>
+
+        <div class="knowledge-grid" id="saved-items-grid">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 4: CONTRACT & DOCUMENT ANALYZER (#analyzer-view) — Solid Canvas Spec
+           ====================================================================== -->
+      <section class="view-section" id="analyzer-view">
+        <div class="analyzer-grid">
+          
+          <!-- Left Input Panel -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span>🔍</span>
+                <span>Contract & Document Input</span>
+              </div>
+              <button class="btn-primary" id="analyze-doc-btn">
+                <span>⚡ Analyze Indian Risk</span>
+              </button>
+            </div>
+
+            <div class="sample-selector-bar">
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; align-self: center;">SAMPLES:</span>
+              <button class="sample-chip active" data-sample="in_contract">🇮🇳 Indian Employment (Sec 27)</button>
+              <button class="sample-chip" data-sample="in_lease">🇮🇳 Registered Lease (Stamp Act)</button>
+              <button class="sample-chip" data-sample="nda">Mutual NDA</button>
+              <button class="sample-chip" data-sample="software">SaaS Agreement</button>
+            </div>
+
+            <textarea class="document-textarea" id="analyzer-document-textarea" placeholder="Paste your Indian contract, Leave & License agreement, or corporate document here to scan for Section 27 void restraints, Stamp Act compliance, and Section 74 damages..."></textarea>
+          </div>
+
+          <!-- Right Analysis Results Panel -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span>⚖️</span>
+                <span>Bharatiya Risk Assessment & Section Review</span>
+              </div>
+              <span style="font-size: 12px; color: var(--accent-gold); font-weight: 600;">Indian Law Compliance</span>
+            </div>
+
+            <div class="analysis-results-area" id="analyzer-results-area">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 5: LEGAL DOCUMENT GENERATOR (#generator-view) — Section 11 Spec
+           ====================================================================== -->
+      <section class="view-section" id="generator-view">
+        <div class="generator-layout">
+
+          <!-- Left Form Input Controls -->
+          <div class="generator-form-panel">
+            <div style="font-size: 18px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+              <span>📝</span>
+              <span>Bharatiya Agreement Builder</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-secondary);">Fill in party details and INR terms below to generate a print-ready Indian legal document in real time.</p>
+
+            <div class="form-group">
+              <label class="form-label">Select Indian Document Template</label>
+              <select class="form-select" id="generator-template-select">
+                <option value="writ">🇮🇳 Constitutional Writ Petition Notice (Art. 226 / Art. 32)</option>
+                <option value="in_offer">🇮🇳 Executive Employment Offer & IP Assignment (Bharat Contract Act)</option>
+                <option value="in_notice">🇮🇳 Statutory Legal Notice (Section 138 NI Act / Section 80 CPC)</option>
+                <option value="nda">Mutual Non-Disclosure Agreement (NDA)</option>
+                <option value="contractor">Independent Contractor & IP Assignment</option>
+                <option value="terms">Website Terms of Service & DPDP Act Privacy Notice</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">First Party (Petitioner / Employer / Advocate / Licensor)</label>
+              <input type="text" class="form-input gen-input" id="gen-party-a" value="Alpha Technologies Private Limited">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Second Party (Respondent / Employee / Debtor / Tenant)</label>
+              <input type="text" class="form-input gen-input" id="gen-party-b" value="Rajesh Sharma / Beta Solutions">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Effective Date</label>
+              <input type="text" class="form-input gen-input" id="gen-date" value="August 2, 2026">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Place of Execution & High Court Bench</label>
+              <input type="text" class="form-input gen-input" id="gen-jurisdiction" value="New Delhi, India (Supreme Court / High Court of Delhi)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Duration / Term Period</label>
+              <input type="text" class="form-input gen-input" id="gen-term" value="Two (2) Years / 24 Months">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Amount / CTC / Cheque Amount (in INR ₹)</label>
+              <input type="text" class="form-input gen-input" id="gen-fee" value="₹5,00,000 (Rupees Five Lakhs INR)">
+            </div>
+
+            <div style="font-size: 13px; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem;">Optional Bharatiya Protective Clauses</div>
+
+            <label class="form-checkbox-group">
+              <input type="checkbox" class="gen-checkbox" id="gen-check-arbitration" checked>
+              <span>Include Arbitration & Conciliation Act 1996 Clause</span>
+            </label>
+
+            <label class="form-checkbox-group">
+              <input type="checkbox" class="gen-checkbox" id="gen-check-confidentiality" checked>
+              <span>Mandatory Return / Destruction of Confidential Materials</span>
+            </label>
+
+            <label class="form-checkbox-group">
+              <input type="checkbox" class="gen-checkbox" id="gen-check-ip" checked>
+              <span>Indian Copyright Act Section 17 Present-Tense Assignment</span>
+            </label>
+          </div>
+
+          <!-- Right Document Preview Paper -->
+          <div class="document-preview-panel">
+            <div class="panel-header">
+              <span style="font-size: 14px; font-weight: 700; color: var(--text-primary);">📄 Bharatiya Document Live Preview</span>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn-secondary" id="copy-generated-doc-btn">📋 Copy Text</button>
+                <button class="btn-primary" id="print-generated-doc-btn">🖨️ Print / Save PDF</button>
+              </div>
+            </div>
+            <div class="preview-paper" id="document-preview-paper">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 6: STATUTORY RIGHTS & FAQ EXPLORER (#rights-view)
+           ====================================================================== -->
+      <section class="view-section" id="rights-view">
+        <div class="knowledge-header">
+          <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Explore Bharatiya Citizen Rights, RTI & FAQ</h2>
+          <p style="color: var(--text-secondary); font-size: 15px;">Search verified statutory checklists under the Right to Information Act 2005, BNSS 2023 police custody rights, Consumer Protection Act 2019, and NI Act Section 138.</p>
+
+          <div class="knowledge-search-input-wrapper" style="margin-top: 1rem;">
+            <span style="font-size: 18px;">🔍</span>
+            <input type="text" class="knowledge-search-input" id="rights-search-input" placeholder="Search citizen rights (e.g. 'RTI', 'police arrest', 'consumer commission', 'cheque bounce')...">
+          </div>
+        </div>
+
+        <div class="knowledge-category-tabs">
+          <button class="rights-tab-btn active" data-category="all">All Bharatiya Topics</button>
+          <button class="rights-tab-btn" data-category="consumer">Consumer & RTI Rights</button>
+          <button class="rights-tab-btn" data-category="housing">Arrest & Police Custody</button>
+          <button class="rights-tab-btn" data-category="employment">Cheque Bounce & Debt</button>
+          <button class="rights-tab-btn" data-category="privacy">DPDP Act Privacy</button>
+        </div>
+
+        <div class="knowledge-grid" id="rights-cards-grid">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar (Visible only on mobile screens <= 768px) -->
+  <nav class="mobile-bottom-nav">
+    <a class="mobile-nav-btn active" data-view="chat-view">
+      <span style="font-size: 1.15rem;">💬</span>
+      <span>Kittu AI</span>
+    </a>
+    <a class="mobile-nav-btn" data-view="knowledge-view">
+      <span style="font-size: 1.15rem;">🏛️</span>
+      <span>Samvidhan</span>
+    </a>
+    <a class="mobile-nav-btn" data-view="saved-view">
+      <span style="font-size: 1.15rem;">⭐</span>
+      <span>Saved</span>
+    </a>
+    <a class="mobile-nav-btn" data-view="analyzer-view">
+      <span style="font-size: 1.15rem;">🔍</span>
+      <span>Analyzer</span>
+    </a>
+    <a class="mobile-nav-btn" data-view="rights-view">
+      <span style="font-size: 1.15rem;">📚</span>
+      <span>RTI</span>
+    </a>
+  </nav>
+
+  <!-- ======================================================================
+       MODAL 1: GLOBAL COMMAND PALETTE (⌘K / Ctrl+K) — Design System Section 13
+       ====================================================================== -->
+  <div class="cmd-modal-overlay" id="command-palette-modal">
+    <div class="cmd-palette-container">
+      <div class="cmd-search-header">
+        <span style="font-size:18px;">🔍</span>
+        <input type="text" class="cmd-search-input" id="cmd-search-input" placeholder="Search Bharatiya statutes, Supreme Court benches, or chat prompts... (ESC to close)" autocomplete="off">
+        <span class="cmd-shortcut-badge">ESC</span>
+      </div>
+      <div class="cmd-results-list" id="cmd-results-list">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: CASE & PRECEDENT DRAWER (#kb-detail-drawer) — Section 10 Hierarchy
+       ====================================================================== -->
+  <div class="modal-overlay" id="kb-detail-drawer">
+    <div class="modal-content kb-drawer-content">
+      <div class="modal-header">
+        <div class="modal-title" id="kb-drawer-title">
+          <span>🏛️</span>
+          <span>Bharatiya Authority Overview</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal="kb-detail-drawer">✕</button>
+      </div>
+
+      <div class="modal-body" id="kb-drawer-body">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="save-precedent-btn">⭐ Save Research</button>
+        <button class="btn-secondary" id="why-case-btn" style="color:var(--accent-gold); border-color:var(--accent-gold);">Why is this relevant?</button>
+        <button class="btn-secondary" id="open-case-compare-btn">⚖️ Compare Case Precedent</button>
+        <button class="btn-secondary" data-close-modal="kb-detail-drawer">Close Authority</button>
+        <button class="btn-primary" id="kb-drawer-ask-ai-btn">🤖 Ask AI About This Authority</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2A: SIDE-BY-SIDE CASE PRECEDENT COMPARISON (#case-compare-modal) — MVP Feature 9
+       ====================================================================== -->
+  <div class="modal-overlay" id="case-compare-modal">
+    <div class="modal-content" style="max-width: 920px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚖️</span>
+          <span>Supreme Court Bench Comparison: Side-by-Side Analysis</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal="case-compare-modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <span style="font-size:13px; color:var(--text-secondary);">Comparing constitutional ratios and statutory interpretations across landmark Indian benches.</span>
+          <select class="form-select" id="compare-case-b-select" style="max-width:320px;">
+            <option value="puttaswamy">Justice K.S. Puttaswamy v. Union of India (2017)</option>
+            <option value="maneka">Maneka Gandhi v. Union of India (1978)</option>
+            <option value="kesavananda">Kesavananda Bharati v. State of Kerala (1973)</option>
+            <option value="shreya">Shreya Singhal v. Union of India (2015)</option>
+          </select>
+        </div>
+
+        <div class="case-compare-matrix">
+          <div class="compare-col" id="compare-col-a">
+            <span style="font-size:11px; font-weight:700; color:var(--accent-gold);">CASE A • PRIMARY PRECEDENT</span>
+            <div style="font-size:17px; font-weight:700; color:var(--text-primary);">Maneka Gandhi v. Union of India</div>
+            <div style="font-size:12px; color:var(--text-muted);">Supreme Court • 1978 (7-Judge Bench)</div>
+            <hr style="border:0; border-top:1px solid var(--border-glass-light);">
+            <div><strong>Key Facts:</strong> Impounding of petitioner's passport without providing prior hearing or reasons under Section 10(3)(c) of Passports Act 1967.</div>
+            <div><strong>Constitutional Issues:</strong> Whether Article 21 procedural law can be arbitrary, and relationship between Articles 14, 19, and 21.</div>
+            <div><strong>Judgment Ratio:</strong> Any statutory procedure depriving personal liberty under Art. 21 must be "just, fair, and reasonable" and satisfy Art. 14 equality.</div>
+          </div>
+
+          <div class="compare-col" id="compare-col-b">
+            <span style="font-size:11px; font-weight:700; color:var(--accent-indigo);">CASE B • COMPARATIVE PRECEDENT</span>
+            <div style="font-size:17px; font-weight:700; color:var(--text-primary);">Justice K.S. Puttaswamy v. Union of India</div>
+            <div style="font-size:12px; color:var(--text-muted);">Supreme Court • 2017 (9-Judge Bench)</div>
+            <hr style="border:0; border-top:1px solid var(--border-glass-light);">
+            <div><strong>Key Facts:</strong> Constitutional challenge to Aadhaar biometric database and state surveillance on citizen privacy grounds.</div>
+            <div><strong>Constitutional Issues:</strong> Whether Right to Privacy is a Fundamental Right guaranteed under Article 21 and Part III.</div>
+            <div><strong>Judgment Ratio:</strong> Privacy is an intrinsic Fundamental Right under Article 21. Any state restriction requires Legality, Legitimate State Aim, and Proportionality.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close-modal="case-compare-modal">Close Comparison</button>
+        <button class="btn-primary" id="compare-ask-ai-btn">🤖 Ask Kittu to Distinguish Both Precedents</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: KITTU AI PREFERENCES & CONSTITUTIONAL SETTINGS MODAL
+       Clean, user-friendly settings (No API testing or developer clutter)
+       With "Made with sakshamfit" attribution at bottom (User Requirement)
+       ====================================================================== -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚙️</span>
+          <span>Kittu AI (Bharat) • Assistant Preferences</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal="settings-modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="margin-bottom: 1.25rem;">Customize your legal assistant's advocate persona, constitutional reasoning style, and local storage preferences.</p>
+
+        <!-- SECTION 1: BHARATIYA CONSTITUTIONAL PERSONA & TONE -->
+        <div class="settings-section-card">
+          <div class="settings-section-title">
+            <span>🇮🇳</span>
+            <span>1. Kittu AI Practice Tone & Persona</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Advocate Bench Persona Mode</label>
+            <select class="form-select" id="settings-advocate-mode">
+              <option value="senior_advocate">Senior Advocate Bench Mode (Supreme Court & High Court Appellate Practice)</option>
+              <option value="researcher">SCC Online Legal Researcher Mode (Detailed Sub-Sections & Case Law)</option>
+              <option value="corporate">General Counsel Corporate Mode (Contract Risk Mitigation & Compliance)</option>
+              <option value="citizen">Citizen RTI & Plain-English Mode (Accessible Rights Advice)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label class="form-label">Reasoning Precision (Creativity vs. Statutory Accuracy)</label>
+              <span id="temperature-value-display" style="font-size:12px; font-weight:700; color:var(--accent-gold);">0.2 — Strict Constitutional Accuracy</span>
+            </div>
+            <div class="range-slider-wrapper">
+              <input type="range" class="range-slider" id="settings-temperature-slider" min="0.1" max="0.7" step="0.1" value="0.2">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: PRIVACY & DPDP ACT COMPLIANCE -->
+        <div class="settings-section-card" style="margin-bottom: 0;">
+          <div class="settings-section-title">
+            <span>🔒</span>
+            <span>2. DPDP Act 2023 Privacy & Local Data Storage</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+            <span style="font-size:13px; color:var(--text-secondary); flex:1;">Your research history and bookmarks are encrypted in local browser storage and never transmitted to third-party tracking networks.</span>
+            <button type="button" class="btn-danger" id="clear-all-data-btn" style="padding:0.45rem 0.85rem;">🗑️ Clear Saved History</button>
+          </div>
+        </div>
+
+        <!-- PROMINENT FOOTER ATTRIBUTION (Made with sakshamfit) -->
+        <div class="sakshamfit-badge">
+          <span>🇮🇳 Made with ❤️ by</span> <strong>sakshamfit</strong> <span>• JurisAI Bharat Enterprise v5.6</span>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close-modal="settings-modal">Cancel</button>
+        <button class="btn-primary" id="save-settings-btn">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: LEGAL DISCLAIMER & TERMS ACCEPTANCE
+       ====================================================================== -->
+  <div class="modal-overlay" id="disclaimer-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🇮🇳</span>
+          <span>Bharatiya Legal Notice & Disclaimer</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal="disclaimer-modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p>Welcome to <strong>JurisAI (Bharat Edition)</strong>. Before utilizing this artificial intelligence legal assistant, please carefully read and understand the following terms:</p>
+        
+        <h4>1. No Legal Advice or Advocate-Client Relationship</h4>
+        <p>JurisAI is an AI-powered informational tool designed to provide preliminary constitutional summaries, contract clause translations, and statutory references under Indian Law and Central Acts. <strong>It is not a law firm, not a licensed Advocate under the Advocates Act 1961, and does not provide formal legal representation.</strong></p>
+
+        <h4>2. Bharatiya Constitution & New Criminal Laws</h4>
+        <p>This edition incorporates the Constitution of India (Bharatiya Samvidhan), the new Criminal Sanhitas (BNS 2023, BNSS 2023, BSA 2023), and Central Acts. Users must independently verify all statutory citations and writ procedural rules with a qualified Advocate or Senior Advocate.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-primary" id="disclaimer-agree-btn" style="width: 100%; justify-content: center;">
+          <span>I Understand & Accept Terms</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 5: LEGAL RIGHTS DETAIL MODAL
+       ====================================================================== -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="detail-modal-title">Statutory Right Overview</div>
+        <button class="modal-close-btn" data-close-modal="detail-modal">✕</button>
+      </div>
+
+      <div class="modal-body" id="detail-modal-body">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close-modal="detail-modal">Close Notice</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 6: LEGAL GLOSSARY GLASS POPOVER (#glossary-modal) — Feature 9
+       ====================================================================== -->
+  <div class="modal-overlay" id="glossary-modal">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <div class="modal-title" id="glossary-term-title">
+          <span>📖</span>
+          <span>Legal Glossary Term</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal="glossary-modal">✕</button>
+      </div>
+
+      <div class="modal-body" id="glossary-term-body">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close-modal="glossary-modal">Close Glossary</button>
+        <button class="btn-primary" id="glossary-ask-ai-btn">🤖 Ask Kittu About This Term</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       PERSISTENT FLOATING KITTU COPILOT PILL (✦ Kittu Copilot) — Feature 11
+       ====================================================================== -->
+  <div class="floating-copilot-pill" id="kittu-copilot-btn" title="Click to open persistent Kittu Legal Copilot">
+    <span>✦</span>
+    <span>Kittu Copilot</span>
+  </div>
+  <div class="floating-copilot-menu" id="kittu-copilot-menu">
+    <div style="font-size:11px; font-weight:700; color:var(--accent-gold); padding:0.4rem 0.6rem; border-bottom:1px solid var(--border-glass);">✦ KITTU ADVOCATE COPILOT</div>
+    <div class="copilot-menu-item" data-copilot="explain">📖 Explain Current Section / Topic</div>
+    <div class="copilot-menu-item" data-copilot="cases">🏛️ Find Supporting Case Precedents</div>
+    <div class="copilot-menu-item" data-copilot="contrary">⚖️ Find Contrary / Opposing Authority</div>
+    <div class="copilot-menu-item" data-copilot="simplify">💡 Explain Like I'm a Citizen (Hindi / English)</div>
+    <div class="copilot-menu-item" data-copilot="draft">📝 Draft Legal Notice / Argument</div>
+  </div>
+
+  <!-- Main App Script -->
+  <script src="app.js"></script>
+</body>
+</html>

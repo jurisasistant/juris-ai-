@@ -4,7 +4,6 @@
   "description": "Indian Constitution & Bharatiya Legal AI Research Platform with Groq Llama-3.3-70B-Versatile Backend",
   "main": "server.js",
   "scripts": {
-    "build": "mkdir -p public && cp -r index.html styles.css app.js juris-vault-obsidian.zip public/ 2>/dev/null || true; echo 'Static web app build ready'",
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
