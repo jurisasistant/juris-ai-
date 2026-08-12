@@ -944,23 +944,77 @@ function getAILegalResponse(prompt, jurisdictionCode) {
   const jurName = JURISDICTION_INFO[jurisdictionCode]?.name || 'India (Bharat)';
   const lower = prompt.toLowerCase().trim();
   const cleanPrompt = lower.replace(/[!.,?]/g, '');
+  const currentLang = localStorage.getItem('jurisai_language') || 'en';
+  const isHi = currentLang === 'hi';
+  const isHinglish = currentLang === 'hinglish';
 
-  // 0A. Conversational Greetings & Short Casual Inputs ("hi", "hii", "hello", "hey", "good morning", "namaste", etc.)
+  // 0A. Conversational Greetings & Short Casual Inputs
   const isGreeting = ['hi', 'hii', 'hiii', 'hiiii', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'namaste', 'namaskaram', 'pranam', 'greetings', 'yo', 'sup', 'kittu', 'hi kittu', 'hello kittu', 'hey kittu', 'namaste kittu', 'hello there', 'hii kittu'].includes(cleanPrompt) ||
                      ((cleanPrompt.startsWith('hi ') || cleanPrompt.startsWith('hii') || cleanPrompt.startsWith('hello ') || cleanPrompt.startsWith('hey ') || cleanPrompt.startsWith('namaste')) && cleanPrompt.length < 30);
   if (isGreeting) {
+    if (isHi) {
+      return `नमस्ते! 🙏 मैं **किट्टू एआई (Kittu AI)** हूँ, आपका भारतीय संविधान और कानूनी सहायक।\n\nमैं इन कानूनी विषयों में आपकी मदद कर सकता हूँ:\n* **📜 भारत का संविधान (Samvidhan):** मौलिक अधिकार (अनुच्छेद 14, 19, 21), याचिकाएं (Art. 32/226), और सुप्रीम कोर्ट के निर्णय (*Puttaswamy*, *Maneka Gandhi*, *Kesavananda Bharati*)।\n* **⚖️ नए भारतीय कानून (BNS/BNSS 2023):** BNS 2023 के तहत अपराध, ई-एफआईआर (e-FIR), और गिरफ्तारी नियम (BNSS 2023) ।\n* **💼 कमर्शियल और सिविल कानून:** भारतीय अनुबंध अधिनियम (Contract Act Section 27), कंपनी कानून 2013, DPDP Act 2023, और चेक बाउंस (Section 138 NI Act) ।\n\nआप आज किस कानूनी विषय या धारा के बारे में जानना चाहते हैं?`;
+    }
     return `Namaste! 🙏 I am **Kittu AI**, your Indian Constitutional and Bharatiya Legal Assistant.\n\nI can help you research and navigate:\n* **📜 Constitution of India (Samvidhan):** Fundamental Rights (Articles 14, 19, 21), Writ Petitions (Art. 32/226), and Supreme Court Bench rulings (*Puttaswamy*, *Maneka Gandhi*, *Kesavananda Bharati*).\n* **⚖️ New Bharatiya Criminal Sanhitas:** Offenses under BNS 2023, e-FIR and arrest procedures under BNSS 2023, and electronic evidence under BSA 2023.\n* **💼 Commercial & Civil Law:** Indian Contract Act Section 27 (void non-competes), Section 74 damages, Companies Act 2013, DPDP Act 2023, and Cheque Bounce remedies under Section 138 NI Act.\n\nWhat legal topic, statute, or case precedent would you like to explore today?`;
   }
 
   // 0B. Acknowledgments, Thanks, or Short confirmations
   const thanks = ['thanks', 'thank you', 'thx', 'ok', 'okay', 'got it', 'awesome', 'great', 'nice', 'understood', 'yes', 'no', 'cool', 'dhanyavad', 'shukriya', 'good'];
   if (thanks.includes(cleanPrompt)) {
+    if (isHi) {
+      return `आपका बहुत-बहुत स्वागत है! 😊\n\nयदि आपके पास **भारतीय संविधान**, **IPC और BNS 2023 कानूनों**, या किसी भी कानूनी समझौते के बारे में कोई और प्रश्न है, तो बेझिझक पूछें। मैं सहायता के लिए तैयार हूँ!`;
+    }
     return `You're very welcome! 😊\n\nIf you have any more questions about **Indian Constitutional Law**, want to compare an old **IPC section with BNS 2023**, or need to analyze a commercial agreement, feel free to ask anytime. I am here to assist!`;
   }
 
-  // 0C. Identity, Creator, & Help Queries ("who are you", "what can you do", "help", "sakshamfit", etc.)
+  // 0C. Identity, Creator, & Help Queries
   if (cleanPrompt.includes('who are you') || cleanPrompt.includes('what is your name') || cleanPrompt.includes('who created you') || cleanPrompt.includes('who made you') || cleanPrompt.includes('sakshamfit') || cleanPrompt.includes('your name') || cleanPrompt.includes('who is kittu') || cleanPrompt === 'help' || cleanPrompt === 'what can you do' || cleanPrompt === 'how to use') {
+    if (isHi) {
+      return `मैं **किट्टू एआई (Kittu AI Bharat)** हूँ, जिसे **sakshamfit** द्वारा भारतीय नागरिकों और अधिवक्ताओं के लिए डिज़ाइन और विकसित किया गया है।\n\nमैं भारत के संविधान, नए BNS/BNSS/BSA 2023 कानूनों, और सुप्रीम कोर्ट के निर्णयों का विशेषज्ञ हूँ।\n\nआज मैं आपके अनुसंधान में कैसे मदद कर सकता हूँ?`;
+    }
     return `I am **Kittu AI (Bharat Edition)**, an Indian Constitutional & Legal Assistant designed and developed with ❤️ by **sakshamfit**.\n\nI am specialized in:\n* The **Constitution of India (Bharatiya Samvidhan)** and landmark Supreme Court benches\n* The new **BNS, BNSS, and BSA 2023** criminal codes\n* **Commercial & Privacy Law** including the Indian Contract Act 1872, Companies Act 2013, DPDP Act 2023, and PMLA 2002.\n\nHow may I assist your research today?`;
+  }
+
+  if (isHi) {
+    return `### 💡 सरल हिंदी सारांश (What This Means for You)
+भारतीय संविधान और नए कानूनों (BNS/BNSS 2023) के तहत आपके मौलिक अधिकार पूरी तरह सुरक्षित हैं। किसी भी सरकारी आदेश या अनुचित पुलिस कार्रवाई के खिलाफ आपको कानूनी सुरक्षा प्राप्त है।
+
+### 📜 कानून क्या कहता है (Acts & Sections)
+* **अनुच्छेद 21 (Article 21):** प्राण और दैहिक स्वतंत्रता का अधिकार। किसी भी व्यक्ति को न्यायसंगत और उचित प्रक्रिया के बिना वंचित नहीं किया जा सकता।
+* **BNS 2023 / BNSS 2023:** नए आपराधिक कानून के तहत नागरिकों को विशेष सुरक्षा, ई-एफआईआर (e-FIR), और 24 घंटे के भीतर मजिस्ट्रेट प्रस्तुति का अधिकार है।
+
+### 🏛️ सुप्रीम कोर्ट का ऐतिहासिक फैसला (Why This Case Matters)
+* **जस्टिस पुट्टास्वामी (2017) / मनेका गांधी (1978):** सुप्रीम कोर्ट ने स्पष्ट किया कि कोई भी कानूनी प्रक्रिया निष्पक्ष, न्यायसंगत और गैर-मनमानी होनी चाहिए।
+
+### ✅ आपको आगे क्या करना चाहिए (Action Plan)
+1. **लिखित सूचना मांगें:** किसी भी कार्रवाई से पहले सरकारी आदेश या आधार की लिखित प्रति मांगें।
+2. **सही धारा का उल्लेख करें:** शिकायतों में IPC के साथ BNS 2023 की धाराओं का प्रयोग करें।
+3. **कानूनी सलाह लें:** हाईकोर्ट या सुप्रीम कोर्ट में याचिका दायर करने के लिए वरिष्ठ अधिवक्ता से संपर्क करें।
+
+<div class="legal-caution-box">
+  <strong>⚠️ किट्टू एआई नोट:</strong> यह भारतीय कानून की सामान्य जानकारी है। किसी भी कानूनी कदम से पहले वरिष्ठ अधिवक्ता से परामर्श लें।
+</div>`;
+  }
+
+  if (isHinglish) {
+    return `### 💡 Plain-English & Hinglish Summary
+Indian Constitution aur naye BNS/BNSS 2023 laws ke under aapke fundamental rights completely protected hain. Kisi bhi arbitrary police action ya unfair government order ke against aapko legal remedy available hai.
+
+### 📜 What the Law Says (Acts & Sections)
+* **Article 21 (Right to Life & Privacy):** Har citizen ko personal liberty aur privacy ka fundamental right hai.
+* **BNS / BNSS 2023:** Naye criminal laws me e-FIR filing aur written arrest notice compulsory hai.
+
+### 🏛️ Supreme Court Landmark Ruling
+* **Puttaswamy (2017) & Maneka Gandhi (1978):** Supreme Court ne rule kiya ki koi bhi legal procedure just, fair, aur reasonable hona chahiye.
+
+### ✅ Practical Action Plan (What You Should Do Next)
+1. **Official written notice demand karein:** Police ya authority se written arrest memo ya order copy lein.
+2. **Correct BNS section cite karein:** Apni complaint ya RTI application me naye code mention karein.
+3. **High Court ya Supreme Court approach karein:** Article 226 ya Article 32 me Writ Petition file ki ja sakti hai.
+
+<div class="legal-caution-box">
+  <strong>⚠️ Kittu AI Note:</strong> Yeh Indian law ka general legal explanation hai. Court filings ke liye hamesha Advocate on Record (AOR) se consult karein.
+</div>`;
   }
 
   // Check if prompt references a known statute number in BHARATIYA_STATUTE_MAP
@@ -1954,8 +2008,17 @@ function initChatEngine() {
       btn.classList.add('active');
       const lang = btn.getAttribute('data-lang');
       localStorage.setItem('jurisai_language', lang || 'en');
+      applyLanguageUI(lang || 'en');
     });
   });
+
+  // Apply initial saved language on load
+  const savedLang = localStorage.getItem('jurisai_language') || 'en';
+  langBtns.forEach((b) => {
+    if (b.getAttribute('data-lang') === savedLang) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+  applyLanguageUI(savedLang);
 
   if (chatForm) {
     chatForm.addEventListener('submit', (e) => {
@@ -2005,6 +2068,61 @@ function initChatEngine() {
       }
     });
   }
+}
+
+// --- Bilingual I18N UI Translation Engine (English / हिन्दी / Hinglish) ---
+function applyLanguageUI(lang) {
+  const isHi = lang === 'hi';
+  const isHinglish = lang === 'hinglish';
+
+  const wTitle = document.querySelector('.welcome-title');
+  const wSub = document.querySelector('.welcome-subtitle');
+  const textarea = document.getElementById('chat-input-textarea');
+
+  if (wTitle) {
+    wTitle.textContent = isHi ? "किट्टू से भारतीय कानून के बारे में पूछें।" : 
+                         isHinglish ? "Ask Kittu about Indian Law (Hinglish)." : 
+                         "Ask Kittu about Indian Law.";
+  }
+
+  if (wSub) {
+    wSub.textContent = isHi ? "भारतीय संविधान, BNS/BNSS 2023 आपराधिक कानून, और सुप्रीम कोर्ट के फैसलों के लिए आपका विश्वसनीय कानूनी AI सहायक।" :
+                       isHinglish ? "Aapka trusted AI Legal Assistant for Indian Constitution, BNS/BNSS 2023, Contract Act, aur Supreme Court landmark judgments." :
+                       "Your authoritative AI assistant for Indian Constitutional jurisprudence, BNS/BNSS 2023 criminal law, Section 27 Contract Act, and Supreme Court precedent research.";
+  }
+
+  if (textarea) {
+    textarea.placeholder = isHi ? "कानूनी प्रश्न पूछें, धारा बताएं, या कोई भी विषय लिखें (जैसे 'Article 21', 'BNS 103')..." :
+                           isHinglish ? "Apna legal question ya section type karein (e.g. 'Article 21', 'BNS 103')..." :
+                           "Ask Kittu a legal question, cite a statute, or type any section (e.g. 'Article 21', 'BNS 103')...";
+  }
+
+  // Update sidebar links
+  const navTexts = document.querySelectorAll('.sidebar-nav .nav-text');
+  const hiNames = [
+    "किट्टू एआई सहायक", "संविधान एक्सप्लोरर", "बीएनएस / भारतीय कानून", "उच्चतम न्यायालय निर्णय", 
+    "अनुसंधान वर्कस्पेस", "सुरक्षित निर्णय", "कानूनी दस्तावेज़ विश्लेषक", "कानूनी दस्तावेज़ निर्माता", 
+    "सूचना का अधिकार (RTI)", "एआई इंजन सेटिंग्स"
+  ];
+  const enNames = [
+    "Kittu AI Assistant", "Constitution Explorer", "BNS / BNSS / BSA", "Case Law Precedents", 
+    "Research Workspaces", "Saved & History", "Contract Analyzer", "Document Builder", 
+    "RTI & Statutory FAQ", "AI Engine Settings"
+  ];
+
+  navTexts.forEach((el, idx) => {
+    if (isHi && hiNames[idx]) el.textContent = hiNames[idx];
+    else if (enNames[idx]) el.textContent = enNames[idx];
+  });
+
+  // Update mobile bottom nav
+  const mobileNavs = document.querySelectorAll('.mobile-bottom-nav span:not([style])');
+  const hiMobile = ["संविधान", "किट्टू AI", "सुरक्षित", "विश्लेषक", "RTI"];
+  const enMobile = ["Samvidhan", "Kittu AI", "Saved", "Analyzer", "RTI"];
+  mobileNavs.forEach((el, idx) => {
+    if (isHi && hiMobile[idx]) el.textContent = hiMobile[idx];
+    else if (enMobile[idx]) el.textContent = enMobile[idx];
+  });
 }
 
 async function sendChatMessage(userText) {
