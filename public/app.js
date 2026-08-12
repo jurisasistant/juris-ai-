@@ -179,6 +179,48 @@ const BHARATIYA_STATUTE_MAP = {
     title: "Twin Conditions for Bail in Money Laundering Offenses",
     summary: "Accused can be granted bail only if Public Prosecutor opposes and Court is satisfied there are reasonable grounds believing accused is not guilty.",
     precedent: "Vijay Madanlal Choudhary v. Union of India (SC 3-Judge Bench 2022) — Upheld constitutional validity of PMLA ED arrest and Section 45 bail rigor."
+  },
+  "304b": {
+    old: "IPC Section 304B (Dowry Death)",
+    newSection: "BNS 2023 Section 80",
+    title: "Dowry Death of a Woman within 7 Years of Marriage",
+    summary: "Where death of a woman is caused by burns or bodily injury within 7 years of marriage and she was subjected to dowry cruelty, husband or relative is guilty. Minimum 7 years to life imprisonment.",
+    precedent: "Shanti v. State of Haryana (SC) — Codified presumption of dowry death under Section 113B Evidence Act / BSA 2023."
+  },
+  "354": {
+    old: "IPC Section 354 (Assault or Modesty of Woman)",
+    newSection: "BNS 2023 Section 74",
+    title: "Assault or Criminal Force to Woman with Intent to Outrage Modesty",
+    summary: "Punishable with imprisonment not less than 1 year up to 5 years, and fine. Protects women from physical molestation and harassment.",
+    precedent: "Rupan Deol Bajaj v. K.P.S. Gill (SC 1995) — Modesty of a woman is an attribute associated with female decency."
+  },
+  "406": {
+    old: "IPC Section 406 (Criminal Breach of Trust)",
+    newSection: "BNS 2023 Section 316",
+    title: "Criminal Breach of Trust",
+    summary: "Whoever is entrusted with property and dishonestly misappropriates or converts it to his own use commits criminal breach of trust. Up to 5 years jail.",
+    precedent: "Velji Raghavji Patel v. State of Maharashtra (SC) — Entrustment and dishonest conversion are essential ingredients."
+  },
+  "500": {
+    old: "IPC Section 499 & 500 (Defamation / Maanhani)",
+    newSection: "BNS 2023 Section 356",
+    title: "Defamation (Maanhani)",
+    summary: "Publishing false imputations harming a person's reputation. BNS Section 356 introduces Community Service as an alternative punishment.",
+    precedent: "Subramanian Swamy v. Union of India (SC 2016) — Upheld criminal defamation as reasonable restriction under Art. 19(2)."
+  },
+  "506": {
+    old: "IPC Section 506 (Criminal Intimidation / Dhamki)",
+    newSection: "BNS 2023 Section 351",
+    title: "Criminal Intimidation (Dhamki)",
+    summary: "Threatening another person with injury to person, reputation, or property to alarm them. Punishable with up to 2 to 7 years jail.",
+    precedent: "Manik Taneja v. State of Karnataka (SC) — Mere outburst of anger without intention to alarm is not criminal intimidation."
+  },
+  "144": {
+    old: "CrPC Section 144 (Prohibitory Orders / Curfew)",
+    newSection: "BNSS 2023 Section 163",
+    title: "Power to Issue Order in Urgent Cases of Nuisance or Apprehended Danger",
+    summary: "Empowers Executive Magistrate to issue immediate prohibitory orders restricting assembly of 4 or more persons to prevent public danger.",
+    precedent: "Anuradha Bhasin v. Union of India (SC 2020) — Section 144 orders cannot be used to suppress legitimate expression or dissent."
   }
 };
 
@@ -2031,7 +2073,8 @@ async function sendChatMessage(userText) {
 // --- Direct Groq Cloud API Helper (llama-3.3-70b-versatile) ---
 async function callGroqCloudAPI(prompt, jurisdictionCode, history = []) {
   const systemPrompt = `You are Kittu (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant powered by Groq Llama-3.3-70B-Versatile. Designed & developed with SakshamFit.
-Always explain Indian legal concepts in simple, easy-to-understand language so any user can understand their rights clearly. Avoid dense legalese or confusing Latin jargon without a plain-English translation.
+Always explain Indian legal concepts in simple, easy-to-understand language so any normal citizen or user can understand their rights clearly. Avoid dense legalese or confusing Latin jargon without a plain-English translation.
+When a user asks about any crime, police complaint, or IPC section (like 420, 302, 307, 376, 498A, 500, 354, 506, 406), always state BOTH the familiar old IPC section number AND the new BNS 2023 section number.
 When answering legal questions, structure your reply cleanly:
 ### 💡 Plain-English Summary (What This Means for You)
 ### 📜 What the Law Says (Acts & Sections)
