@@ -2172,7 +2172,7 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
     bubbleDiv.textContent = contentText;
   } else {
     bubbleDiv.className += ' ai-formatted-content';
-    bubbleDiv.innerHTML = formatLegalMarkdown(contentText);
+    bubbleDiv.innerHTML = `<div style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;"><span>✦ KITTU AI (BHARAT)</span></div>` + formatLegalMarkdown(contentText);
   }
 
   contentWrapper.appendChild(bubbleDiv);
