@@ -2,6 +2,21 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🗄️ Legal RAG Roadmap (Supabase + pgvector)
+
+The app currently ships a **curated verified legal library** (Constitution of India, BNS/BNSS/BSA 2023, Central Acts, and Supreme Court Constitution Bench judgments incl. Ram Janmabhoomi–Ayodhya, Sabarimala, Triple Talaq, Navtej Singh Johar, Aadhaar, Joseph Shine) — retrieved at answer time and injected into the model as evidence.
+
+Next milestone — **live legal corpus** (`supabase/schema.sql` included, ready to run):
+
+1. **Supabase project** → run `supabase/schema.sql` (pgvector enabled).
+2. **Phase 1 core**: Constitution + BNS/BNSS/BSA with per-section metadata (`document_type`, `section`, `effective_from`, `authority_level: primary`, `verified: true`).
+3. **Phase 2**: Central Acts (Contract Act, Companies Act, Consumer Protection, Arbitration, CPC…).
+4. **Phase 3**: Supreme Court judgments — Constitution Benches and landmark cases, chunked with `bench`, `citation`, `source_url`.
+5. **Phase 4**: High Courts. **Phase 5**: Gazette notifications, rules, circulars.
+
+Every chunk preserves provenance (`official_source`, `source_url`, `verified`), and the **Citation Verifier queries the `citations` table before any citation is displayed**. Retrieval = hybrid (pgvector cosine + full-text) + authority re-ranking. The LLM never generates citations from memory.
+
+---
 ## 🧭 Conversation Intent Router
 
 Being a legal AI does **not** mean every message is about law:
