@@ -2,20 +2,24 @@
 -- JURISAI BHARAT — SEED DATA (auto-generated from the verified legal library)
 -- 28 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
 -- ============================================================================
-
 do $$
 declare doc_id uuid;
 begin
+
+  delete from public.legal_chunks;
+  delete from public.legal_documents;
 
 
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India: Fundamental Rights (Articles 14, 19, 21)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'Legislative Department, Govt. of India', 'primary', true)
+    ('Constitution of India: Fundamental Rights (Articles 14, 19, 21)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Articles 14, 19, and 21 form the "Golden Triangle" of the Indian Constitution (Bharatiya Samvidhan). Article 14 prohibits state arbitrariness and guarantees equal protection of laws. Article 19(1)(a) protects freedom of speech and expression subject to reasonable restrictions under Art. 19(2). Article 21 guarantees that no person shall be deprived of life or personal liberty except according to just, fair, and reasonable procedure established by law.
+  values (doc_id, 'The Golden Triangle of the Bharatiya Constitution: Equality before law, Freedom of speech & expression, and Right to life, liberty & privacy.
+
+Articles 14, 19, and 21 form the "Golden Triangle" of the Indian Constitution (Bharatiya Samvidhan). Article 14 prohibits state arbitrariness and guarantees equal protection of laws. Article 19(1)(a) protects freedom of speech and expression subject to reasonable restrictions under Art. 19(2). Article 21 guarantees that no person shall be deprived of life or personal liberty except according to just, fair, and reasonable procedure established by law.
 
 
       * **Constitution of India Article 14:** The State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.
@@ -32,11 +36,13 @@ begin
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
   values
-    ('Constitutional Writs & Judicial Review (Articles 32 & 226)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'Legislative Department, Govt. of India', 'primary', true)
+    ('Constitutional Writs & Judicial Review (Articles 32 & 226)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Dr. B.R. Ambedkar termed Article 32 the "heart and soul" of the Constitution of India. It grants citizens the Fundamental Right to move the Supreme Court directly for the enforcement of Part III rights. Article 226 empowers High Courts to issue writs both for Fundamental Rights and any other legal purpose.
+  values (doc_id, 'The heart and soul of the Constitution: Filing Writ Petitions (Habeas Corpus, Mandamus, Certiorari, Prohibition, Quo Warranto) in Supreme Court & High Courts.
+
+Dr. B.R. Ambedkar termed Article 32 the "heart and soul" of the Constitution of India. It grants citizens the Fundamental Right to move the Supreme Court directly for the enforcement of Part III rights. Article 226 empowers High Courts to issue writs both for Fundamental Rights and any other legal purpose.
 
 
       * **Constitution of India Article 32:** Remedies for enforcement of Fundamental Rights conferred by Part III.
@@ -56,7 +62,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Effective July 1, 2024, India replaced its colonial criminal law trilogy with three Bharatiya Sanhitas: Bharatiya Nyaya Sanhita (BNS 2023), Bharatiya Nagarik Suraksha Sanhita (BNSS 2023), and Bharatiya Sakshya Adhiniyam (BSA 2023). The new laws modernize offenses, establish strict investigation timelines, and recognize electronic evidence as primary records.
+  values (doc_id, 'Complete transition guide from IPC 1860, CrPC 1973, and Evidence Act 1872 to the new Bharatiya Nyaya Sanhita, Nagarik Suraksha Sanhita, and Sakshya Adhiniyam.
+
+Effective July 1, 2024, India replaced its colonial criminal law trilogy with three Bharatiya Sanhitas: Bharatiya Nyaya Sanhita (BNS 2023), Bharatiya Nagarik Suraksha Sanhita (BNSS 2023), and Bharatiya Sakshya Adhiniyam (BSA 2023). The new laws modernize offenses, establish strict investigation timelines, and recognize electronic evidence as primary records.
 
 
       * **BNS 2023 Section 111 (Organized Crime):** Introduces stringent statutory penalties for syndicates, economic offenses, and cybercrime.
@@ -77,7 +85,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'The Prevention of Money Laundering Act 2002 (PMLA) gives the Enforcement Directorate (ED) broad statutory powers to attach proceeds of crime and arrest individuals under Section 19. Under Section 45, bail is subject to rigorous "twin conditions"—the court must be satisfied there are reasonable grounds to believe the accused is not guilty.
+  values (doc_id, 'ED arrest powers under Section 19, attachment of proceeds of crime, and twin conditions for bail under Section 45.
+
+The Prevention of Money Laundering Act 2002 (PMLA) gives the Enforcement Directorate (ED) broad statutory powers to attach proceeds of crime and arrest individuals under Section 19. Under Section 45, bail is subject to rigorous "twin conditions"—the court must be satisfied there are reasonable grounds to believe the accused is not guilty.
 
 
       * **PMLA Section 3 (Offense of Money Laundering):** Whosoever directly or indirectly attempts to indulge or knowingly assists in any process connected with proceeds of crime is guilty.
@@ -97,7 +107,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Section 27 of the Indian Contract Act 1872 embodies a strict statutory prohibition: "Every agreement by which anyone is restrained from exercising a lawful profession, trade or business of any kind, is to that extent void." Indian courts consistently hold that post-termination restrictive covenants on employees are unenforceable.
+  values (doc_id, 'Why post-termination employee non-competes are void under Section 27, and how to structure liquidated damages under Section 74.
+
+Section 27 of the Indian Contract Act 1872 embodies a strict statutory prohibition: "Every agreement by which anyone is restrained from exercising a lawful profession, trade or business of any kind, is to that extent void." Indian courts consistently hold that post-termination restrictive covenants on employees are unenforceable.
 
 
       * **Indian Contract Act 1872 Section 27:** Agreement in restraint of trade void. Exception: Sale of goodwill of a business within specified local limits.
@@ -118,7 +130,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Section 166 of the Companies Act 2013 codifies the statutory fiduciary duties of Indian company directors. Meanwhile, the Insolvency and Bankruptcy Code (IBC 2016) provides a time-bound Corporate Insolvency Resolution Process (CIRP) under Sections 7 and 9, imposing an immediate statutory moratorium under Section 14.
+  values (doc_id, 'Fiduciary duties under Section 166, Related Party Transactions (RPT), CSR mandates, and IBC Corporate Insolvency Resolution Process (CIRP).
+
+Section 166 of the Companies Act 2013 codifies the statutory fiduciary duties of Indian company directors. Meanwhile, the Insolvency and Bankruptcy Code (IBC 2016) provides a time-bound Corporate Insolvency Resolution Process (CIRP) under Sections 7 and 9, imposing an immediate statutory moratorium under Section 14.
 
 
       * **Companies Act 2013 Section 166 (Duties of Directors):** Requires acting with due and reasonable care, skill, and diligence; prohibits secret profits.
@@ -139,7 +153,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'The Digital Personal Data Protection Act (DPDP Act 2023) establishes India''s modern statutory privacy framework. Organizations ("Data Fiduciaries") must obtain clear, affirmative consent before processing personal data of "Data Principals" (citizens) and must report data breaches immediately.
+  values (doc_id, 'Statutory compliance for Data Fiduciaries, affirmative consent, Data Principal rights, CERT-In 6-hour rules, and penalties up to ₹250 crore.
+
+The Digital Personal Data Protection Act (DPDP Act 2023) establishes India''s modern statutory privacy framework. Organizations ("Data Fiduciaries") must obtain clear, affirmative consent before processing personal data of "Data Principals" (citizens) and must report data breaches immediately.
 
 
       * **DPDP Act 2023 Section 6 (Consent):** Consent must be free, specific, informed, unconditional, and capable of withdrawal at any time.
@@ -161,7 +177,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Under Section 107 of the Transfer of Property Act 1882 and Section 17 of the Registration Act 1908, any lease of immovable property exceeding one year MUST be made by a registered instrument. Furthermore, under the Indian Stamp Act 1899, an unstamped or under-stamped agreement cannot be admitted in evidence.
+  values (doc_id, 'Why unstamped or unregistered leave & license / lease agreements are inadmissible in Indian courts, and how to execute valid leases.
+
+Under Section 107 of the Transfer of Property Act 1882 and Section 17 of the Registration Act 1908, any lease of immovable property exceeding one year MUST be made by a registered instrument. Furthermore, under the Indian Stamp Act 1899, an unstamped or under-stamped agreement cannot be admitted in evidence.
 
 
       * **Registration Act 1908 Section 17 & 49:** Compulsory registration for leases exceeding 11 months; unregistered leases cannot be received as evidence of any transaction affecting the property.
@@ -181,7 +199,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'The Arbitration and Conciliation Act 1996 governs domestic and international commercial arbitration in India. Section 34 provides narrow statutory grounds to challenge arbitral awards, prioritizing minimal judicial intervention and expeditious disposal.
+  values (doc_id, 'Interim relief under Section 9, appointment of arbitrators under Section 11, and grounds for challenging awards under Section 34.
+
+The Arbitration and Conciliation Act 1996 governs domestic and international commercial arbitration in India. Section 34 provides narrow statutory grounds to challenge arbitral awards, prioritizing minimal judicial intervention and expeditious disposal.
 
 
       * **Arbitration Act Section 9 (Interim Relief):** Empowers civil courts to grant interim protection before, during, or after arbitral proceedings.
@@ -201,7 +221,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Section 138 of the Negotiable Instruments Act 1881 makes the dishonour of a cheque for insufficiency of funds a criminal offense punishable by imprisonment up to 2 years or fine up to twice the cheque amount. Strict adherence to statutory notice timelines is mandatory.
+  values (doc_id, 'Mandatory 30-day statutory demand notice, summary trial before Magistrate, interim compensation up to 20%, and director liability.
+
+Section 138 of the Negotiable Instruments Act 1881 makes the dishonour of a cheque for insufficiency of funds a criminal offense punishable by imprisonment up to 2 years or fine up to twice the cheque amount. Strict adherence to statutory notice timelines is mandatory.
 
 
       * **NI Act Section 138 (Cheque Dishonour Offense):** Requires presenting cheque within validity (3 months), issuing a written demand notice within **30 calendar days** of bank return memo, and giving the drawer 15 days to pay.
@@ -220,7 +242,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'The Code of Civil Procedure (CPC 1908) governs civil litigation in India. Under Order XXXIX Rules 1 & 2, obtaining a temporary injunction requires satisfying a strict three-prong test: (1) Prima Facie Case, (2) Balance of Convenience, and (3) Irreparable Injury.
+  values (doc_id, 'Mandatory 60-day government notice under Section 80, temporary injunction three-prong test, summary suits for debt, and res judicata.
+
+The Code of Civil Procedure (CPC 1908) governs civil litigation in India. Under Order XXXIX Rules 1 & 2, obtaining a temporary injunction requires satisfying a strict three-prong test: (1) Prima Facie Case, (2) Balance of Convenience, and (3) Irreparable Injury.
 
 
       * **CPC Section 80 (Notice to Government):** No suit shall be instituted against the Government or a public officer until the expiration of two months next after notice in writing has been delivered.
@@ -240,7 +264,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'The Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013 (POSH Act) mandates that every organization with 10 or more employees MUST constitute an Internal Complaints Committee (ICC). Failure to constitute an ICC triggers statutory fines and cancellation of business licenses.
+  values (doc_id, 'Mandatory Internal Complaints Committee (ICC) constitution, sexual harassment redressal, and constitutional equality at work.
+
+The Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013 (POSH Act) mandates that every organization with 10 or more employees MUST constitute an Internal Complaints Committee (ICC). Failure to constitute an ICC triggers statutory fines and cancellation of business licenses.
 
 
       * **POSH Act 2013 Section 4 (Internal Complaints Committee):** Requires an ICC headed by a senior woman employee, with at least 50% women members and an external NGO/legal expert.
@@ -260,7 +286,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Non-Disclosure Agreements (NDAs) protect non-public commercial assets. Under the Defend Trade Secrets Act (DTSA) in the US and the EU Trade Secrets Directive 2016/943, protection requires proof that information derives independent economic value from secrecy and that the owner took reasonable measures to maintain it.
+  values (doc_id, 'Essential legal doctrines governing Non-Disclosure Agreements, trade secret misappropriation remedies, and statutory whistleblower carve-outs.
+
+Non-Disclosure Agreements (NDAs) protect non-public commercial assets. Under the Defend Trade Secrets Act (DTSA) in the US and the EU Trade Secrets Directive 2016/943, protection requires proof that information derives independent economic value from secrecy and that the owner took reasonable measures to maintain it.
 
 
       * **18 U.S.C. § 1836 (Defend Trade Secrets Act - US):** Grants federal civil jurisdiction for trade secret misappropriation.
@@ -278,7 +306,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Data protection frameworks like EU GDPR and California CPRA impose strict operational mandates on companies processing personal data. Non-compliance risks statutory penalties of up to 4% of annual global turnover.
+  values (doc_id, 'Statutory requirements for Data Processing Agreements (DPAs), lawful processing bases, right to erasure, and cross-border data transfer safeguards.
+
+Data protection frameworks like EU GDPR and California CPRA impose strict operational mandates on companies processing personal data. Non-compliance risks statutory penalties of up to 4% of annual global turnover.
 
 
       * **GDPR Article 28 (Processor Contracts):** Mandates an explicit Data Processing Agreement (DPA) whenever a vendor processes personal data.
@@ -292,11 +322,13 @@ begin
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India Article 12: Definition of "State" under Part III', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'Legislative Department, Govt. of India', 'primary', true)
+    ('Constitution of India Article 12: Definition of "State" under Part III', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Article 12 defines "the State" for Part III Fundamental Rights to include the Government and Parliament of India, State Legislatures, local authorities, and "other authorities". Under the Ajay Hasia (1981) and Pradeep Kumar Biswas (2002) tests, any instrumentality or agency under deep and pervasive state control is amenable to writ jurisdiction.
+  values (doc_id, 'What entities qualify as "State" or "other authorities" amenable to Writ Jurisdiction under Part III Fundamental Rights.
+
+Article 12 defines "the State" for Part III Fundamental Rights to include the Government and Parliament of India, State Legislatures, local authorities, and "other authorities". Under the Ajay Hasia (1981) and Pradeep Kumar Biswas (2002) tests, any instrumentality or agency under deep and pervasive state control is amenable to writ jurisdiction.
 
 
       * **Constitution of India Article 12:** Definition of State including local or other authorities within the territory of India or under the control of the Government of India.
@@ -311,11 +343,13 @@ begin
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India Article 20: Protection in Conviction (Double Jeopardy & Self-Incrimination)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'Legislative Department, Govt. of India', 'primary', true)
+    ('Constitution of India Article 20: Protection in Conviction (Double Jeopardy & Self-Incrimination)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Article 20 guarantees three inviolable criminal protections: (1) prohibition against retrospective criminal laws, (2) prohibition against double jeopardy (prosecuted and punished twice for the same offense), and (3) protection against self-incrimination. In Selvi v. State of Karnataka (2010), the Supreme Court ruled that involuntary narco-analysis and lie-detector tests violate Article 20(3) and Article 21.
+  values (doc_id, 'Inviolable criminal safeguards: prohibition on ex-post facto laws, double jeopardy, and self-incrimination.
+
+Article 20 guarantees three inviolable criminal protections: (1) prohibition against retrospective criminal laws, (2) prohibition against double jeopardy (prosecuted and punished twice for the same offense), and (3) protection against self-incrimination. In Selvi v. State of Karnataka (2010), the Supreme Court ruled that involuntary narco-analysis and lie-detector tests violate Article 20(3) and Article 21.
 
 
       * **Constitution of India Article 20(1):** No ex-post facto criminal law or enhanced retrospective punishment.
@@ -330,11 +364,13 @@ begin
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India Article 22: Arrest Safeguards & 24-Hour Magistrate Remand', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'Legislative Department, Govt. of India', 'primary', true)
+    ('Constitution of India Article 22: Arrest Safeguards & 24-Hour Magistrate Remand', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Article 22 protects arrested persons by requiring immediate notification of the grounds of arrest, the right to consult a lawyer of choice, and mandatory production before the nearest Judicial Magistrate within 24 hours of arrest. The D.K. Basu (1997) Supreme Court guidelines enforce these rights to prevent custodial torture.
+  values (doc_id, 'Fundamental Rights upon arrest: right to be informed of grounds, right to counsel, and mandatory 24-hour Magistrate presentation.
+
+Article 22 protects arrested persons by requiring immediate notification of the grounds of arrest, the right to consult a lawyer of choice, and mandatory production before the nearest Judicial Magistrate within 24 hours of arrest. The D.K. Basu (1997) Supreme Court guidelines enforce these rights to prevent custodial torture.
 
 
       * **Constitution of India Article 22(1):** Right to be informed of grounds of arrest and right to be defended by a legal practitioner.
@@ -353,7 +389,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In Lalita Kumari v. Govt. of U.P. (2014), a 5-Judge Constitution Bench ruled unanimously that registration of a First Information Report (FIR) is mandatory under old CrPC 154 (now BNSS 2023 Section 173) if the complaint discloses a cognizable offense. Police cannot conduct a preliminary inquiry to test veracity before registering an FIR.
+  values (doc_id, 'Constitution Bench ruling mandating compulsory FIR registration if a cognizable offense is disclosed, without police discretion.
+
+In Lalita Kumari v. Govt. of U.P. (2014), a 5-Judge Constitution Bench ruled unanimously that registration of a First Information Report (FIR) is mandatory under old CrPC 154 (now BNSS 2023 Section 173) if the complaint discloses a cognizable offense. Police cannot conduct a preliminary inquiry to test veracity before registering an FIR.
 
 
       * **BNSS 2023 Section 173:** Compulsory registration of FIR and electronic e-FIR.
@@ -371,7 +409,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In Satender Kumar Antil v. CBI (2022), the Supreme Court laid down structured guidelines for bail adjudication to combat undertrial overcrowding. It established Category A to D offenses, directing that for offenses punishable up to 7 years where the accused cooperated, bail applications must be decided without mechanical remand.
+  values (doc_id, 'Authoritative Supreme Court ruling reinforcing that "Bail is the rule, jail is the exception" and categorizing offenses for speedy bail.
+
+In Satender Kumar Antil v. CBI (2022), the Supreme Court laid down structured guidelines for bail adjudication to combat undertrial overcrowding. It established Category A to D offenses, directing that for offenses punishable up to 7 years where the accused cooperated, bail applications must be decided without mechanical remand.
 
 
       * **BNSS 2023 Section 480:** Special powers of High Court and Sessions Court regarding regular bail.
@@ -390,7 +430,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Section 113 of the Bharatiya Nyaya Sanhita (BNS 2023) defines a Terrorist Act as any act done with intent to threaten the unity, integrity, sovereignty, or security of India, or to strike terror in the people using explosives, biological/chemical weapons, or cyber warfare. Punishable with death or life imprisonment if death results.
+  values (doc_id, 'First statutory codification of Terrorist Act in the general criminal code, punishable with death or life imprisonment.
+
+Section 113 of the Bharatiya Nyaya Sanhita (BNS 2023) defines a Terrorist Act as any act done with intent to threaten the unity, integrity, sovereignty, or security of India, or to strike terror in the people using explosives, biological/chemical weapons, or cyber warfare. Punishable with death or life imprisonment if death results.
 
 
       * **BNS 2023 Section 113(1):** Comprehensive definition of terrorist acts including cyber warfare and economic disruption.
@@ -408,7 +450,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Section 11 of the Code of Civil Procedure 1908 embodies the principle of Res Judicata: no court shall try any suit or issue which has already been directly and substantially decided in a former suit between the same parties. In Daryao v. State of UP (SC 1961), the Supreme Court held that Res Judicata applies equally to Writ Petitions under Articles 32 and 226.
+  values (doc_id, 'A matter directly and substantially judged by a competent court cannot be relitigated between the same parties.
+
+Section 11 of the Code of Civil Procedure 1908 embodies the principle of Res Judicata: no court shall try any suit or issue which has already been directly and substantially decided in a former suit between the same parties. In Daryao v. State of UP (SC 1961), the Supreme Court held that Res Judicata applies equally to Writ Petitions under Articles 32 and 226.
 
 
       * **CPC 1908 Section 11:** Statutory prohibition against second trial on decided issues.
@@ -426,7 +470,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'Under Section 35 of the Indian Stamp Act 1899, no instrument chargeable with duty can be admitted in evidence for any purpose unless duly stamped. In N.N. Global Mercantile v. Indo Unique Flame (SC 7-Judge Bench 2023), the Supreme Court ruled that while an arbitration agreement is separable, stamp duty defects on the substantive agreement must be cured by impounding and payment of duty/penalty before enforcement.
+  values (doc_id, 'Why unstamped or under-stamped agreements are inadmissible in evidence, and how the 7-Judge Bench resolved arbitration enforceability.
+
+Under Section 35 of the Indian Stamp Act 1899, no instrument chargeable with duty can be admitted in evidence for any purpose unless duly stamped. In N.N. Global Mercantile v. Indo Unique Flame (SC 7-Judge Bench 2023), the Supreme Court ruled that while an arbitration agreement is separable, stamp duty defects on the substantive agreement must be cured by impounding and payment of duty/penalty before enforcement.
 
 
       * **Indian Stamp Act 1899 Section 35:** Inadmissibility of unstamped instruments; curable by payment of 10x penalty.
@@ -444,7 +490,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'On 9 November 2019, a 5-judge Constitution Bench of the Supreme Court decided the Ram Janmabhoomi–Babri Masjid title dispute (M. Siddiq (D) Thr. Lrs. v. Mahant Suresh Das & Ors., (2020) 1 SCC 1). The Court held that the disputed 2.77-acre site in Ayodhya would be handed over for the construction of the Ram temple through a trust (Shri Ram Janmabhoomi Teerth Kshetra) to be set up by the Central Government, and directed that 5 acres of alternative land in Ayodhya be allotted to the Sunni Central Waqf Board for a mosque. The Court found the demolition of the Babri Masjid on 6 December 1992 to be an unlawful act, weighed the ASI archaeological report, and invoked its plenary powers under Article 142 to render complete justice between the parties.
+  values (doc_id, 'The Supreme Court''s 2019 Constitution Bench judgment in the Ram Mandir (Ayodhya) title dispute: land for the Ram temple, 5 acres alternative land for the mosque, and the reasoning under Article 142.
+
+On 9 November 2019, a 5-judge Constitution Bench of the Supreme Court decided the Ram Janmabhoomi–Babri Masjid title dispute (M. Siddiq (D) Thr. Lrs. v. Mahant Suresh Das & Ors., (2020) 1 SCC 1). The Court held that the disputed 2.77-acre site in Ayodhya would be handed over for the construction of the Ram temple through a trust (Shri Ram Janmabhoomi Teerth Kshetra) to be set up by the Central Government, and directed that 5 acres of alternative land in Ayodhya be allotted to the Sunni Central Waqf Board for a mosque. The Court found the demolition of the Babri Masjid on 6 December 1992 to be an unlawful act, weighed the ASI archaeological report, and invoked its plenary powers under Article 142 to render complete justice between the parties.
 
 
       * **Constitution of India Article 142:** The Supreme Court may pass such decree or order as is necessary for doing complete justice in any cause or matter pending before it.
@@ -463,7 +511,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In Indian Young Lawyers Assn. v. State of Kerala ((2019) 11 SCC 1), a 4:1 majority of the Supreme Court (28 September 2018) held that Rule 3(b) of the Kerala Hindu Places of Public Worship (Authorisation of Entry) Rules, 1965 — which barred women aged 10 to 50 from entering the Sabarimala temple — violated Articles 14, 15, and 25(1) of the Constitution. The Court held that public morality or order under Article 25(1) refers to constitutional morality, and that the practice could not be treated as an essential religious practice. Review petitions were subsequently referred to a larger bench (Kantaru Rajeevaru).
+  values (doc_id, 'Supreme Court struck down the Sabarimala rule barring women aged 10–50 from entering the temple — equality and religious freedom analysis.
+
+In Indian Young Lawyers Assn. v. State of Kerala ((2019) 11 SCC 1), a 4:1 majority of the Supreme Court (28 September 2018) held that Rule 3(b) of the Kerala Hindu Places of Public Worship (Authorisation of Entry) Rules, 1965 — which barred women aged 10 to 50 from entering the Sabarimala temple — violated Articles 14, 15, and 25(1) of the Constitution. The Court held that public morality or order under Article 25(1) refers to constitutional morality, and that the practice could not be treated as an essential religious practice. Review petitions were subsequently referred to a larger bench (Kantaru Rajeevaru).
 
 
       * **Constitution Article 25(1):** Freedom of conscience and free profession, practice and propagation of religion, subject to public order, morality and health.
@@ -482,7 +532,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In Shayara Bano v. Union of India ((2017) 9 SCC 1), a 3:2 majority of a 5-judge Supreme Court bench (22 August 2017) set aside the practice of talaq-e-biddat (instant triple talaq) as manifestly arbitrary and violative of Article 14. Parliament subsequently enacted the Muslim Women (Protection of Rights on Marriage) Act, 2019, making instant triple talaq a cognizable offence punishable with imprisonment of up to three years.
+  values (doc_id, 'Instant triple talaq (talaq-e-biddat) set aside by the Supreme Court as unconstitutional — followed by the 2019 Act criminalizing it.
+
+In Shayara Bano v. Union of India ((2017) 9 SCC 1), a 3:2 majority of a 5-judge Supreme Court bench (22 August 2017) set aside the practice of talaq-e-biddat (instant triple talaq) as manifestly arbitrary and violative of Article 14. Parliament subsequently enacted the Muslim Women (Protection of Rights on Marriage) Act, 2019, making instant triple talaq a cognizable offence punishable with imprisonment of up to three years.
 
 
       * **Constitution Article 14:** Equality before law — the majority found instant triple talaq manifestly arbitrary.
@@ -501,7 +553,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In Navtej Singh Johar v. Union of India ((2018) 10 SCC 1), a 5-judge Constitution Bench (6 September 2018) partially struck down Section 377 of the Indian Penal Code insofar as it criminalized consensual sexual conduct between adults in private. The Court held the provision violated Articles 14, 15, 19 and 21, and expressly overruled Suresh Kumar Koushal v. Naz Foundation (2014). Section 377 continues to apply to non-consensual acts and acts with minors.
+  values (doc_id, 'Supreme Court decriminalized consensual adult same-sex relations by partially striking down Section 377 IPC.
+
+In Navtej Singh Johar v. Union of India ((2018) 10 SCC 1), a 5-judge Constitution Bench (6 September 2018) partially struck down Section 377 of the Indian Penal Code insofar as it criminalized consensual sexual conduct between adults in private. The Court held the provision violated Articles 14, 15, 19 and 21, and expressly overruled Suresh Kumar Koushal v. Naz Foundation (2014). Section 377 continues to apply to non-consensual acts and acts with minors.
 
 
       * **Constitution Articles 14, 15, 19, 21:** Equality, non-discrimination, free expression, and privacy/autonomy — the four grounds of the judgment.
@@ -520,7 +574,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In K.S. Puttaswamy (Aadhaar-5J) v. Union of India ((2019) 1 SCC 1), a 4:1 majority of a 5-judge bench (26 September 2018) upheld the constitutional validity of the Aadhaar Act 2016, including its passage as a Money Bill, but struck down Section 57, which allowed private entities to demand Aadhaar authentication. The Court upheld Aadhaar linkage for PAN and welfare benefits, and applied the triple test (legality, necessity, proportionality) with the proportionality analysis developed in the 2017 Puttaswamy privacy judgment.
+  values (doc_id, 'Supreme Court upheld the Aadhaar Act with restrictions — struck down Section 57 so private entities cannot demand Aadhaar.
+
+In K.S. Puttaswamy (Aadhaar-5J) v. Union of India ((2019) 1 SCC 1), a 4:1 majority of a 5-judge bench (26 September 2018) upheld the constitutional validity of the Aadhaar Act 2016, including its passage as a Money Bill, but struck down Section 57, which allowed private entities to demand Aadhaar authentication. The Court upheld Aadhaar linkage for PAN and welfare benefits, and applied the triple test (legality, necessity, proportionality) with the proportionality analysis developed in the 2017 Puttaswamy privacy judgment.
 
 
       * **Aadhaar (Targeted Delivery of Financial and Other Subsidies, Benefits and Services) Act, 2016:** Upheld with restrictions by the 2018 judgment.
@@ -539,7 +595,9 @@ begin
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
-  values (doc_id, 'In Joseph Shine v. Union of India ((2019) 3 SCC 39), a 5-judge Constitution Bench (27 September 2018) struck down Section 497 of the Indian Penal Code, which criminalized adultery. The Court held the provision unconstitutional for violating Articles 14, 15 and 21 — it treated women as chattel, gave only the husband the right to prosecute, and denied women agency. Adultery remains a ground for divorce but is no longer a criminal offence.
+  values (doc_id, 'Supreme Court struck down Section 497 IPC (adultery) as unconstitutional — the husband''s sole right to prosecute violated Articles 14, 15 and 21.
+
+In Joseph Shine v. Union of India ((2019) 3 SCC 39), a 5-judge Constitution Bench (27 September 2018) struck down Section 497 of the Indian Penal Code, which criminalized adultery. The Court held the provision unconstitutional for violating Articles 14, 15 and 21 — it treated women as chattel, gave only the husband the right to prosecute, and denied women agency. Adultery remains a ground for divorce but is no longer a criminal offence.
 
 
       * **Constitution Articles 14, 15, 21:** The three grounds on which Section 497 IPC was struck down.
@@ -552,7 +610,6 @@ begin
     ', null, '{"kb_id":"kb-in-case-joseph-shine","category":"caselaw"}'::jsonb);
 
 end $$;
-
 -- ============================================================================
 -- Verify: select count(*) from legal_documents;  -- expect 28
 -- ============================================================================

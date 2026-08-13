@@ -34,6 +34,8 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  result_count int := 0;
 begin
   -- Path A: semantic search (only when embeddings exist)
   if query_embedding is not null then
@@ -51,22 +53,61 @@ begin
   end if;
 
   -- Path B: full-text search (keyword) — used by the app today
+  -- Search over title + chunk. AND query first; if it matches nothing,
+  -- retry with OR semantics so partial matches still return (e.g. "ram mandir").
   if query_text is not null and length(trim(query_text)) > 0 then
     begin
       return query
-        select c.id, c.document_id, d.title, d.document_type, d.court, d.judgment_date,
-               d.citation, c.section_number, c.chunk_text, d.authority_level,
-               d.source_url, d.official_source, d.verified,
-               round((
-                 ts_rank(to_tsvector('english', c.chunk_text), websearch_to_tsquery('english', query_text))
+        with ranked as (
+          select c.id as chunk_id, c.document_id, d.title, d.document_type, d.court,
+                 d.judgment_date, d.citation, c.section_number, c.chunk_text,
+                 d.authority_level, d.source_url, d.official_source, d.verified,
+                 ts_rank(
+                   to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,'')),
+                   websearch_to_tsquery('english', query_text)
+                 )
                  + case d.authority_level when 'primary' then 0.5 when 'secondary' then 0.2 else 0.0 end
-               )::numeric, 4)::float as score
-        from public.legal_chunks c
-        join public.legal_documents d on d.id = c.document_id
-        where d.verified = true
-          and to_tsvector('english', c.chunk_text) @@ websearch_to_tsquery('english', query_text)
-        order by score desc
+                 as raw_score
+          from public.legal_chunks c
+          join public.legal_documents d on d.id = c.document_id
+          where d.verified = true
+            and to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,''))
+                @@ websearch_to_tsquery('english', query_text)
+        )
+        select chunk_id, document_id, title, document_type, court, judgment_date, citation,
+               section_number, chunk_text, authority_level, source_url, official_source, verified,
+               round(raw_score::numeric, 4)::float as score
+        from ranked
+        order by raw_score desc
         limit match_count;
+
+      -- AND matched nothing? Retry with OR semantics (partial keyword overlap).
+      get diagnostics result_count = row_count;
+      if result_count = 0 then
+        return query
+          with ranked as (
+            select c.id as chunk_id, c.document_id, d.title, d.document_type, d.court,
+                   d.judgment_date, d.citation, c.section_number, c.chunk_text,
+                   d.authority_level, d.source_url, d.official_source, d.verified,
+                   ts_rank(
+                     to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,'')),
+                     array_to_string(tsvector_to_array(to_tsvector('english', query_text)), ' | ')::tsquery
+                   )
+                   + case d.authority_level when 'primary' then 0.5 when 'secondary' then 0.2 else 0.0 end
+                   as raw_score
+            from public.legal_chunks c
+            join public.legal_documents d on d.id = c.document_id
+            where d.verified = true
+              and to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,''))
+                  @@ array_to_string(tsvector_to_array(to_tsvector('english', query_text)), ' | ')::tsquery
+          )
+          select chunk_id, document_id, title, document_type, court, judgment_date, citation,
+                 section_number, chunk_text, authority_level, source_url, official_source, verified,
+                 round(raw_score::numeric, 4)::float as score
+          from ranked
+          order by raw_score desc
+          limit match_count;
+      end if;
     exception when others then
       -- websearch_to_tsquery can throw on odd punctuation — degrade gracefully
       return query
