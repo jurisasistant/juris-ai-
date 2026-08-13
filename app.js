@@ -3230,12 +3230,12 @@ window.openEvidenceSource = function (id) {
 // ==========================================================================
 
 const CASUAL_PHRASES = [
-  "hows your day", "how is your day", "how was your day", "how is it going", "hows it going",
+  "hows your day", "how's your day", "how is your day", "how was your day", "how is it going", "hows it going",
   "how are you", "how r u", "how are u", "whats up", "what's up", "what are you doing", "what you doing", "whatcha doing",
   "i am bored", "im bored", "i am sad", "im sad", "i am happy", "im happy", "i am tired", "im tired", "i am angry", "im angry",
   "tell me a joke", "a joke", "something interesting", "interesting fact", "fun fact",
   "what should i eat", "eat tonight", "dinner ideas", "lunch ideas",
-  "weather", "cricket", "ipl", "movie", "film", "song", "music", "play a game",
+  "weather", "play a game",
   "i love you", "love you", "i miss you", "you are cute", "you are sweet", "you are smart", "you are funny", "you are awesome",
   "good morning", "good evening", "good afternoon", "good night", "see you", "goodbye",
   "who are you", "what is your name", "who made you", "who created you", "your creator",
@@ -3273,14 +3273,28 @@ const CASE_NAME_TRIGGERS = [
   "shayara bano", "mandal commission", "suresh kumar koushal", "ismail faruqui"
 ];
 
+// Shared casual-message check: true only for genuine small talk / chit-chat.
+function isCasualMessage(q) {
+  if (isSmallTalkPrompt(q)) return true;
+  if (CASUAL_PHRASES.some((p) => new RegExp('\\b' + p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(q))) return true;
+  // Opinion / preference chat ("what do you think about cricket?") is casual.
+  if (/\b(what do you think|do you like|your opinion|i think|i like|i love watching|favourite|favorite)\b/.test(q)) return true;
+  // Short Hinglish chit-chat with no legal words is casual ("kya kar rhe ho").
+  const words = q.split(/\s+/).filter(Boolean);
+  if (words.length <= 6 && detectLanguage(q) === 'hinglish') {
+    const hinglishLegal = ['jamanat','girftari','girafftari','kanoon','kanun','mukadma','muqadma','dafa','dhara','talaq','dahej','chori','hatya','balatkar','haq','adhikar','adhikaar','fir','police','cheque','court','vakeel','wakeel','nafka','gujara','kabza','kiraya','sampatti','jaaydad','jaydad','zameen','jameen','vasiyat','bail','article','section','case','law','rights','saza','ilzaam','gawah','saboot'];
+    if (!hinglishLegal.some((h) => q.includes(h))) return true;
+  }
+  return false;
+}
+
 function classifyIntent(message, sessionMessages) {
   const q = String(message || '').toLowerCase().trim();
   if (!q) return 'casual';
 
   // 1. Strong casual signals — always win, even mid-legal-conversation.
   // Word-boundary matching so short tokens never misfire ("triple" must NOT match "ipl").
-  if (isSmallTalkPrompt(q)) return 'casual';
-  if (CASUAL_PHRASES.some((p) => new RegExp('\\b' + p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(q))) return 'casual';
+  if (isCasualMessage(q)) return 'casual';
 
   // 2. Case-name / case-law patterns — the strongest legal-research signals
   if (/\bv\.\s|\bvs\.?\s|\bversus\b|\bv\s+[a-z]\w*/i.test(q)) return 'legal_research';
@@ -3314,6 +3328,98 @@ function classifyIntent(message, sessionMessages) {
 
   // 5. Default: casual / general conversation — never force legal mode
   return 'casual';
+}
+
+// ==========================================================================
+// 🧭 QUERY CHANNEL ROUTER
+// CASUAL | STATIC_GENERAL | LEGAL_STATIC | LEGAL_CURRENT | LEGAL_RESEARCH
+// WEB_GENERAL | WEB_CURRENT | UNKNOWN
+// Web questions go to live search (server-side); legal questions stay
+// evidence-grounded; casual never searches.
+// ==========================================================================
+const CURRENT_MARKERS = /\b(today|yesterday|tonight|now\b|right now|latest|recent|recently|current|currently|this week|this month|this year|breaking|news|live|score|result|won|lost|last night|update|2026|2027|election|verdict today)\b/i;
+const ENTITY_MARKERS = /\bwho is\b|\bwho was\b|\bwho are\b|\bwho won\b|\bwho will\b|\bprime minister\b|\bpresident\b|\bchief minister\b|\bceo of\b|\bowner of\b|\bfounder of\b|\bcaptain of\b|\bcoach of\b|\bpopulation of\b|\bprice of\b|\bstock of\b|\bmatch\b|\bipl\b|\bcricket\b|\bscore\b|\bweather\b|\bnews about\b|\bfilm\b|\bmovie\b|\bactor\b|\bsinger\b|\bplayer\b|\bteam\b/i;
+
+function classifyQuery(message) {
+  const q = String(message || '').trim();
+  const ql = q.toLowerCase();
+  if (!q) return 'UNKNOWN';
+
+  const baseIntent = classifyIntent(q);
+  const isLegal = isLegalIntent(baseIntent);
+  const current = CURRENT_MARKERS.test(ql);
+  const entity = ENTITY_MARKERS.test(ql) || hasProperNoun(q);
+
+  // Only genuine small talk is CASUAL — classifyIntent's default 'casual'
+  // fallthrough must NOT capture real questions.
+  if (isCasualMessage(ql)) return 'CASUAL';
+
+  // Legal + freshness → hybrid (legal RAG + web)
+  if (isLegal && current) return 'LEGAL_CURRENT';
+
+  // Legal case-law / research
+  if (baseIntent === 'legal_research') return 'LEGAL_RESEARCH';
+
+  // Static legal → Supabase RAG only
+  if (isLegal) return 'LEGAL_STATIC';
+
+  // Current non-legal → live web
+  if (current) return 'WEB_CURRENT';
+
+  // Person/entity/factual questions → live web (model memory is NOT current truth)
+  if (entity) return 'WEB_GENERAL';
+
+  // Stable general knowledge — plain model answer, no search, no evidence panel
+  return 'STATIC_GENERAL';
+}
+
+// Detects proper nouns (likely person/place/company names) without hardcoding anyone.
+function hasProperNoun(q) {
+  const words = q.split(/\s+/);
+  let caps = 0;
+  words.forEach((w, i) => {
+    if (/^[A-Z][a-z]{2,}$/.test(w) && i > 0 && !/^(I|A|The|In|On|What|Who|Is|Are|Why|How|When|My|Our|Your|His|Her|This|That|There|Their|Which|Where)$/.test(w)) caps++;
+  });
+  return caps >= 1 && /\b(is|was|who|won|score|latest|news|about|of)\b/i.test(q);
+}
+
+// --- Web answer link verification: URLs in the answer must exist in the
+// actual search results — anything else is stripped (never fabricated). ---
+function verifyWebLinks(answerText, webSources) {
+  if (!answerText) return { text: answerText, removed: [] };
+  const allowed = new Set((webSources || []).map((s) => String(s.url || '').replace(/\/$/, '')));
+  const urlRe = /https?:\/\/[^\s)>"'\]]+/g;
+  const removed = [];
+  let text = String(answerText);
+  let m;
+  urlRe.lastIndex = 0;
+  while ((m = urlRe.exec(text)) !== null) {
+    const found = m[0].replace(/[.,;]+$/, '');
+    const norm = found.replace(/\/$/, '');
+    let ok = false;
+    for (const a of allowed) { if (norm.startsWith(a) || a.startsWith(norm)) { ok = true; break; } }
+    if (!ok) {
+      removed.push(found.slice(0, 120));
+      text = text.slice(0, m.index) + text.slice(m.index + m[0].length);
+      urlRe.lastIndex = m.index;
+    }
+  }
+  return { text, removed };
+}
+
+// --- Web sources UI (real URLs only, from executed_tools search results) ---
+function buildWebSourcesSection(webSources) {
+  if (!webSources || !webSources.length) return '';
+  const items = webSources.slice(0, 6).map((s) => `
+    <div class="evidence-source-item evidence-live">
+      <span class="evidence-source-type">🌐 WEB</span>
+      <div class="evidence-source-text">
+        <div class="evidence-source-title">${barristerEscape(s.title)}</div>
+        <div class="evidence-source-statutes"><a href="${barristerEscape(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-gold); word-break:break-all;">${barristerEscape(s.url)}</a></div>
+      </div>
+      <a class="evidence-source-open" href="${barristerEscape(s.url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+    </div>`).join('');
+  return `<details class="evidence-panel" open><summary>🌐 Web sources <span class="evidence-summary-note">${webSources.length} live</span></summary><div class="evidence-panel-body">${items}</div></details>`;
 }
 
 function isLegalIntent(intent) {
@@ -5180,9 +5286,63 @@ async function sendChatMessage(userText, options) {
   const sessionMessages = currentSession ? currentSession.messages : [];
   const intent = classifyIntent(userText, sessionMessages);
   const legalIntent = isLegalIntent(intent);
+  const channel = classifyQuery(userText);
 
   const detectedLang = detectLanguage(userText);
   const lang = (detectedLang !== 'en') ? detectedLang : (localStorage.getItem('jurisai_language') || 'en');
+
+  // === 🌐 REAL-TIME WEB CHANNEL (current/factual questions) ===
+  // Server-side Groq web search; legal questions may still add RAG evidence.
+  if (channel === 'WEB_GENERAL' || channel === 'WEB_CURRENT' || channel === 'LEGAL_CURRENT') {
+    if (targetElement) {
+      targetElement.innerHTML = '<span style="opacity:0.8;font-style:italic;">🌐 Searching the web…</span>';
+    }
+    const webData = await tryWebSearchBackend(userText, AppState.jurisdiction, {
+      history: sessionMessages,
+      summary: buildConversationSummary(sessionMessages),
+      language: lang
+    });
+    let webText = webData && webData.reply ? webData.reply : '';
+    const webSources = webData && Array.isArray(webData.webSources) ? webData.webSources : [];
+
+    // Link verification: URLs in the answer must exist in the actual search results.
+    if (webText) {
+      const linkCheck = verifyWebLinks(webText, webSources);
+      if (linkCheck.removed.length) {
+        webText = linkCheck.text + '\n\n🔗 **Link check:** removed ' + linkCheck.removed.length + ' unverified link(s) — only links from actual search results are shown.';
+      }
+    }
+    if (!webText) {
+      webText = "I couldn't verify this from current sources. Please try again in a moment.";
+    }
+
+    // LEGAL_CURRENT: hybrid — live web answer + legal evidence panel
+    let hybridPanel = '';
+    if (channel === 'LEGAL_CURRENT') {
+      try {
+        const searchQuery = (detectedLang === 'hinglish' || detectedLang === 'hi')
+          ? LegalSearchService.normalizeHinglish(userText)
+          : userText;
+        const hybridPack = computeEvidencePack(searchQuery);
+        if (hybridPack.sourceCount > 0) {
+          hybridPanel = buildEvidencePanel(hybridPack);
+        }
+      } catch (err) { /* hybrid panel optional */ }
+    }
+
+    const searchedBadge = webData && webData.webSearched
+      ? `<span class="evidence-badge evidence-web">🌐 Web searched${webSources.length ? ' · ' + webSources.length + ' sources' : ''}</span>`
+      : `<span class="evidence-badge evidence-low">🌐 Search unavailable</span>`;
+    const finalWebHTML = `<div class="ai-bubble-header">${searchedBadge}</div>` + formatLegalMarkdown(webText) + hybridPanel + buildWebSourcesSection(webSources);
+    targetElement.innerHTML = finalWebHTML;
+    if (stopGenBtn) stopGenBtn.style.display = 'none';
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+
+    currentSession.messages.push({ role: 'ai', content: webText, intent: 'web' });
+    localStorage.setItem('jurisai_chat_history', JSON.stringify(AppState.chatHistory));
+    renderChatHistoryList();
+    return;
+  }
 
   // === Pass 1 (Retrieval): only for legal intent ===
   // SEARCH FIRST: entity extraction → targeted retrieval (court/year/mode filters).
@@ -5442,6 +5602,30 @@ async function callOpenAICloudAPI(prompt, jurisdictionCode, history = []) {
   if (!response.ok) throw new Error(`OpenAI API returned ${response.status}`);
   const data = await response.json();
   return data.choices?.[0]?.message?.content || getAILegalResponse(prompt, jurisdictionCode);
+}
+
+// --- 🌐 Live web search backend caller (returns full payload incl. sources) ---
+async function tryWebSearchBackend(prompt, jurisdictionCode, opts = {}) {
+  const { history = [], summary = '', language = 'en' } = opts;
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: prompt,
+        jurisdiction: jurisdictionCode,
+        history: history.slice(-4),
+        summary: summary,
+        language: language,
+        stream: false,
+        webSearch: true
+      })
+    });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (err) {
+    return null;
+  }
 }
 
 // --- Backend Server /api/chat Helper (non-streaming fallback) ---

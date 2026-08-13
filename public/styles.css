@@ -2982,6 +2982,14 @@ body {
   background: rgba(245, 158, 11, 0.14);
   border-color: rgba(245, 158, 11, 0.5);
 }
+
+.evidence-web {
+  color: #1d4ed8;
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+[data-theme="dark"] .evidence-web { color: #93c5fd; background: rgba(59,130,246,0.18); }
+
 .evidence-low {
   color: #b3261e;
   background: rgba(239, 68, 68, 0.12);

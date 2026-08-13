@@ -131,6 +131,56 @@ ${lines.join('\n\n')}
 Use these sources as the authoritative basis for the legal answer. Do not stretch them: if a source does not establish the proposition, say so instead of guessing.`;
 }
 
+
+// --- 🌐 LIVE WEB SEARCH (Groq built-in web search via groq/compound) ---
+// Server-side only. The model searches the web itself and returns real
+// citations (executed_tools[].search_results) — never fabricated URLs.
+async function callGroqWebSearch(groqApiKey, messages, requestId) {
+  const startTime = Date.now();
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${groqApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'groq/compound',
+        messages: messages,
+        temperature: 0.2,
+        max_tokens: 2048,
+        top_p: 0.95,
+        search_settings: { country: 'india' }
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`[api/chat ${requestId}] web search error ${response.status}`, errText.slice(0, 300));
+      return null;
+    }
+
+    const data = await response.json();
+    const message = data.choices?.[0]?.message || {};
+    const content = message.content || '';
+    const rawResults = message.executed_tools?.[0]?.search_results?.results || [];
+
+    // Only real search results become sources — the model can never invent them.
+    const webSources = rawResults.slice(0, 8).map((r) => ({
+      title: String(r.title || '').slice(0, 160),
+      url: String(r.url || ''),
+      score: typeof r.score === 'number' ? Math.round(r.score * 100) / 100 : null
+    })).filter((r) => r.url);
+
+    if (!content) return null;
+    console.log(`[api/chat ${requestId}] web search done ms=${Date.now() - startTime} sources=${webSources.length}`);
+    return { reply: content, webSources, searched: webSources.length > 0, model: 'groq/compound' };
+  } catch (err) {
+    console.error(`[api/chat ${requestId}] web search failed`, err.message);
+    return null;
+  }
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -168,7 +218,8 @@ module.exports = async (req, res) => {
       asOfDate = '2026-08-11',
       language = 'en',
       stream = false,
-      intent
+      intent,
+      webSearch = false
     } = req.body;
 
     if (!message || typeof message !== 'string') {
@@ -229,6 +280,33 @@ module.exports = async (req, res) => {
 
     const maxTokens = casualIntent ? 400 : (mode === 'deep' ? 3072 : (Number(process.env.GROQ_MAX_TOKENS) || 2048));
     const finalTemperature = temperature !== undefined ? Number(temperature) : (Number(process.env.GROQ_TEMPERATURE) || 0.2);
+
+    // 🌐 REAL-TIME WEB SEARCH PATH — current/factual questions.
+    // groq/compound performs the search server-side and returns real citations.
+    if (webSearch) { // explicit client intent — the web channel always wins
+      const webMessages = [
+        { role: 'system', content: 'You are Barrister (Bharat Edition), an Indian legal AI that also answers current, real-world questions using live web search. Use the search results as the factual basis of your answer. NEVER invent information, URLs, statistics, scores, or facts that the search results do not support. If the results are insufficient, say: "I couldn\'t verify this from current sources." When answering current-affairs, sports, technology, business or general questions, answer directly and concisely (150-350 words). If the question is legal, prioritize official sources (sci.gov.in, indiacode.nic.in, gov.in) and answer in the language the user wrote (Hinglish in → Hinglish out; Hindi in → Devanagari out).' },
+        ...(summary ? [{ role: 'user', content: '[Summary of earlier conversation]\n' + String(summary).slice(0, 800) }] : []),
+        ...history.slice(-4),
+        { role: 'user', content: message }
+      ];
+      const webResult = await callGroqWebSearch(groqApiKey, webMessages, requestId);
+      if (webResult) {
+        console.log(`[api/chat ${requestId}] web search reply ms=${Date.now() - startTime}`);
+        return res.status(200).json({
+          reply: webResult.reply,
+          webSources: webResult.webSources,
+          webSearched: webResult.searched,
+          model: webResult.model
+        });
+      }
+      // Honest failure — never fabricate from model memory for current questions.
+      return res.status(200).json({
+        reply: "I couldn't verify this from current sources. Please try again in a moment.",
+        webSources: [],
+        webSearched: false
+      });
+    }
 
     console.log(`[api/chat ${requestId}] start model=${groqModel} stream=${!!stream} mode=${mode} lang=${language}`);
 

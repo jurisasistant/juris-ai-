@@ -2,6 +2,27 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🌐 Real-Time Web Intelligence
+
+JurisAI now combines **three knowledge channels** behind an 8-way query router:
+
+| Channel | Example | Behavior |
+|---|---|---|
+| CASUAL | "how's your day?" | Normal chat — **no search** |
+| STATIC_GENERAL | "what is photosynthesis?" | Plain model answer, no evidence chrome |
+| LEGAL_STATIC | "What is Article 21?" | Supabase legal RAG + verification |
+| LEGAL_RESEARCH | "Ram Mandir case" | Case-law retrieval + citation gate |
+| LEGAL_CURRENT | "latest SC judgment on bail" | **Hybrid: legal RAG + live web**, merged evidence |
+| WEB_GENERAL | "who is Virat Kohli?" | Live web search |
+| WEB_CURRENT | "who won yesterday's match?" | Live web search, freshness-aware |
+
+- **Server-side only**: the browser never calls Groq's web search directly — `/api/chat` orchestrates `groq/compound` (with `search_settings.country: "india"`) using the server secret.
+- **Real citations, never fabricated**: sources come from Groq's `executed_tools[].search_results` (real titles + URLs + relevance scores). A client-side link verifier strips any URL in the answer that doesn't exist in the actual search results.
+- **Honest failure**: if web search fails, the answer is *"I couldn't verify this from current sources"* — never a confident guess from model memory.
+- **UI**: "🌐 Searching the web…" indicator, `🌐 Web searched · N sources` badge, and a tappable web-sources panel under the answer. No "LIVE" label unless a real web request occurred.
+- **No caching of current information** — live scores, news and prices are never served stale.
+
+---
 ## 🔎 Legal Search Engine & Evidence-First Architecture
 
 **SEARCH FIRST → VERIFY EVIDENCE → ANSWER SECOND.** The LLM is never the source of truth for Indian law.
