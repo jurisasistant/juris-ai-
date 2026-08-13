@@ -15,7 +15,7 @@ Retrieval then runs **two layers**: the live Supabase corpus (full-text hybrid s
 ---
 ## 🗄️ Legal RAG Roadmap (Supabase + pgvector)
 
-The app currently ships a **curated verified legal library** (Constitution of India, BNS/BNSS/BSA 2023, Central Acts, and Supreme Court Constitution Bench judgments incl. Ram Janmabhoomi–Ayodhya, Sabarimala, Triple Talaq, Navtej Singh Johar, Aadhaar, Joseph Shine) — retrieved at answer time and injected into the model as evidence.
+The app ships a **curated verified legal library of 88 authorities**: the Constitution of India (Fundamental Rights, DPSP, reservations, religious freedom, minority rights, amendments), BNS/BNSS/BSA 2023 (26 IPC→BNS mappings incl. dowry death, kidnapping, theft/dacoity, cybercrime, bail), Central Acts (Contract, TPA, Limitation, Consumer Protection, RTI, IBC, Companies, NI Act, Labour Codes), Family & Succession (HMA, HSA, SMA, Muslim personal law, adoption, guardianship), and 30+ Supreme Court landmarks (Ram Janmabhoomi–Ayodhya, Kesavananda, S.R. Bommai, NALSA, Common Cause euthanasia, Bachan Singh, NJAC, Delhi Services, Anoop Baranwal, Supriyo…) — retrieved at answer time and injected into the model as evidence.
 
 Next milestone — **live legal corpus** (`supabase/schema.sql` included, ready to run):
 

@@ -1,13 +1,13 @@
 -- ============================================================================
--- JURISAI BHARAT — RETRIEVAL FUNCTIONS (run AFTER schema.sql)
+-- JURISAI BHARAT — RETRIEVAL FUNCTIONS v2 (bulletproof, dictionary-independent)
 -- 1. search_legal_docs()  — hybrid retrieval used by the app today
---    (Postgres full-text search + authority re-ranking; no API key needed)
--- 2. match_legal_docs()   — pgvector semantic search, activates when you
---    later generate embeddings (Phase: embeddings provider)
+--    Deterministic word-overlap scoring (no FTS dictionary quirks, works with
+--    Indian/Hinglish words like "mandir", "bail", "talaq").
+-- 2. match_legal_docs()   — pgvector semantic search (activates with embeddings)
 -- ============================================================================
 
 -- ---------------------------------------------------------------------------
--- FTS-based hybrid retrieval (query_text path is used by the live app now)
+-- Deterministic ILIKE-based hybrid retrieval (query_text path)
 -- ---------------------------------------------------------------------------
 create or replace function public.search_legal_docs(
   query_text text default null,
@@ -31,11 +31,14 @@ returns table (
   score float
 )
 language plpgsql
+stable
 security definer
 set search_path = public
 as $$
 declare
-  result_count int := 0;
+  q text := lower(trim(coalesce(query_text, '')));
+  title_bonus float;
+  hit_count int;
 begin
   -- Path A: semantic search (only when embeddings exist)
   if query_embedding is not null then
@@ -50,78 +53,45 @@ begin
         and c.embedding is not null
       order by c.embedding <=> query_embedding
       limit match_count;
+    return;
   end if;
 
-  -- Path B: full-text search (keyword) — used by the app today
-  -- Search over title + chunk. AND query first; if it matches nothing,
-  -- retry with OR semantics so partial matches still return (e.g. "ram mandir").
-  if query_text is not null and length(trim(query_text)) > 0 then
-    begin
-      return query
-        with ranked as (
-          select c.id as chunk_id, c.document_id, d.title, d.document_type, d.court,
-                 d.judgment_date, d.citation, c.section_number, c.chunk_text,
-                 d.authority_level, d.source_url, d.official_source, d.verified,
-                 ts_rank(
-                   to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,'')),
-                   websearch_to_tsquery('english', query_text)
-                 )
-                 + case d.authority_level when 'primary' then 0.5 when 'secondary' then 0.2 else 0.0 end
-                 as raw_score
-          from public.legal_chunks c
-          join public.legal_documents d on d.id = c.document_id
-          where d.verified = true
-            and to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,''))
-                @@ websearch_to_tsquery('english', query_text)
-        )
-        select chunk_id, document_id, title, document_type, court, judgment_date, citation,
-               section_number, chunk_text, authority_level, source_url, official_source, verified,
-               round(raw_score::numeric, 4)::float as score
-        from ranked
-        order by raw_score desc
-        limit match_count;
-
-      -- AND matched nothing? Retry with OR semantics (partial keyword overlap).
-      get diagnostics result_count = row_count;
-      if result_count = 0 then
-        return query
-          with ranked as (
-            select c.id as chunk_id, c.document_id, d.title, d.document_type, d.court,
-                   d.judgment_date, d.citation, c.section_number, c.chunk_text,
-                   d.authority_level, d.source_url, d.official_source, d.verified,
-                   ts_rank(
-                     to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,'')),
-                     array_to_string(tsvector_to_array(to_tsvector('english', query_text)), ' | ')::tsquery
-                   )
-                   + case d.authority_level when 'primary' then 0.5 when 'secondary' then 0.2 else 0.0 end
-                   as raw_score
-            from public.legal_chunks c
-            join public.legal_documents d on d.id = c.document_id
-            where d.verified = true
-              and to_tsvector('english', coalesce(d.title,'') || ' ' || coalesce(c.chunk_text,''))
-                  @@ array_to_string(tsvector_to_array(to_tsvector('english', query_text)), ' | ')::tsquery
-          )
-          select chunk_id, document_id, title, document_type, court, judgment_date, citation,
-                 section_number, chunk_text, authority_level, source_url, official_source, verified,
-                 round(raw_score::numeric, 4)::float as score
-          from ranked
-          order by raw_score desc
-          limit match_count;
-      end if;
-    exception when others then
-      -- websearch_to_tsquery can throw on odd punctuation — degrade gracefully
-      return query
-        select c.id, c.document_id, d.title, d.document_type, d.court, d.judgment_date,
-               d.citation, c.section_number, c.chunk_text, d.authority_level,
-               d.source_url, d.official_source, d.verified,
-               0.1::float as score
+  -- Path B: deterministic keyword scoring
+  --   +3.0  full phrase appears in title (e.g. "ram mandir" in the Ayodhya title)
+  --   +2.0  each query word appears in title
+  --   +1.0  each query word appears in chunk text
+  --   +0.5  authority = primary
+  if length(q) > 0 then
+    return query
+      select s.chunk_id, s.document_id, s.title, s.document_type, s.court,
+             s.judgment_date, s.citation, s.section_number, s.chunk_text,
+             s.authority_level, s.source_url, s.official_source, s.verified,
+             round((s.raw_score + s.auth_bonus)::numeric, 4)::float as score
+      from (
+        select c.id as chunk_id, c.document_id, d.title, d.document_type, d.court,
+               d.judgment_date, d.citation, c.section_number, c.chunk_text,
+               d.authority_level, d.source_url, d.official_source, d.verified,
+               (case when lower(coalesce(d.title,'')) like '%' || q || '%' then 3.0 else 0.0 end)
+               +
+               (select count(*)::float
+                  from unnest(string_to_array(q, ' ')) as w
+                 where lower(coalesce(d.title,'')) like '%' || w || '%') * 2.0
+               +
+               (select count(*)::float
+                  from unnest(string_to_array(q, ' ')) as w
+                 where lower(coalesce(c.chunk_text,'')) like '%' || w || '%') * 1.0
+               +
+               (case when lower(coalesce(c.section_number,'')) like '%' || q || '%' then 2.0 else 0.0 end)
+               as raw_score,
+               (case d.authority_level when 'primary' then 0.5 when 'secondary' then 0.2 else 0.0 end) as auth_bonus
         from public.legal_chunks c
         join public.legal_documents d on d.id = c.document_id
         where d.verified = true
-          and (d.title ilike '%' || query_text || '%' or c.section_number ilike '%' || query_text || '%')
-        order by d.authority_level desc
-        limit match_count;
-    end;
+      ) s
+      where s.raw_score > 0
+      order by (s.raw_score + s.auth_bonus) desc, s.title
+      limit match_count;
+    return;
   end if;
 
   -- Path C: no query — newest verified authorities
@@ -190,6 +160,7 @@ as $$
 $$;
 
 -- Policies live in supabase/policies.sql (idempotent).
+
 -- ---------------------------------------------------------------------------
 -- Grants: search functions run with definer rights (bypass RLS internally),
 -- callable by the anonymous frontend key.
