@@ -861,39 +861,39 @@ body {
   width: 100%;
 }
 
-/* User Bubble: Simple Rounded Container */
+/* User Bubble: Simple Rounded Container (ChatGPT-style compact) */
 .chat-message.user .message-bubble {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-glass);
-  padding: 1rem 1.25rem;
+  padding: 0.8rem 1rem;
   border-radius: 16px;
   border-bottom-right-radius: 4px;
   color: var(--text-primary);
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13.5px;
+  line-height: 1.55;
 }
 
-/* AI Bubble: Subtle Glass Card (Design System Section 3 & 8) */
+/* AI Bubble: Subtle Glass Card (ChatGPT-style compact) */
 .chat-message.ai .message-bubble {
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass);
-  padding: 1.5rem;
+  padding: 1.05rem 1.1rem;
   border-radius: 18px;
   border-bottom-left-radius: 4px;
   color: var(--text-primary);
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: 13.5px;
+  line-height: 1.6;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
 /* AI Typography Hierarchy */
 .ai-formatted-content h3 {
-  font-size: 17px;
+  font-size: 14.5px;
   color: var(--accent-gold);
-  margin-top: 1.25rem;
-  margin-bottom: 0.6rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
   font-weight: 700;
 }
 .ai-formatted-content h3:first-child {
@@ -903,11 +903,12 @@ body {
   margin-bottom: 0.85rem;
 }
 .ai-formatted-content ul, .ai-formatted-content ol {
-  margin-left: 1.35rem;
-  margin-bottom: 0.85rem;
+  margin-left: 1.2rem;
+  margin-bottom: 0.7rem;
 }
 .ai-formatted-content li {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.35rem;
+  font-size: 13.5px;
 }
 
 /* VISUALLY DISTINGUISHABLE LEGAL CITATION PILLS (Minimal Muted Spec) */
@@ -1032,7 +1033,7 @@ body {
   border: none;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 13.5px;
   resize: none;
   max-height: 160px;
   min-height: 44px;
@@ -3006,8 +3007,8 @@ body {
 }
 .evidence-panel summary {
   cursor: pointer;
-  padding: 0.55rem 0.8rem;
-  font-size: 12px;
+  padding: 0.5rem 0.75rem;
+  font-size: 11.5px;
   font-weight: 700;
   color: var(--text-secondary, #404040);
   display: flex;
@@ -3072,7 +3073,7 @@ body {
 }
 .evidence-source-text { flex: 1 1 auto; min-width: 0; }
 .evidence-source-title {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   color: var(--text-primary, #171717);
   overflow-wrap: anywhere;

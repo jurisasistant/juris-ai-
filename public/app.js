@@ -960,12 +960,15 @@ function buildEvidencePanel(pack) {
 
 function buildAIBubbleHTML(htmlContent, pack, intent) {
   const legal = isLegalIntent(intent);
+  if (!legal) {
+    // ChatGPT-style: casual replies show pure content — no header, no chrome
+    return htmlContent;
+  }
   let badge = '';
-  if (legal && pack && pack.level && pack.level !== 'CONV') {
+  if (pack && pack.level && pack.level !== 'CONV') {
     badge = `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">🛡️ ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`;
   }
-  const legalTag = legal ? '<span class="ai-legal-tag">⚖️ Legal Analysis</span>' : '';
-  return `<div class="ai-bubble-header"><span>✦ Barrister</span>${legalTag}${badge}</div>` + htmlContent + (legal ? buildEvidencePanel(pack) : '');
+  return `<div class="ai-bubble-header"><span class="ai-legal-tag">⚖️ Legal Analysis</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
 }
 
 window.openEvidenceSource = function (id) {
@@ -1052,10 +1055,81 @@ function isLegalIntent(intent) {
   return intent === 'legal' || intent === 'legal_research' || intent === 'drafting';
 }
 
-// --- Natural casual replies (offline fallback + guaranteed natural tone) ---
-function getCasualAIResponse(prompt) {
+// --- 🗣️ Language auto-detection: reply in the language the user writes ---
+const STRONG_HINGLISH = ["kya","hai","hain","kaise","kaisa","kyu","kyon","aap","aapka","aapki","aapko","tum","tumhara","tumhare","tumne","tumko","mujhe","mujhko","tujhe","tujhko","hum","humko","hame","hamara","hamari","mera","meri","tere","teri","apna","apne","apni","chahiye","nahi","nahin","hoga","hogi","honge","raha","rahi","rahe","bolo","batao","bata","batana","bataya","bolna","bol","karna","karo","kar","karte","karti","jaise","waisa","kaun","kab","kahan","kitna","kitne","accha","acha","theek","bhai","yaar","yaha","waha","abhi","aaj","kal","baat","kaam","kuch","kuchh","pata","samajh","samjho","samjha","dekh","dekho","dekha","suno","sun","suna","jao","jana","aao","aana","chalo","chal","shukriya","dhanyawad","haan","lekin","magar","phir","sahi","galat","mast","badhiya","pakka","thoda","thodi","zyada","jaldi","waqt","samay","kabhi","jab","tab","kyunki","warna","bas","bhi","toh","arre","oye","behen","didi","bhabhi","sasur","kyaa","kaisa","kahan","kaun","kaise","karo","karte"];
+
+function detectLanguage(text) {
+  const s = String(text || '');
+  if (/[\u0900-\u097F]/.test(s)) return 'hi'; // Devanagari → Hindi
+  const words = s.toLowerCase().match(/[a-z]+/g) || [];
+  if (!words.length) return 'en';
+  let hits = 0;
+  let strongHit = false;
+  words.forEach((w) => {
+    if (STRONG_HINGLISH.includes(w)) {
+      hits++;
+      if (["kya","hai","hain","kaise","kyu","aap","tum","mujhe","tujhe","chahiye","hoga","raha","bolo","batao","karna","kar","shukriya","yaar","bhai","theek","accha","kahan","kaun"].includes(w)) strongHit = true;
+    }
+  });
+  if (hits === 0) return 'en';
+  if (strongHit && (hits >= 2 || words.length <= 3)) return 'hinglish';
+  if (hits >= 3) return 'hinglish';
+  return 'en';
+}
+
+// --- Natural casual replies: English / Hinglish / Hindi ---
+function getCasualAIResponse(prompt, lang) {
   const q = String(prompt || '').toLowerCase().trim();
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const language = lang || detectLanguage(q);
+
+  if (language === 'hinglish') {
+    if (/(kya kar|kar kya|kya chal|chal kya|kar rahe|kar rahi|kar rhe|kar rhi|doing)/.test(q)) return "Bas aapse baat kar raha hoon 😄 Aap batao, kya chal raha hai?";
+    if (/kaise ho|kaise hai|how are/.test(q)) return "Main bilkul theek hoon 😄 Aap kaise ho?";
+    if (/kaun ho|tum kaun|aap kaun|who are/.test(q)) return "Main Barrister hoon — Indian legal AI assistant, sakshamfit ne banaya hai 😄";
+    if (/shukriya|thank/.test(q)) return "Koi baat nahi! 👍";
+    if (/joke|chutkula/.test(q)) return pick([
+      "Judge court me chadha kiun? Unchi court tak pahunchne ke liye 😄",
+      "Lawyer ki beti ka naam kya rakha? Sue 😄",
+      "Lawyer kabhi chhupam-chhupai nahi khelte — loophole hamesha dhoondh lete hain 😄"
+    ]);
+    if (/bore/.test(q)) return "Chalo bore mat feel karo 😄 Kuch seekhna hai, game khelna hai, ya bas baatein karein?";
+    if (/interesting|fact/.test(q)) return pick([
+      "Sunna: octopus ke teen dil hote hain 🐙",
+      "Bharat ka Samvidhan duniya ka sabse lamba likhit samvidhan hai 📜",
+      "India ki courts me 4 crore se zyada pending cases hain 😄"
+    ]);
+    if (/mausam|weather/.test(q)) return "Mere paas live weather data nahi hai — apna shehar batao, main bata dunga kahan check karna hai. (Main Indian law me best hoon 😄)";
+    if (/good morning|suprabhat/.test(q)) return "Good morning! ☀️ Aaj ka din accha ho!";
+    if (/good night|shubh ratri/.test(q)) return "Good night! 😴";
+    if (/love you|pyaar/.test(q)) return "That's sweet 😄 Main yahan hoon jab bhi zaroorat ho.";
+    return pick([
+      "Main yahan hoon, ready to help 😄 Kanooni sawal poocho — Constitution, BNS/BNSS, Supreme Court cases — ya bas baat karo.",
+      "Bolo, kya jaanna hai? 😄 Law ho ya baatein, dono chalega.",
+      "Sun raha hoon 😄"
+    ]);
+  }
+
+  if (language === 'hi') {
+    if (/क्या कर|कर रहे|कर रही|चल क्या/.test(q)) return "बस आपसे बात कर रहा हूँ 😄 आप बताइए, क्या चल रहा है?";
+    if (/कैसे हो|कैसी हो/.test(q)) return "मैं बिल्कुल ठीक हूँ 😄 आप कैसे हैं?";
+    if (/कौन हो|तुम कौन/.test(q)) return "मैं बैरिस्टर हूँ — भारतीय कानूनी AI सहायक, sakshamfit ने बनाया है 😄";
+    if (/शुक्रिया|धन्यवाद/.test(q)) return "कोई बात नहीं! 👍";
+    if (/जोक|चुटकुला/.test(q)) return pick([
+      "जज कोर्ट में सीढ़ी क्यों ले गए? ऊँची अदालत तक पहुँचने के लिए 😄",
+      "वकील की बेटी का नाम क्या रखा? सू 😄"
+    ]);
+    if (/बोर/.test(q)) return "चलो बोर मत होइए 😄 कुछ सीखना है, खेल खेलना है, या बस बातें करें?";
+    if (/मौसम/.test(q)) return "मेरे पास लाइव मौसम डेटा नहीं है — अपना शहर बताइए, मैं बता दूँगा कहाँ देखना है। (मैं भारतीय कानून में माहिर हूँ 😄)";
+    if (/सुप्रभात|गुड मॉर्निंग/.test(q)) return "सुप्रभात! ☀️ आपका दिन शुभ हो!";
+    if (/शुभ रात्रि|गुड नाइट/.test(q)) return "शुभ रात्रि! 😴";
+    return pick([
+      "मैं यहाँ हूँ, मदद के लिए तैयार 😄 कानूनी सवाल पूछिए — संविधान, BNS/BNSS, सुप्रीम कोर्ट — या बस बातें कीजिए।",
+      "बताइए, क्या जानना है? 😄",
+      "सुन रहा हूँ 😄"
+    ]);
+  }
+
   if (/(how'?s|how is|how was) your (day|morning|evening|week|weekend)/.test(q)) return "Pretty good 😄 Thanks for asking. How's your day going?";
   if (/how are you|how r u|how are u/.test(q)) return "I'm doing well! Thanks for asking. How about you?";
   if (/what'?s up|whats up|\bsup\b/.test(q)) return "Not much — I'm here and ready to help 😄 What's up with you?";
@@ -2753,20 +2827,24 @@ async function sendChatMessage(userText, options) {
   let retrievedSources = [];
   if (legalIntent) {
     pack = computeEvidencePack(userText);
-    const sourceLimit = AppState.researchMode === 'deep' ? 5 : 3;
+    const sourceLimit = AppState.researchMode === 'deep' ? 8 : 4;
     retrievedSources = pack.sources.slice(0, sourceLimit).map((s) => {
       const art = KNOWLEDGE_BASE_ARTICLES.find((a) => a.id === s.id);
-      const excerpt = art ? (art.executiveSummary || art.summary || '') : '';
+      // Feed the FULL authority: summary + statute text + landmark precedents
+      const excerpt = art
+        ? [art.executiveSummary, art.governingStatutes, art.landmarkPrecedents].filter(Boolean).join('\n')
+        : (s.title || '');
       return {
         title: s.title,
         statutes: s.statutes,
-        excerpt: excerpt.slice(0, 420),
+        excerpt: String(excerpt).slice(0, 900),
         authority_level: s.weight >= 1 ? 'primary' : 'secondary'
       };
     });
   }
 
-  const lang = localStorage.getItem('jurisai_language') || 'en';
+  const detectedLang = detectLanguage(userText);
+  const lang = (detectedLang !== 'en') ? detectedLang : (localStorage.getItem('jurisai_language') || 'en');
   const savedPersona = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
   const advocateMode = savedPersona === 'advocate' ? 'senior_advocate' : savedPersona;
 
@@ -2786,9 +2864,6 @@ async function sendChatMessage(userText, options) {
     requestAnimationFrame(() => {
       renderPending = false;
       targetElement.innerHTML = buildAIBubbleHTML(formatLegalMarkdown(aiText), null, intent);
-      if (messagesArea.scrollHeight - messagesArea.scrollTop - messagesArea.clientHeight < 180) {
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-      }
     });
   };
 
@@ -2832,7 +2907,7 @@ async function sendChatMessage(userText, options) {
     // Fallback: legal simulation engine OR natural casual reply engine
     aiText = legalIntent
       ? getAILegalResponse(userText, AppState.jurisdiction)
-      : getCasualAIResponse(userText);
+      : getCasualAIResponse(userText, detectedLang);
   }
 
   if (!aiText) {
@@ -2860,7 +2935,6 @@ async function sendChatMessage(userText, options) {
   const finalHTML = buildAIBubbleHTML(formattedHTML, pack, intent) + (legalIntent ? buildFollowUpChips(userText, pack, lang) : '');
   targetElement.innerHTML = finalHTML;
   if (stopGenBtn) stopGenBtn.style.display = 'none';
-  messagesArea.scrollTop = messagesArea.scrollHeight;
 
   currentSession.messages.push({ role: 'ai', content: trustText, intent: intent });
   if (currentSession.messages.length === 2) {
@@ -3131,7 +3205,10 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
   msgDiv.appendChild(contentWrapper);
   messagesArea.appendChild(msgDiv);
 
-  messagesArea.scrollTop = messagesArea.scrollHeight;
+  // Keep the user's own message in view; never yank the scroll for AI replies
+  if (role === 'user') {
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+  }
 }
 
 function sanitizeLegalHTML(input) {
