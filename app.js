@@ -26,8 +26,8 @@ const AppState = {
 // Full setup guide: supabase/setup.md
 // ==========================================================================
 const SUPABASE_CONFIG = {
-  url: 'YOUR_SUPABASE_PROJECT_URL',
-  anonKey: 'YOUR_SUPABASE_ANON_KEY'
+  url: 'https://ekwvogebxbvkjojkqszt.supabase.co',
+  anonKey: 'sb_publishable_O7OoXVbYHs-4hCQmr3Slrg_2QQbT0i3'
 };
 
 function isSupabaseConfigured() {

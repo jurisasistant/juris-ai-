@@ -35,19 +35,21 @@ select title, score from public.search_legal_docs('ram mandir case', null, 3);
 
 ## 4. Wire the app
 
-1. **Project Settings → API** → copy **Project URL** and **anon (public) key**
-   (the anon key is *designed* to be public — never paste the `service_role` key anywhere)
-2. Open `app.js` → find `SUPABASE_CONFIG` → paste both values:
+✅ **Already done** — the app is wired to project `ekwvogebxbvkjojkqszt` using the
+publishable key (`sb_publishable_...`), which is safe for browsers.
 
 ```js
 const SUPABASE_CONFIG = {
-  url: 'https://xxxxxxxxxxxx.supabase.co',
-  anonKey: 'eyJhbGciOi...'   // anon key only
+  url: 'https://ekwvogebxbvkjojkqszt.supabase.co',
+  anonKey: 'sb_publishable_O7OoXVbYHs-4hCQmr3Slrg_2QQbT0i3'
 };
 ```
 
-3. Deploy. The chat now runs **two-layer retrieval**: live Supabase corpus first,
-   curated in-app library second, and every source shows a **🌐 LIVE** badge.
+> Note: the publishable key authenticates the PostgREST RPC calls used by the app.
+> Never paste a `sb_secret_...` or `service_role` key into frontend code.
+
+The chat now runs **two-layer retrieval**: live Supabase corpus first,
+curated in-app library second, and every live source shows a **🌐 LIVE** badge.
 
 ## 5. Security model (already handled)
 
