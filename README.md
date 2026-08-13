@@ -1,8 +1,8 @@
-# 🇮🇳 Kittu AI (JurisAI Bharat) — Indian Constitutional & Legal AI Research Workspace
+# 🇮🇳 Barrister AI (JurisAI Bharat) — Indian Constitutional & Legal AI Research Workspace
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
-**Kittu AI** (JurisAI Bharat) is a premium Indian legal-tech AI research platform trained on the **Constitution of India (Bharatiya Samvidhan)**, **Bharatiya Nyaya Sanhita (BNS 2023)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS 2023)**, **Bharatiya Sakshya Adhiniyam (BSA 2023)**, and Central Acts. Built strictly to the **JurisAI Bharat Design System**: ultra-minimal slate & muted champagne gold palette (`#C6A86B`), crisp SVG iconography, intelligent, trustworthy, visually refined with subtle glassmorphism, and 100% compatible across all mobile screens.
+**Barrister AI** (JurisAI Bharat) is a premium Indian legal-tech AI research platform trained on the **Constitution of India (Bharatiya Samvidhan)**, **Bharatiya Nyaya Sanhita (BNS 2023)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS 2023)**, **Bharatiya Sakshya Adhiniyam (BSA 2023)**, and Central Acts. Built strictly to the **JurisAI Bharat Design System**: ultra-minimal slate & muted champagne gold palette (`#C6A86B`), crisp SVG iconography, intelligent, trustworthy, visually refined with subtle glassmorphism, and 100% compatible across all mobile screens.
 
 ---
 
@@ -24,7 +24,7 @@
 ## 🕸️ Obsidian Vault Brain (`juris-vault/`) & Legal Drafting Suite
 
 * **Obsidian Knowledge Brain (`juris-vault-obsidian.zip`):** Downloadable folder containing 46 deeply interconnected Markdown (`.md`) files using Obsidian `[[WikiLinks]]` syntax across Constitutional Articles, Supreme Court Benches, BNS/BNSS/BSA codes, and Contract Act Section 27.
-* **Interactive Constitutional Node Graph (`#graph-view` ➔ `🕸️ Legal Node Graph`):** Interactive visual node network inside the web app where you can click nodes (`Article 21`, `Puttaswamy`, `Maneka Gandhi`, `DPDP Act`, `Article 14`, `Vishaka`, `POSH`, `Article 19(1)(a)`, `Shreya Singhal`, `BNS 152`, `Contract Act Sec 27`, `Basic Structure`, `Kesavananda Bharati`) to view connected `[[WikiLinks]]` and open them in Kittu AI!
+* **Interactive Constitutional Node Graph (`#graph-view` ➔ `🕸️ Legal Node Graph`):** Interactive visual node network inside the web app where you can click nodes (`Article 21`, `Puttaswamy`, `Maneka Gandhi`, `DPDP Act`, `Article 14`, `Vishaka`, `POSH`, `Article 19(1)(a)`, `Shreya Singhal`, `BNS 152`, `Contract Act Sec 27`, `Basic Structure`, `Kesavananda Bharati`) to view connected `[[WikiLinks]]` and open them in Barrister AI!
 * **Automated Legal Drafting Suite (`#drafting-view` ➔ `🖋️ Legal Drafting Suite`):** Live-binding drafting wizard for statutory formats:
   * `🇮🇳 RTI Application under Section 6(1) of RTI Act 2005`
   * `🇮🇳 Section 138 Cheque Bounce Statutory Demand Notice`
@@ -36,7 +36,7 @@
 ---
 
 ## ⚡ Out-of-the-Box Operation
-* **Zero User Configuration Needed:** Kittu AI works immediately out-of-the-box with built-in Groq Llama-3.3-70B-Versatile intelligence and our embedded Bharatiya Legal Engine.
+* **Zero User Configuration Needed:** Barrister AI works immediately out-of-the-box with built-in Groq Llama-3.3-70B-Versatile intelligence and our embedded Bharatiya Legal Engine.
 * **User Customization (`⚙️ AI Engine Settings`):**
   * Select your **Advocate Bench Persona Mode** (*Senior Advocate Bench Mode*, *SCC Online Legal Researcher*, *General Counsel Corporate Mode*, or *Citizen RTI Plain-English Mode*).
   * Adjust the **Reasoning Precision Slider** (`0.2 — Strict Constitutional Accuracy`).
@@ -51,7 +51,7 @@ Open your terminal inside the project folder (`/home/user`) and run:
 ```bash
 git init
 git add .
-git commit -m "feat: Kittu AI Bharat Enterprise v6.0 with Obsidian Legal Brain"
+git commit -m "feat: Barrister AI Bharat Enterprise v6.0 with Obsidian Legal Brain"
 git branch -M main
 git remote add origin https://github.com/sakshamfit/juris-ai-.git
 git push -u origin main

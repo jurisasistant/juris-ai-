@@ -2246,7 +2246,7 @@ body {
     font-weight: 700;
   }
 
-  /* Prevent Kittu Copilot from overlapping Mobile Bottom Navbar */
+  /* Prevent Barrister Copilot from overlapping Mobile Bottom Navbar */
   .floating-copilot-pill {
     bottom: calc(74px + env(safe-area-inset-bottom, 8px));
     right: 14px;
@@ -2718,7 +2718,7 @@ body {
   transform: scale(1.03);
 }
 
-/* 6. Persistent Floating Legal Copilot Pill (✦ Kittu Copilot) */
+/* 6. Persistent Floating Legal Copilot Pill (✦ Barrister Copilot) */
 .floating-copilot-pill {
   position: fixed;
   bottom: 24px;

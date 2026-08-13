@@ -949,13 +949,13 @@ function getAILegalResponse(prompt, jurisdictionCode) {
   const isHinglish = currentLang === 'hinglish';
 
   // 0A. Conversational Greetings & Short Casual Inputs
-  const isGreeting = ['hi', 'hii', 'hiii', 'hiiii', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'namaste', 'namaskaram', 'pranam', 'greetings', 'yo', 'sup', 'kittu', 'hi kittu', 'hello kittu', 'hey kittu', 'namaste kittu', 'hello there', 'hii kittu'].includes(cleanPrompt) ||
+  const isGreeting = ['hi', 'hii', 'hiii', 'hiiii', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'namaste', 'namaskaram', 'pranam', 'greetings', 'yo', 'sup', 'barrister', 'hi barrister', 'hello barrister', 'hey barrister', 'namaste barrister', 'hello there', 'hii barrister'].includes(cleanPrompt) ||
                      ((cleanPrompt.startsWith('hi ') || cleanPrompt.startsWith('hii') || cleanPrompt.startsWith('hello ') || cleanPrompt.startsWith('hey ') || cleanPrompt.startsWith('namaste')) && cleanPrompt.length < 30);
   if (isGreeting) {
     if (isHi) {
-      return `नमस्ते! 🙏 मैं **किट्टू एआई (Kittu AI)** हूँ, आपका भारतीय संविधान और कानूनी सहायक।\n\nमैं इन कानूनी विषयों में आपकी मदद कर सकता हूँ:\n* **📜 भारत का संविधान (Samvidhan):** मौलिक अधिकार (अनुच्छेद 14, 19, 21), याचिकाएं (Art. 32/226), और सुप्रीम कोर्ट के निर्णय।\n* **⚖️ नए भारतीय कानून (BNS/BNSS 2023):** BNS 2023 के तहत अपराध, ई-एफआईआर (e-FIR), और गिरफ्तारी नियम (BNSS 2023) ।\n* **💼 कमर्शियल और सिविल कानून:** भारतीय अनुबंध अधिनियम (Contract Act Section 27), कंपनी कानून 2013, DPDP Act 2023, और चेक बाउंस (Section 138 NI Act) ।\n\nआप आज किस कानूनी विषय या धारा के बारे में जानना चाहते हैं?`;
+      return `नमस्ते! 🙏 मैं **बैरिस्टर एआई (Barrister AI)** हूँ, आपका भारतीय संविधान और कानूनी सहायक।\n\nमैं इन कानूनी विषयों में आपकी मदद कर सकता हूँ:\n* **📜 भारत का संविधान (Samvidhan):** मौलिक अधिकार (अनुच्छेद 14, 19, 21), याचिकाएं (Art. 32/226), और सुप्रीम कोर्ट के निर्णय।\n* **⚖️ नए भारतीय कानून (BNS/BNSS 2023):** BNS 2023 के तहत अपराध, ई-एफआईआर (e-FIR), और गिरफ्तारी नियम (BNSS 2023) ।\n* **💼 कमर्शियल और सिविल कानून:** भारतीय अनुबंध अधिनियम (Contract Act Section 27), कंपनी कानून 2013, DPDP Act 2023, और चेक बाउंस (Section 138 NI Act) ।\n\nआप आज किस कानूनी विषय या धारा के बारे में जानना चाहते हैं?`;
     }
-    return `Namaste! 🙏 I am **Kittu AI**, your Indian Constitutional and Bharatiya Legal Assistant.\n\nI can help you research and navigate:\n* **📜 Constitution of India (Samvidhan):** Fundamental Rights (Articles 14, 19, 21), Writ Petitions (Art. 32/226), and Supreme Court Bench rulings.\n* **⚖️ New Bharatiya Criminal Sanhitas:** Offenses under BNS 2023, e-FIR and arrest procedures under BNSS 2023, and electronic evidence under BSA 2023.\n* **💼 Commercial & Civil Law:** Indian Contract Act Section 27 (void non-competes), Section 74 damages, Companies Act 2013, DPDP Act 2023, and Cheque Bounce remedies under Section 138 NI Act.\n\nWhat legal topic, statute, or case precedent would you like to explore today?`;
+    return `Namaste! 🙏 I am **Barrister AI**, your Indian Constitutional and Bharatiya Legal Assistant.\n\nI can help you research and navigate:\n* **📜 Constitution of India (Samvidhan):** Fundamental Rights (Articles 14, 19, 21), Writ Petitions (Art. 32/226), and Supreme Court Bench rulings.\n* **⚖️ New Bharatiya Criminal Sanhitas:** Offenses under BNS 2023, e-FIR and arrest procedures under BNSS 2023, and electronic evidence under BSA 2023.\n* **💼 Commercial & Civil Law:** Indian Contract Act Section 27 (void non-competes), Section 74 damages, Companies Act 2013, DPDP Act 2023, and Cheque Bounce remedies under Section 138 NI Act.\n\nWhat legal topic, statute, or case precedent would you like to explore today?`;
   }
 
   // 0B. Acknowledgments, Thanks, or Short confirmations
@@ -968,11 +968,11 @@ function getAILegalResponse(prompt, jurisdictionCode) {
   }
 
   // 0C. Identity, Creator, & Help Queries
-  if (cleanPrompt.includes('who are you') || cleanPrompt.includes('what is your name') || cleanPrompt.includes('who created you') || cleanPrompt.includes('who made you') || cleanPrompt.includes('sakshamfit') || cleanPrompt.includes('your name') || cleanPrompt.includes('who is kittu') || cleanPrompt === 'help' || cleanPrompt === 'what can you do' || cleanPrompt === 'how to use') {
+  if (cleanPrompt.includes('who are you') || cleanPrompt.includes('what is your name') || cleanPrompt.includes('who created you') || cleanPrompt.includes('who made you') || cleanPrompt.includes('sakshamfit') || cleanPrompt.includes('your name') || cleanPrompt.includes('who is barrister') || cleanPrompt === 'help' || cleanPrompt === 'what can you do' || cleanPrompt === 'how to use') {
     if (isHi) {
-      return `मैं **किट्टू एआई (Kittu AI Bharat)** हूँ, जिसे **sakshamfit** द्वारा भारतीय नागरिकों और अधिवक्ताओं के लिए डिज़ाइन और विकसित किया गया है।\n\nमैं भारत के संविधान, नए BNS/BNSS/BSA 2023 कानूनों, और सुप्रीम कोर्ट के निर्णयों का विशेषज्ञ हूँ।\n\nआज मैं आपके अनुसंधान में कैसे मदद कर सकता हूँ?`;
+      return `मैं **बैरिस्टर एआई (Barrister AI Bharat)** हूँ, जिसे **sakshamfit** द्वारा भारतीय नागरिकों और अधिवक्ताओं के लिए डिज़ाइन और विकसित किया गया है।\n\nमैं भारत के संविधान, नए BNS/BNSS/BSA 2023 कानूनों, और सुप्रीम कोर्ट के निर्णयों का विशेषज्ञ हूँ।\n\nआज मैं आपके अनुसंधान में कैसे मदद कर सकता हूँ?`;
     }
-    return `I am **Kittu AI (Bharat Edition)**, an Indian Constitutional & Legal Assistant designed and developed with ❤️ by **sakshamfit**.\n\nI am specialized in:\n* The **Constitution of India (Bharatiya Samvidhan)** and landmark Supreme Court benches\n* The new **BNS, BNSS, and BSA 2023** criminal codes\n* **Commercial & Privacy Law** including the Indian Contract Act 1872, Companies Act 2013, DPDP Act 2023, and PMLA 2002.\n\nHow may I assist your research today?`;
+    return `I am **Barrister AI (Bharat Edition)**, an Indian Constitutional & Legal Assistant designed and developed with ❤️ by **sakshamfit**.\n\nI am specialized in:\n* The **Constitution of India (Bharatiya Samvidhan)** and landmark Supreme Court benches\n* The new **BNS, BNSS, and BSA 2023** criminal codes\n* **Commercial & Privacy Law** including the Indian Contract Act 1872, Companies Act 2013, DPDP Act 2023, and PMLA 2002.\n\nHow may I assist your research today?`;
   }
 
   if (isHi) {
@@ -992,7 +992,7 @@ function getAILegalResponse(prompt, jurisdictionCode) {
 3. **कानूनी सलाह लें:** हाईकोर्ट या सुप्रीम कोर्ट में याचिका दायर करने के लिए वरिष्ठ अधिवक्ता से संपर्क करें।
 
 <div class="legal-caution-box">
-  <strong>⚠️ किट्टू एआई नोट:</strong> यह भारतीय कानून की सामान्य जानकारी है। किसी भी कानूनी कदम से पहले वरिष्ठ अधिवक्ता से परामर्श लें।
+  <strong>⚠️ बैरिस्टर एआई नोट:</strong> यह भारतीय कानून की सामान्य जानकारी है। किसी भी कानूनी कदम से पहले वरिष्ठ अधिवक्ता से परामर्श लें।
 </div>`;
   }
 
@@ -1013,7 +1013,7 @@ Indian Constitution aur naye BNS/BNSS 2023 laws ke under aapke fundamental right
 3. **High Court ya Supreme Court approach karein:** Article 226 ya Article 32 me Writ Petition file ki ja sakti hai.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> Yeh Indian law ka general legal explanation hai. Court filings ke liye hamesha Advocate on Record (AOR) se consult karein.
+  <strong>⚠️ Barrister AI Note:</strong> Yeh Indian law ka general legal explanation hai. Court filings ke liye hamesha Advocate on Record (AOR) se consult karein.
 </div>`;
   }
 
@@ -1058,7 +1058,7 @@ Under the **Constitution of India (Bharatiya Samvidhan)**, you have fundamental 
 3. **Approach the High Court or Supreme Court:** If your fundamental rights are violated, you have the direct constitutional right to file a **Writ Petition** under Article 226 (High Court) or Article 32 (Supreme Court).
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> This is a simple explanation of Indian constitutional rights. Always consult a Senior Advocate for High Court or Supreme Court writ petitions.
+  <strong>⚠️ Barrister AI Note:</strong> This is a simple explanation of Indian constitutional rights. Always consult a Senior Advocate for High Court or Supreme Court writ petitions.
 </div>`;
   }
 
@@ -1083,7 +1083,7 @@ A **Writ Petition** is a direct constitutional remedy. If a government authority
 3. **Engage an Advocate on Record (AOR):** Writ pleadings require verification and formal affidavits under High Court / Supreme Court rules.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> High Courts generally prefer that you try regular departmental appeals first unless there is a direct fundamental rights violation.
+  <strong>⚠️ Barrister AI Note:</strong> High Courts generally prefer that you try regular departmental appeals first unless there is a direct fundamental rights violation.
 </div>`;
   }
 
@@ -1107,7 +1107,7 @@ Effective **July 1, 2024**, India replaced its old colonial criminal laws (IPC 1
 3. **Check Arrest Notice Rules:** If police contact you regarding a complaint under 7 years punishment, request an official BNSS Section 35 Notice of Appearance.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> Criminal procedure under BNSS 2023 involves strict deadlines. Retain a criminal defense advocate for police or court proceedings.
+  <strong>⚠️ Barrister AI Note:</strong> Criminal procedure under BNSS 2023 involves strict deadlines. Retain a criminal defense advocate for police or court proceedings.
 </div>`;
   }
 
@@ -1130,7 +1130,7 @@ In India, an employer **cannot legally stop you from working for a competitor or
 3. **Serve Notice Periods Legally:** Adhere to agreed Garden Leave or paid notice periods during your active employment contract.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> While non-competes are void after leaving, never download or take confidential company files prior to resignation.
+  <strong>⚠️ Barrister AI Note:</strong> While non-competes are void after leaving, never download or take confidential company files prior to resignation.
 </div>`;
   }
 
@@ -1154,7 +1154,7 @@ India's **Digital Personal Data Protection Act 2023 (DPDP Act)** gives you stron
 3. **Submit Erasure Notices:** As a citizen, you can send a formal DPDP Act Right to Erasure notice to any company's Data Protection Officer to permanently delete your data.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> DPDP Act statutory fines apply per breach event. Regularly audit data security practices.
+  <strong>⚠️ Barrister AI Note:</strong> DPDP Act statutory fines apply per breach event. Regularly audit data security practices.
 </div>`;
   }
 
@@ -1178,7 +1178,7 @@ India enforces **zero tolerance for sexual harassment in workplaces**. Under the
 3. **Conduct Annual Training:** Hold annual awareness workshops for employees and orientation for ICC members.
 
 <div class="legal-caution-box">
-  <strong>⚠️ Kittu AI Note:</strong> Employers are strictly liable for statutory compliance under the POSH Act 2013 regardless of company size.
+  <strong>⚠️ Barrister AI Note:</strong> Employers are strictly liable for statutory compliance under the POSH Act 2013 regardless of company size.
 </div>`;
   }
 
@@ -1197,7 +1197,7 @@ Here is an analysis of your query under **${jurName}** constitutional and statut
 3. **Appropriate Forum:** Depending on the dispute, remedies may lie before a Civil Court, Commercial Court, Judicial Magistrate, or via a Constitutional Writ Petition under Article 226 (High Court) / Article 32 (Supreme Court).
 
 <div class="legal-caution-box">
-  <strong>⚠️ Important Advocate Note:</strong> Kittu is an AI legal research assistant providing preliminary legal information. Always consult a qualified Advocate on Record (AOR) for formal legal representation.
+  <strong>⚠️ Important Advocate Note:</strong> Barrister is an AI legal research assistant providing preliminary legal information. Always consult a qualified Advocate on Record (AOR) for formal legal representation.
 </div>`;
 
   const personaMode = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
@@ -1220,7 +1220,7 @@ Here is an analysis of your query under **${jurName}** constitutional and statut
 <div class="contradiction-alert-box">
   <div class="contradiction-alert-title">⚠ Contradiction & Statutory Evolution Analysis</div>
   <div><strong>Old Regime vs. New Bharatiya Code:</strong> Colonial statutory provisions (such as automatic arrest under IPC 498A or colonial sedition under IPC 124A) are superseded by BNSS 2023 Section 35 notice of appearance and BNS 2023 Section 152 sovereignty rules.</div>
-  <div style="margin-top:0.4rem; color:var(--accent-gold);"><strong>Kittu AI Analysis:</strong> Supreme Court constitutional benches in Arnesh Kumar (2014) and Puttaswamy (2017) strictly bind procedural enforcement.</div>
+  <div style="margin-top:0.4rem; color:var(--accent-gold);"><strong>Barrister AI Analysis:</strong> Supreme Court constitutional benches in Arnesh Kumar (2014) and Puttaswamy (2017) strictly bind procedural enforcement.</div>
 </div>
 
 ${baseResp}
@@ -2106,21 +2106,21 @@ function applyPersonaAndLanguageUI() {
   // Customize Welcome Title & Subtitle according to Persona and Language
   if (wTitle) {
     if (persona === 'student') {
-      wTitle.textContent = isHi ? "किट्टू AI • LLB और ज्यूडिशियरी स्टडी पार्टनर" :
-                           isHinglish ? "Kittu AI • LLB aur Judiciary Exam Copilot" :
-                           "Kittu AI • LLB & Judiciary Exam Partner";
+      wTitle.textContent = isHi ? "बैरिस्टर AI • LLB और ज्यूडिशियरी स्टडी पार्टनर" :
+                           isHinglish ? "Barrister AI • LLB aur Judiciary Exam Copilot" :
+                           "Barrister AI • LLB & Judiciary Exam Partner";
     } else if (persona === 'citizen') {
-      wTitle.textContent = isHi ? "किट्टू AI से जानें अपने अधिकार" :
-                           isHinglish ? "Kittu AI se Jaanein Apne Kanooni Adhikar" :
-                           "Know Your Rights with Kittu AI";
+      wTitle.textContent = isHi ? "बैरिस्टर AI से जानें अपने अधिकार" :
+                           isHinglish ? "Barrister AI se Jaanein Apne Kanooni Adhikar" :
+                           "Know Your Rights with Barrister AI";
     } else if (persona === 'business') {
-      wTitle.textContent = isHi ? "किट्टू AI • कॉर्पोरेट और कमर्शियल लीगल सलाहकार" :
-                           isHinglish ? "Kittu AI • General Counsel aur Corporate Copilot" :
-                           "Kittu AI • General Counsel & Corporate";
+      wTitle.textContent = isHi ? "बैरिस्टर AI • कॉर्पोरेट और कमर्शियल लीगल सलाहकार" :
+                           isHinglish ? "Barrister AI • General Counsel aur Corporate Copilot" :
+                           "Barrister AI • General Counsel & Corporate";
     } else {
-      wTitle.textContent = isHi ? "किट्टू से भारतीय कानून के बारे में पूछें।" : 
-                           isHinglish ? "Kittu AI se Bharatiya Kanoon ke baare me puchein." : 
-                           "Ask Kittu about Indian Law.";
+      wTitle.textContent = isHi ? "बैरिस्टर से भारतीय कानून के बारे में पूछें।" : 
+                           isHinglish ? "Barrister AI se Bharatiya Kanoon ke baare me puchein." : 
+                           "Ask Barrister about Indian Law.";
     }
   }
 
@@ -2203,17 +2203,17 @@ function applyPersonaAndLanguageUI() {
   // Update sidebar links
   const navTexts = document.querySelectorAll('.sidebar-nav .nav-text');
   const hiNames = [
-    "किट्टू एआई सहायक", "संविधान एक्सप्लोरर", "बीएनएस / भारतीय कानून", "उच्चतम न्यायालय निर्णय", 
+    "बैरिस्टर एआई सहायक", "संविधान एक्सप्लोरर", "बीएनएस / भारतीय कानून", "उच्चतम न्यायालय निर्णय", 
     "अनुसंधान वर्कस्पेस", "सुरक्षित निर्णय", "दस्तावेज़ विश्लेषक", "कानूनी दस्तावेज़ निर्माता", 
     "सूचना का अधिकार (RTI)", "एआई इंजन सेटिंग्स"
   ];
   const hinglishNames = [
-    "Kittu AI Assistant", "Samvidhan Explorer", "Naye BNS / BNSS Laws", "Supreme Court Judgments", 
+    "Barrister AI Assistant", "Samvidhan Explorer", "Naye BNS / BNSS Laws", "Supreme Court Judgments", 
     "Research Workspaces", "Saved Bookmarks", "Document Risk Analyzer", "Agreement Builder", 
     "RTI & Kanooni Adhikar", "AI Engine Settings"
   ];
   const enNames = [
-    "Kittu AI Assistant", "Constitution Explorer", "BNS / BNSS / BSA", "Case Law Precedents", 
+    "Barrister AI Assistant", "Constitution Explorer", "BNS / BNSS / BSA", "Case Law Precedents", 
     "Research Workspaces", "Saved & History", "Contract Analyzer", "Document Builder", 
     "RTI & Statutory FAQ", "AI Engine Settings"
   ];
@@ -2226,9 +2226,9 @@ function applyPersonaAndLanguageUI() {
 
   // Update mobile bottom nav
   const mobileNavs = document.querySelectorAll('.mobile-bottom-nav span:not([style])');
-  const hiMobile = ["संविधान", "किट्टू AI", "सुरक्षित", "विश्लेषक", "RTI"];
-  const hinglishMobile = ["Samvidhan", "Kittu AI", "Saved", "Analyzer", "RTI"];
-  const enMobile = ["Samvidhan", "Kittu AI", "Saved", "Analyzer", "RTI"];
+  const hiMobile = ["संविधान", "बैरिस्टर AI", "सुरक्षित", "विश्लेषक", "RTI"];
+  const hinglishMobile = ["Samvidhan", "Barrister AI", "Saved", "Analyzer", "RTI"];
+  const enMobile = ["Samvidhan", "Barrister AI", "Saved", "Analyzer", "RTI"];
   mobileNavs.forEach((el, idx) => {
     if (isHi && hiMobile[idx]) el.textContent = hiMobile[idx];
     else if (isHinglish && hinglishMobile[idx]) el.textContent = hinglishMobile[idx];
@@ -2301,7 +2301,7 @@ async function sendChatMessage(userText) {
 
 // --- Direct Groq Cloud API Helper (llama-3.3-70b-versatile) ---
 async function callGroqCloudAPI(prompt, jurisdictionCode, history = []) {
-  const systemPrompt = `You are Kittu (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant powered by Groq Llama-3.3-70B-Versatile. Designed & developed with SakshamFit.
+  const systemPrompt = `You are Barrister (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant powered by Groq Llama-3.3-70B-Versatile. Designed & developed with SakshamFit.
 Always explain Indian legal concepts in simple, easy-to-understand language so any normal citizen or user can understand their rights clearly. Avoid dense legalese or confusing Latin jargon without a plain-English translation.
 When a user asks about any crime, police complaint, or IPC section (like 420, 302, 307, 376, 498A, 500, 354, 506, 406), always state BOTH the familiar old IPC section number AND the new BNS 2023 section number.
 When answering legal questions, structure your reply cleanly:
@@ -2342,7 +2342,7 @@ If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets yo
 
 // --- Direct OpenAI API Helper ---
 async function callOpenAICloudAPI(prompt, jurisdictionCode, history = []) {
-  const systemPrompt = `You are Kittu (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant. Designed & developed with SakshamFit. Prioritize Indian Constitution, BNS/BNSS 2023, Section 27 Contract Act, and Supreme Court precedents.`;
+  const systemPrompt = `You are Barrister (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant. Designed & developed with SakshamFit. Prioritize Indian Constitution, BNS/BNSS 2023, Section 27 Contract Act, and Supreme Court precedents.`;
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -2386,7 +2386,7 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
   const avatarDiv = document.createElement('div');
   avatarDiv.className = `avatar ${role === 'user' ? 'user-avatar' : 'ai-avatar'}`;
   avatarDiv.textContent = role === 'user' ? 'U' : 'K';
-  avatarDiv.title = role === 'user' ? 'You' : 'Kittu AI (Bharat)';
+  avatarDiv.title = role === 'user' ? 'You' : 'Barrister AI (Bharat)';
 
   const contentWrapper = document.createElement('div');
   contentWrapper.className = 'message-content-wrapper';
@@ -2396,12 +2396,12 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
 
   if (isTyping && !contentText) {
     if (elementId) bubbleDiv.id = elementId;
-    bubbleDiv.innerHTML = `<span style="opacity:0.6;font-style:italic;">⚖️ Kittu is analyzing Bharatiya Constitution & Supreme Court precedents...</span>`;
+    bubbleDiv.innerHTML = `<span style="opacity:0.6;font-style:italic;">⚖️ Barrister is analyzing Bharatiya Constitution & Supreme Court precedents...</span>`;
   } else if (role === 'user') {
     bubbleDiv.textContent = contentText;
   } else {
     bubbleDiv.className += ' ai-formatted-content';
-    bubbleDiv.innerHTML = `<div style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;"><span>✦ KITTU AI (BHARAT)</span></div>` + formatLegalMarkdown(contentText);
+    bubbleDiv.innerHTML = `<div style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;"><span>✦ BARRISTER AI (BHARAT)</span></div>` + formatLegalMarkdown(contentText);
   }
 
   contentWrapper.appendChild(bubbleDiv);
@@ -2488,7 +2488,7 @@ function formatLegalMarkdown(text) {
     .replace(/\n/g, ' ');
 }
 
-// --- Indian English / Hindi Synthetic Voice Selector for Kittu AI ---
+// --- Indian English / Hindi Synthetic Voice Selector for Barrister AI ---
 let cachedIndianVoice = null;
 function getIndianVoice() {
   const voices = window.speechSynthesis.getVoices();
@@ -2900,7 +2900,7 @@ function initModals() {
       localStorage.setItem('jurisai_temperature', tempVal);
 
       closeModal('settings-modal');
-      alert('✅ Kittu AI Persona & Precision Preferences Saved Successfully!');
+      alert('✅ Barrister AI Persona & Precision Preferences Saved Successfully!');
     });
   }
 
@@ -3367,7 +3367,7 @@ function initLegalNodeGraph() {
           ${linksHTML}
         </div>
         <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-          <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" id="graph-node-ask-ai-btn">🤖 Open Connected Nodes in Kittu AI</button>
+          <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" id="graph-node-ask-ai-btn">🤖 Open Connected Nodes in Barrister AI</button>
         </div>
       `;
 
@@ -3586,10 +3586,10 @@ function initDeepResearchToggle() {
   }
 }
 
-// --- 16. Persistent Floating Kittu Copilot Pill (MVP Feature 11) ---
+// --- 16. Persistent Floating Barrister Copilot Pill (MVP Feature 11) ---
 function initFloatingCopilot() {
-  const pill = document.getElementById('kittu-copilot-btn');
-  const menu = document.getElementById('kittu-copilot-menu');
+  const pill = document.getElementById('barrister-copilot-btn');
+  const menu = document.getElementById('barrister-copilot-menu');
   if (!pill || !menu) return;
 
   pill.addEventListener('click', (e) => {
