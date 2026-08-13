@@ -115,6 +115,143 @@ const LegalSearchService = (() => {
 
   const COURTS = ['supreme court', 'high court', 'session court', 'sessions court', 'district court', 'magistrate', 'nclt', 'nclat', 'cat', 'drt', 'tribunal', 'consumer commission'];
 
+  // Hinglish (Roman Hindi) legal terms → English legal concepts (for retrieval)
+  const HINGLISH_GLOSSARY = {
+    'jamanat': 'bail anticipatory bail bnss 480 crpc 439',
+    'girftari': 'arrest anticipatory bail arnesh kumar bnss 35',
+    'girafftari': 'arrest anticipatory bail',
+    'kanoon': 'law legal statute',
+    'kanun': 'law legal statute',
+    'mukadma': 'lawsuit litigation case court',
+    'muqadma': 'lawsuit litigation',
+    'dafa': 'section statute',
+    'dhara': 'section article provision',
+    'adhikar': 'rights fundamental rights constitution',
+    'adhikaar': 'rights fundamental rights',
+    'haq': 'rights entitlement',
+    'talaq': 'divorce talaq muslim personal law shayara bano triple talaq',
+    'dahej': 'dowry dowry death 498a bnss 85 dowry prohibition act',
+    'chori': 'theft robbery bnss 303 ipc 378',
+    'hatya': 'murder homicide bns 103 ipc 302',
+    'balatkar': 'rape sexual assault bnss 63 ipc 376',
+    'jameen': 'land property dispute',
+    'zameen': 'land property',
+    'jaaydad': 'property succession inheritance',
+    'jaydad': 'property succession',
+    'sampatti': 'property succession coparcenary',
+    'vasiyat': 'will succession testamentary',
+    'vivad': 'dispute litigation',
+    'saza': 'punishment penalty',
+    'saja': 'punishment',
+    'ilzaam': 'offence charge accusation',
+    'gawah': 'witness evidence',
+    'saboot': 'evidence proof bsa',
+    'vakeel': 'advocate lawyer',
+    'wakeel': 'advocate lawyer',
+    'kachehri': 'court',
+    'nafka': 'maintenance alimony bnss 144 crpc 125',
+    'gujara': 'maintenance alimony',
+    'kabza': 'possession adverse possession',
+    'kiraya': 'rent tenancy lease',
+    'makaan': 'house property residence',
+    'udhaar': 'loan debt recovery',
+    'karz': 'debt loan',
+    'rasid': 'receipt evidence',
+    'warrant': 'arrest warrant bnss 2023',
+    'dand': 'punishment penalty',
+    'jurmana': 'fine penalty',
+    'harzana': 'damages compensation',
+    'muaavza': 'compensation damages',
+    'pension': 'pension family pension',
+    'naukri': 'employment labour job termination',
+    'salary': 'wages salary labour',
+    'tanakhwa': 'salary wages',
+    'khula': 'divorce khula muslim personal law',
+    'mahar': 'dower mahr muslim personal law',
+    'god': 'adoption hama cara',
+    'bacha': 'child custody guardianship',
+    'baccha': 'child custody',
+    'bina': 'without',
+    'shadi': 'marriage',
+    'vyah': 'marriage',
+    'sasural': 'in laws domestic violence 498a'
+  };
+
+  // Devanagari Hindi → English legal concepts
+  const DEVA_GLOSSARY = {
+    'जमानत': 'bail anticipatory bail bnss 480',
+    'गिरफ्तारी': 'arrest anticipatory bail',
+    'कानून': 'law legal statute',
+    'क़ानून': 'law legal statute',
+    'मुकदमा': 'lawsuit litigation case',
+    'दफा': 'section',
+    'धारा': 'section provision',
+    'अधिकार': 'rights fundamental rights',
+    'हक': 'rights entitlement',
+    'तलाक': 'divorce talaq muslim personal law',
+    'दहेज': 'dowry dowry death',
+    'चोरी': 'theft',
+    'हत्या': 'murder homicide',
+    'बलात्कार': 'rape sexual assault',
+    'जमीन': 'land property',
+    'ज़मीन': 'land property',
+    'संपत्ति': 'property succession coparcenary',
+    'जायदाद': 'property succession',
+    'वसीयत': 'will succession',
+    'विवाद': 'dispute litigation',
+    'सजा': 'punishment',
+    'इल्जाम': 'offence charge',
+    'गवाह': 'witness evidence',
+    'सबूत': 'evidence proof',
+    'वकील': 'advocate lawyer',
+    'कचहरी': 'court',
+    'गुजारा': 'maintenance alimony',
+    'कब्जा': 'possession',
+    'किराया': 'rent tenancy',
+    'मकान': 'house property',
+    'उधार': 'loan debt',
+    'शादी': 'marriage',
+    'बच्चा': 'child custody',
+    'गोद': 'adoption',
+    'पुलिस': 'police',
+    'एफआईआर': 'fir',
+    'एफ.आई.आर': 'fir',
+    'वारंट': 'warrant arrest',
+    'अनुच्छेद': 'article'
+  };
+
+  // Common legal phrases in Hinglish → their English legal meaning
+  const HINGLISH_PHRASE_MAP = [
+    [/bail kaise/i, 'bail anticipatory bail regular bail how to get bail'],
+    [/jamanat kaise/i, 'bail anticipatory bail bnss 480'],
+    [/girftari se/i, 'arrest protection anticipatory bail arnesh kumar'],
+    [/police bina warrant/i, 'arrest without warrant bnss 2023 police'],
+    [/bina warrant/i, 'arrest without warrant'],
+    [/fir kaise/i, 'fir e-fir how to file fir bnss 173'],
+    [/fir likh/i, 'fir registration bnss 173 police complaint'],
+    [/beti ko.{0,30}property/i, 'daughter property rights coparcenary hindu succession'],
+    [/beti ka.{0,20}(haq|adhikar)/i, 'daughter property rights coparcenary hindu succession'],
+    [/property mein haq/i, 'property rights coparcenary hindu succession'],
+    [/talaq (kaise|dena|lene|lena)/i, 'divorce muslim personal law talaq'],
+    [/divorce kaise/i, 'divorce hindu marriage act mutual divorce'],
+    [/cheque bounce/i, 'cheque bounce section 138 ni act dishonour'],
+    [/cheque kat/i, 'cheque bounce section 138'],
+    [/jameen ka vivad/i, 'land dispute property'],
+    [/jaaydad/i, 'property succession'],
+    [/sampatti/i, 'property succession coparcenary'],
+    [/saza kya/i, 'punishment'],
+    [/article 21 kya/i, 'article 21'],
+    [/mandir case/i, 'ram mandir ayodhya siddiq'],
+    [/posh act/i, 'posh sexual harassment workplace'],
+    [/kanoon kya/i, 'law'],
+    [/harzana kaise/i, 'damages compensation'],
+    [/nafka kaise/i, 'maintenance alimony crpc 125 bnss 144'],
+    [/kabza kaise/i, 'adverse possession possession'],
+    [/kiraya na de/i, 'tenant eviction rent arrears'],
+    [/shadi kaise/i, 'marriage special marriage act'],
+    [/god kaise/i, 'adoption hama cara']
+  ];
+
   const CASE_TOKEN_RE = /\b(?:\d{4}\s+)?(?:\d+\s+)?(?:SCC|AIR|SCR|Cri\s*LJ|SCC\s+OnLine|MANU)\b[^\n,;]{0,60}|\b(?:\d{4})\s+(?:SCC|AIR)\s+\d+\b|\bSCC\s+OnLine\s+SC\s+\d+\b|\bMANU\/[A-Z]{2}\/\d{4}\/\d+\b/gi;
   const SECTION_RE = /\b(?:section|sec\.?|s\.?)\s+(\d+[a-z]*(?:\s*\(\s*\d+[a-z]*\s*\))?)\b/gi;
   const ARTICLE_RE = /\barticle\s+(\d+[a-z]?)\b/gi;
@@ -172,6 +309,57 @@ const LegalSearchService = (() => {
     return terms.slice(0, 10);
   }
 
+  // Broken-English / misspelled legal terms → correct forms
+  const BROKEN_ENGLISH_MAP = {
+    'arest': 'arrest', 'chek': 'cheque', 'cheq': 'cheque', 'bounc': 'bounce',
+    'devorce': 'divorce', 'divorse': 'divorce', 'propert': 'property', 'propety': 'property',
+    'custodi': 'custody', 'maintainence': 'maintenance', 'maintainance': 'maintenance',
+    'harasment': 'harassment', 'polise': 'police', 'polece': 'police',
+    'jaj': 'judge', 'judj': 'judge', 'cort': 'court', 'kort': 'court',
+    'lawer': 'lawyer', 'loyer': 'lawyer', 'judjment': 'judgment',
+    'suprim': 'supreme', 'supream': 'supreme', 'constitusion': 'constitution',
+    'saction': 'section', 'artical': 'article', 'fundametal': 'fundamental',
+    'marrage': 'marriage', 'marige': 'marriage', 'husbend': 'husband', 'alimoni': 'alimony',
+    'dowri': 'dowry', 'stoling': 'stalking', 'robery': 'robbery', 'murdr': 'murder',
+    'assalt': 'assault', 'injur': 'injury', 'witnes': 'witness', 'evidance': 'evidence',
+    'notery': 'notary', 'affidevit': 'affidavit', 'appel': 'appeal', 'apeal': 'appeal',
+    'tribnal': 'tribunal', 'comision': 'commission', 'insurence': 'insurance',
+    'compensasion': 'compensation', 'agrement': 'agreement', 'agreemant': 'agreement',
+    'tenent': 'tenant', 'evicton': 'eviction', 'seperation': 'separation',
+    'seperat': 'separate', 'maintanance': 'maintenance', 'maintanence': 'maintenance',
+    'document': 'document', 'documnt': 'document', 'stamp papr': 'stamp paper',
+    'defamation': 'defamation', 'defemation': 'defamation', 'kilng': 'killing',
+    'homicid': 'homicide', 'kidnapng': 'kidnapping', 'theeft': 'theft',
+    'posession': 'possession', 'succesion': 'succession', 'inheritence': 'inheritance'
+  };
+
+  // Hinglish / Hindi query → normalized English legal concepts for retrieval
+  function normalizeHinglish(query) {
+    const q = String(query || '');
+    const ql = q.toLowerCase();
+    const concepts = [];
+    Object.keys(HINGLISH_GLOSSARY).forEach((k) => {
+      if (new RegExp('\\b' + k + '\\b').test(ql)) {
+        HINGLISH_GLOSSARY[k].split(' ').forEach((c) => { if (concepts.length < 30) concepts.push(c); });
+      }
+    });
+    Object.keys(DEVA_GLOSSARY).forEach((k) => {
+      if (q.includes(k)) {
+        DEVA_GLOSSARY[k].split(' ').forEach((c) => { if (concepts.length < 30) concepts.push(c); });
+      }
+    });
+    HINGLISH_PHRASE_MAP.forEach(([re, expansion]) => {
+      if (re.test(q)) {
+        expansion.split(' ').forEach((c) => { if (concepts.length < 30) concepts.push(c); });
+      }
+    });
+    // Pass through English legal words that are already in the query
+    ['article', 'section', 'bail', 'fir', 'police', 'court', 'law', 'rights', 'property', 'divorce', 'talaq', 'dowry', 'rape', 'murder', 'theft', 'cheque', 'bounce', 'warrant', 'arrest', 'custody', 'maintenance', 'adoption', 'will', 'succession', 'contract', 'rent', 'tenant', 'writ', 'supreme court'].forEach((w) => {
+      if (ql.includes(w) && !concepts.includes(w)) concepts.push(w);
+    });
+    return concepts.slice(0, 30).join(' ');
+  }
+
   // Lightweight spelling correction against the indexed lexicon
   let lexicon = null;
   function buildLexicon() {
@@ -207,6 +395,7 @@ const LegalSearchService = (() => {
     let changed = false;
     const corrected = words.map((w) => {
       if (w.length < 4 || lex.has(w) || COMMON_WORDS.has(w)) return w;
+      if (BROKEN_ENGLISH_MAP[w]) { changed = true; return BROKEN_ENGLISH_MAP[w]; }
       let best = null, bestDist = (w.length >= 8 ? 2 : 1);
       for (const lw of lex) {
         if (lw[0] !== w[0]) continue;
@@ -219,7 +408,7 @@ const LegalSearchService = (() => {
     return { text: corrected.join(' '), changed };
   }
 
-  return { normalize, extractEntities, expandQuery, correctSpelling, detectCitation: (q) => extractEntities(q).mode === 'citation', SYNONYMS };
+  return { normalize, extractEntities, expandQuery, normalizeHinglish, correctSpelling, detectCitation: (q) => extractEntities(q).mode === 'citation', SYNONYMS };
 })();
 
 // --- Live corpus search: browser → Supabase PostgREST → hybrid retrieval ---
@@ -3097,11 +3286,15 @@ function classifyIntent(message, sessionMessages) {
   if (/\bv\.\s|\bvs\.?\s|\bversus\b|\bv\s+[a-z]\w*/i.test(q)) return 'legal_research';
   if (CASE_NAME_TRIGGERS.some((n) => q.includes(n))) return 'legal_research';
 
-  // 3. Drafting intent
+  // 3. Hinglish legal phrases — legal intent in Roman Hindi
+  const HINGLISH_LEGAL = ["jamanat","girftari","girafftari","kanoon","kanun","mukadma","muqadma","dafa","dhara","talaq","dahej","chori","hatya","balatkar","vivad","adhikar","adhikaar","haq","jameen","zameen","jaaydad","jaydad","sampatti","vasiyat","saza","saja","ilzaam","gawah","saboot","vakeel","wakeel","kachehri","nafka","gujara","kabza","kiraya","makaan","udhaar","karz","rasid","warrant","cheque","fir","police","judge","appeal","saza","dand","jurmana","harzana","muaavza","mauvza","pension","naukri","salary","tanakhwa"];
+  if (HINGLISH_LEGAL.some((p) => q.includes(p))) return 'legal';
+
+  // 4. Drafting intent
   if (/\b(draft|prepare|format of|template of)\b/.test(q) &&
       /(notice|agreement|affidavit|plaint|petition|deed|contract|mou|power of attorney|legal)/.test(q)) return 'drafting';
 
-  // 4. Strong legal signals
+  // 5. Strong legal signals
   const legalHit = LEGAL_PHRASES.some((p) => q.includes(p));
   const researchHit = /\b(compare|contrary|landmark|ratio decidendi|obiter|dissenting|research|which cases|case law|jurisprudence)\b/.test(q);
   if (legalHit) return researchHit ? 'legal_research' : 'legal';
@@ -3128,7 +3321,9 @@ function isLegalIntent(intent) {
 }
 
 // --- 🗣️ Language auto-detection: reply in the language the user writes ---
-const STRONG_HINGLISH = ["kya","hai","hain","kaise","kaisa","kyu","kyon","aap","aapka","aapki","aapko","tum","tumhara","tumhare","tumne","tumko","mujhe","mujhko","tujhe","tujhko","hum","humko","hame","hamara","hamari","mera","meri","tere","teri","apna","apne","apni","chahiye","nahi","nahin","hoga","hogi","honge","raha","rahi","rahe","bolo","batao","bata","batana","bataya","bolna","bol","karna","karo","kar","karte","karti","jaise","waisa","kaun","kab","kahan","kitna","kitne","accha","acha","theek","bhai","yaar","yaha","waha","abhi","aaj","kal","baat","kaam","kuch","kuchh","pata","samajh","samjho","samjha","dekh","dekho","dekha","suno","sun","suna","jao","jana","aao","aana","chalo","chal","shukriya","dhanyawad","haan","lekin","magar","phir","sahi","galat","mast","badhiya","pakka","thoda","thodi","zyada","jaldi","waqt","samay","kabhi","jab","tab","kyunki","warna","bas","bhi","toh","arre","oye","behen","didi","bhabhi","sasur","kyaa","kaisa","kahan","kaun","kaise","karo","karte"];
+const STRONG_HINGLISH = ["kya","hai","hain","kaise","kaisa","kyu","kyon","aap","aapka","aapki","aapko","tum","tumhara","tumhare","tumne","tumko","mujhe","mujhko","tujhe","tujhko","hum","humko","hame","hamara","hamari","mera","meri","tere","teri","apna","apne","apni","chahiye","nahi","nahin","hoga","hogi","honge","raha","rahi","rahe","bolo","batao","bata","batana","bataya","bolna","bol","karna","karo","kar","karte","karti","jaise","waisa","kaun","kab","kahan","kitna","kitne","accha","acha","theek","bhai","yaar","yaha","waha","abhi","aaj","kal","baat","kaam","kuch","kuchh","pata","samajh","samjho","samjha","dekh","dekho","dekha","suno","sun","suna","jao","jana","aao","aana","chalo","chal","shukriya","dhanyawad","haan","lekin","magar","phir","sahi","galat","mast","badhiya","pakka","thoda","thodi","zyada","jaldi","waqt","samay","kabhi","jab","tab","kyunki","warna","bas","bhi","toh","arre","oye","behen","didi","bhabhi","sasur","kyaa","kaisa","kahan","kaun","kaise","karo","karte",
+  // Functional words that make Hinglish unmistakable
+  "mein","ko","ka","ki","ke","se","ne","na","par","pe","ho","hoon","yeh","ye","woh","wo","wo","kis","kisi","kijiye","karein","karen","karega","karegi","milega","milegi","hota","hoti","hote","dena","dena","lena","dilwa","karwa","karwana","banwana","lagana","lagta","lagti","khilaf","andhar","bahar","andar","pehle","baad","sath","saath","bina","bager","bagair","keval","sirf","bahut","zaroorat","zarurat","madad","help karo","samjha","samjhao","batao","puchhna","poochna","puchna"];
 
 function detectLanguage(text) {
   const s = String(text || '');
@@ -4986,18 +5181,33 @@ async function sendChatMessage(userText, options) {
   const intent = classifyIntent(userText, sessionMessages);
   const legalIntent = isLegalIntent(intent);
 
+  const detectedLang = detectLanguage(userText);
+  const lang = (detectedLang !== 'en') ? detectedLang : (localStorage.getItem('jurisai_language') || 'en');
+
   // === Pass 1 (Retrieval): only for legal intent ===
   // SEARCH FIRST: entity extraction → targeted retrieval (court/year/mode filters).
   // Relevance gate: only sources that actually match are injected — never the whole corpus.
+  // Hinglish / Devanagari / broken English → normalized to English legal concepts
+  // so retrieval finds the right authority (the answer stays in the user's language).
   let pack = null;
   let retrievedSources = [];
   if (legalIntent) {
     const entities = LegalSearchService.extractEntities(userText);
     const sourceLimit = AppState.researchMode === 'deep' ? 8 : 4;
 
-    pack = computeEvidencePack(userText);
+    let searchQuery = userText;
+    if (detectedLang === 'hinglish' || detectedLang === 'hi') {
+      searchQuery = LegalSearchService.normalizeHinglish(userText);
+    }
+    // Broken English: correct spellings before searching (original query preserved)
+    if (detectedLang === 'en') {
+      const correction = LegalSearchService.correctSpelling(userText);
+      searchQuery = correction.text;
+    }
+
+    pack = computeEvidencePack(searchQuery);
     try {
-      const remoteSources = await supabaseSearchLegal(userText, sourceLimit, {
+      const remoteSources = await supabaseSearchLegal(searchQuery, sourceLimit, {
         court: entities.courts[0] || null,
         year: entities.years[0] || null,
         docType: entities.mode === 'case' || entities.mode === 'citation' ? 'judgment' : null,
@@ -5044,8 +5254,6 @@ async function sendChatMessage(userText, options) {
     });
   }
 
-  const detectedLang = detectLanguage(userText);
-  const lang = (detectedLang !== 'en') ? detectedLang : (localStorage.getItem('jurisai_language') || 'en');
   const savedPersona = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
   const advocateMode = savedPersona === 'advocate' ? 'senior_advocate' : savedPersona;
 
@@ -5184,6 +5392,7 @@ If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets yo
 9. UNCERTAINTY IS A FEATURE: It is correct and professional to say "I don't have enough verified information to answer that reliably" or "I found conflicting authorities — the position may depend on jurisdiction and facts." Never trade accuracy for a confident-looking answer.
 10. If the user asks in Hindi, answer in Hindi (Devanagari). If the user asks in Hinglish (Roman Hindi), answer in natural Hinglish. Keep official statute names in official form.
 11. LEGAL ANSWER REQUIREMENT (never violate): When the user asks a question that is clearly legal (a case, judgment, court, statute, Article or Section), NEVER respond with a generic conversational message like "Happy to help! What would you like to know?". You MUST attempt to answer the question. If verified legal sources are available, use them. If they are unavailable, say you cannot reliably verify the answer. Never replace an understandable legal question with "How can I help?". Never fabricate an answer merely to avoid saying information is unavailable.
+11. HINGLISH / BROKEN ENGLISH UNDERSTANDING: Users may type Hinglish (Roman Hindi), Devanagari Hindi, or imperfect/broken English. Interpret the LEGAL INTENT behind imperfect phrasing — e.g., 'beti ko property mein haq hai' means the daughter's right in property (Hindu Succession / coparcenary); 'police bina warrant arrest kar sakti hai' means arrest without warrant (BNSS 2023); 'jamanat kaise milegi' means how to get bail; 'cheque kat gaya' means cheque bounce (NI Act Section 138); 'talaq dena hai' means seeking divorce. Never lecture users about their language, never mock imperfect grammar — quietly understand the intent and answer in the same language/style the user used.
 LAW AS-OF DATE (CURRENT LAW CONTEXT): ${AppState.asOfDate || '2026-08-11'} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).`;
 
   const messages = [
