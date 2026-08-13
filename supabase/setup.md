@@ -21,8 +21,9 @@ In **SQL Editor → New query**, paste and run each file from this repo:
 | Order | File | What it does |
 |---|---|---|
 | 1 | `supabase/schema.sql` | Tables: legal_documents, legal_chunks, cases, citations, conversations |
-| 2 | `supabase/search_functions.sql` | Hybrid search + citation verifier functions + Row Level Security |
-| 3 | `supabase/seed.sql` | Seeds all **28 verified authorities** (Constitution, BNS/BNSS/BSA, Central Acts, SC Constitution Bench judgments) |
+| 2 | `supabase/search_functions.sql` | Hybrid search + citation verifier functions (no policies — safe to re-run) |
+| 3 | `supabase/policies.sql` | Row Level Security policies (idempotent — drop-if-exists guards) |
+| 4 | `supabase/seed.sql` | Seeds all **28 verified authorities** (Constitution, BNS/BNSS/BSA, Central Acts, SC Constitution Bench judgments) |
 
 **Verify it worked:**
 
