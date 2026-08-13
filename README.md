@@ -2,6 +2,23 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## ⚡ Production Legal AI Engine
+
+Real conversational legal AI — not a demo wrapper:
+
+- **True streaming** — tokens render as they arrive from Groq (SSE through `/api/chat`), with a **⏹️ Stop generating** control and AbortController.
+- **Conversation memory** — recent turns + an automatic summary of older messages (bounded window), so "which cases expanded *it*?" resolves correctly.
+- **Regenerate / Save / Copy / Read Aloud** actions on every answer; retry UI on network failure.
+- **Quick ⚡ / Deep ⚖️ Research modes** — Deep mode runs a wider source sweep with contrary-authority analysis.
+- **Retrieval-first answers** — matched legal-library sources are injected into the model as evidence ("AUTHORITATIVE SOURCES"), not left to model memory.
+- **Auto conversation titles** — "Article 21 Research", "BNS Section 103"…
+- **Contextual follow-up chips** — related questions generated from the actual answer (English/Hindi).
+- **Concise "cut to cut" answers** — direct first line, bullets, no filler openers; length scales with question complexity.
+- **Persona modes** — Advocate, Law Student, Citizen, Business.
+- **Rate limiting (30 req/min/IP), input validation, streaming error handling, and observability logs** (request ID, model, latency, tokens — never keys).
+- **Prompt-injection defense** — retrieved/user documents are treated as DATA, never instructions.
+
+---
 ## 🛡️ Anti-Hallucination Trust Engine
 
 Barrister never answers from memory alone. Every reply passes a **trust pipeline**:
