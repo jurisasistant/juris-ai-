@@ -3104,6 +3104,14 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
 .evidence-cite { border-left: 3px solid rgba(16,185,129,0.6); }
+.evidence-live {
+  border-left: 3px solid rgba(59, 130, 246, 0.55);
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.07), rgba(255, 255, 255, 0.65)) !important;
+}
+[data-theme="dark"] .evidence-live {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.14), rgba(24, 24, 24, 0.5)) !important;
+}
+
 .evidence-removed { border-left: 3px solid rgba(239,68,68,0.6); opacity: 0.85; }
 
 @media (max-width: 480px) {

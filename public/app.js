@@ -20,6 +20,59 @@ const AppState = {
   kbSearchTerm: ''
 };
 
+// ==========================================================================
+// 🗄️ SUPABASE LEGAL CORPUS (live RAG layer)
+// Paste your project URL + anon key below (anon key is safe for browsers).
+// Full setup guide: supabase/setup.md
+// ==========================================================================
+const SUPABASE_CONFIG = {
+  url: 'YOUR_SUPABASE_PROJECT_URL',
+  anonKey: 'YOUR_SUPABASE_ANON_KEY'
+};
+
+function isSupabaseConfigured() {
+  return !!(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey &&
+    !String(SUPABASE_CONFIG.url).includes('YOUR_') &&
+    !String(SUPABASE_CONFIG.anonKey).includes('YOUR_'));
+}
+
+// --- Live corpus search: browser → Supabase PostgREST → hybrid retrieval ---
+async function supabaseSearchLegal(queryText, limit) {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const base = String(SUPABASE_CONFIG.url).replace(/\/$/, '');
+    const response = await fetch(base + '/rest/v1/rpc/search_legal_docs', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_CONFIG.anonKey,
+        'Authorization': 'Bearer ' + SUPABASE_CONFIG.anonKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query_text: queryText, match_count: limit || 8 })
+    });
+    if (!response.ok) return [];
+    const rows = await response.json();
+    if (!Array.isArray(rows) || !rows.length) return [];
+    return rows.map((r) => ({
+      id: 'sb_' + (r.chunk_id || Math.random().toString(36).slice(2)),
+      title: r.title || 'Legal source',
+      statutes: [r.section_number, r.citation].filter(Boolean).join(' · '),
+      excerpt: String(r.chunk_text || '').slice(0, 900),
+      authority_level: r.authority_level || 'primary',
+      weight: r.authority_level === 'primary' ? 1 : 0.8,
+      category: r.document_type || 'statute',
+      court: r.court || '',
+      judgment_date: r.judgment_date || '',
+      source_url: r.source_url || '',
+      official_source: r.official_source || '',
+      verified: !!r.verified,
+      remote: true
+    }));
+  } catch (err) {
+    return [];
+  }
+}
+
 // --- Jurisdiction Display Metadata ---
 const JURISDICTION_INFO = {
   IN: { name: 'India (Bharat — Samvidhan & Central Acts)', flag: '🇮🇳', code: 'IN' },
@@ -1088,16 +1141,27 @@ function buildEvidencePanel(pack) {
   if (!pack || pack.level === 'CONV') return '';
   const parts = [];
   if (pack.sources && pack.sources.length) {
-    const items = pack.sources.map((s) => `
-      <div class="evidence-source-item">
-        <span class="evidence-source-type">${s.weight >= 1 ? '📜 PRIMARY' : '📚 AUTHORITY'}</span>
+    const items = pack.sources.map((s) => {
+      const remote = !!s.remote;
+      const typeLabel = remote
+        ? '🌐 LIVE · ' + ((s.weight >= 1) ? 'PRIMARY' : 'AUTHORITY')
+        : (s.weight >= 1 ? '📜 PRIMARY' : '📚 AUTHORITY');
+      const courtLine = (s.court || s.judgment_date) ? `<div class="evidence-source-statutes">${barristerEscape([s.court, s.judgment_date].filter(Boolean).join(' · '))}</div>` : '';
+      const openAction = remote && s.source_url
+        ? `<a class="evidence-source-open" href="${barristerEscape(s.source_url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>`
+        : `<button class="evidence-source-open" onclick="openEvidenceSource('${s.id}')">Open ↗</button>`;
+      return `
+      <div class="evidence-source-item${remote ? ' evidence-live' : ''}">
+        <span class="evidence-source-type">${typeLabel}</span>
         <div class="evidence-source-text">
           <div class="evidence-source-title">${barristerEscape(s.title)}</div>
           <div class="evidence-source-statutes">${barristerEscape(s.statutes)}</div>
+          ${courtLine}
         </div>
-        <button class="evidence-source-open" onclick="openEvidenceSource('${s.id}')">Open ↗</button>
-      </div>`).join('');
-    parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Evidence used (retrieved from the verified legal library)</div>${items}</div>`);
+        ${openAction}
+      </div>`;
+    }).join('');
+    parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Evidence used (retrieved from the legal corpus)</div>${items}</div>`);
   }
   if (pack.verifiedCites && pack.verifiedCites.length) {
     const cites = pack.verifiedCites.map((c) => `<div class="evidence-source-item evidence-cite"><span class="evidence-source-type">⚖️ VERIFIED</span><div class="evidence-source-text"><div class="evidence-source-title">${barristerEscape(c.name)}</div><div class="evidence-source-statutes">${barristerEscape(c.cite)}</div></div></div>`).join('');
@@ -2993,17 +3057,29 @@ async function sendChatMessage(userText, options) {
   const legalIntent = isLegalIntent(intent);
 
   // === Pass 1 (Retrieval): only for legal intent ===
+  // Two layers: live Supabase corpus first, curated in-app library second.
   let pack = null;
   let retrievedSources = [];
   if (legalIntent) {
     pack = computeEvidencePack(userText);
     const sourceLimit = AppState.researchMode === 'deep' ? 8 : 4;
+    try {
+      const remoteSources = await supabaseSearchLegal(userText, sourceLimit);
+      if (remoteSources.length) {
+        const seen = new Set(remoteSources.map((r) => String(r.title || '').toLowerCase().slice(0, 50)));
+        const localRest = pack.sources.filter((s) => !seen.has(String(s.title || '').toLowerCase().slice(0, 50)));
+        pack.sources = remoteSources.concat(localRest).slice(0, 8);
+        pack.sourceCount = Math.max(pack.sourceCount, remoteSources.length);
+        pack.evidence = Math.max(pack.evidence, 0.82);
+        pack.level = pack.evidence >= 0.7 ? 'HIGH' : (pack.evidence >= 0.4 ? 'MEDIUM' : 'LOW');
+      }
+    } catch (err) { /* live corpus optional — continue with local library */ }
     retrievedSources = pack.sources.slice(0, sourceLimit).map((s) => {
       const art = KNOWLEDGE_BASE_ARTICLES.find((a) => a.id === s.id);
       // Feed the FULL authority: summary + statute text + landmark precedents
       const excerpt = art
         ? [art.executiveSummary, art.governingStatutes, art.landmarkPrecedents].filter(Boolean).join('\n')
-        : (s.title || '');
+        : (s.excerpt || s.title || '');
       return {
         title: s.title,
         statutes: s.statutes,

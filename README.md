@@ -2,6 +2,17 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🗄️ Supabase Integration (ready)
+
+The app is wired for a live legal corpus — setup takes ~10 minutes (`supabase/setup.md`):
+
+1. Create a Supabase project (region: **Mumbai ap-south-1**) and enable the **vector** extension.
+2. Run the SQL in order: `supabase/schema.sql` → `supabase/search_functions.sql` → `supabase/seed.sql` (seeds all 28 verified authorities).
+3. Paste your Project URL + anon key into `SUPABASE_CONFIG` in `app.js`.
+
+Retrieval then runs **two layers**: the live Supabase corpus (full-text hybrid search + authority ranking, RLS-protected, `verified`-only) first, then the curated in-app library. Live sources appear in "Why this answer?" with a **🌐 LIVE** badge and an external "Open ↗" link to the official source. The SQL includes a pgvector semantic-search function (`match_legal_docs`) that activates automatically once embeddings are added.
+
+---
 ## 🗄️ Legal RAG Roadmap (Supabase + pgvector)
 
 The app currently ships a **curated verified legal library** (Constitution of India, BNS/BNSS/BSA 2023, Central Acts, and Supreme Court Constitution Bench judgments incl. Ram Janmabhoomi–Ayodhya, Sabarimala, Triple Talaq, Navtej Singh Johar, Aadhaar, Joseph Shine) — retrieved at answer time and injected into the model as evidence.

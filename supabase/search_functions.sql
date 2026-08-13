@@ -1,0 +1,205 @@
+-- ============================================================================
+-- JURISAI BHARAT — RETRIEVAL FUNCTIONS (run AFTER schema.sql)
+-- 1. search_legal_docs()  — hybrid retrieval used by the app today
+--    (Postgres full-text search + authority re-ranking; no API key needed)
+-- 2. match_legal_docs()   — pgvector semantic search, activates when you
+--    later generate embeddings (Phase: embeddings provider)
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- FTS-based hybrid retrieval (query_text path is used by the live app now)
+-- ---------------------------------------------------------------------------
+create or replace function public.search_legal_docs(
+  query_text text default null,
+  query_embedding vector(1536) default null,
+  match_count int default 8
+)
+returns table (
+  chunk_id uuid,
+  document_id uuid,
+  title text,
+  document_type text,
+  court text,
+  judgment_date date,
+  citation text,
+  section_number text,
+  chunk_text text,
+  authority_level text,
+  source_url text,
+  official_source text,
+  verified boolean,
+  score float
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  -- Path A: semantic search (only when embeddings exist)
+  if query_embedding is not null then
+    return query
+      select c.id, c.document_id, d.title, d.document_type, d.court, d.judgment_date,
+             d.citation, c.section_number, c.chunk_text, d.authority_level,
+             d.source_url, d.official_source, d.verified,
+             round((1 - (c.embedding <=> query_embedding))::numeric, 4)::float as score
+      from public.legal_chunks c
+      join public.legal_documents d on d.id = c.document_id
+      where d.verified = true
+        and c.embedding is not null
+      order by c.embedding <=> query_embedding
+      limit match_count;
+  end if;
+
+  -- Path B: full-text search (keyword) — used by the app today
+  if query_text is not null and length(trim(query_text)) > 0 then
+    begin
+      return query
+        select c.id, c.document_id, d.title, d.document_type, d.court, d.judgment_date,
+               d.citation, c.section_number, c.chunk_text, d.authority_level,
+               d.source_url, d.official_source, d.verified,
+               round((
+                 ts_rank(to_tsvector('english', c.chunk_text), websearch_to_tsquery('english', query_text))
+                 + case d.authority_level when 'primary' then 0.5 when 'secondary' then 0.2 else 0.0 end
+               )::numeric, 4)::float as score
+        from public.legal_chunks c
+        join public.legal_documents d on d.id = c.document_id
+        where d.verified = true
+          and to_tsvector('english', c.chunk_text) @@ websearch_to_tsquery('english', query_text)
+        order by score desc
+        limit match_count;
+    exception when others then
+      -- websearch_to_tsquery can throw on odd punctuation — degrade gracefully
+      return query
+        select c.id, c.document_id, d.title, d.document_type, d.court, d.judgment_date,
+               d.citation, c.section_number, c.chunk_text, d.authority_level,
+               d.source_url, d.official_source, d.verified,
+               0.1::float as score
+        from public.legal_chunks c
+        join public.legal_documents d on d.id = c.document_id
+        where d.verified = true
+          and (d.title ilike '%' || query_text || '%' or c.section_number ilike '%' || query_text || '%')
+        order by d.authority_level desc
+        limit match_count;
+    end;
+  end if;
+
+  -- Path C: no query — newest verified authorities
+  return query
+    select c.id, c.document_id, d.title, d.document_type, d.court, d.judgment_date,
+           d.citation, c.section_number, c.chunk_text, d.authority_level,
+           d.source_url, d.official_source, d.verified,
+           0.0::float as score
+    from public.legal_chunks c
+    join public.legal_documents d on d.id = c.document_id
+    where d.verified = true
+    order by d.updated_at desc
+    limit match_count;
+end $$;
+
+-- ---------------------------------------------------------------------------
+-- Citation verifier: is this citation in the approved corpus?
+-- ---------------------------------------------------------------------------
+create or replace function public.verify_citation(cite text)
+returns table (
+  case_name text,
+  citation text,
+  court text,
+  judgment_date date,
+  source_url text,
+  verified boolean
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select case_name, citation, court, judgment_date, source_url, verified
+  from public.cases
+  where lower(citation) = lower(trim(cite))
+     or lower(case_name) = lower(trim(cite))
+  limit 1;
+$$;
+
+-- ---------------------------------------------------------------------------
+-- Pure vector search (used later, when embeddings are generated server-side)
+-- ---------------------------------------------------------------------------
+create or replace function public.match_legal_docs(
+  query_embedding vector(1536),
+  match_count int default 8
+)
+returns table (
+  chunk_id uuid,
+  document_id uuid,
+  title text,
+  section_number text,
+  chunk_text text,
+  similarity float
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select c.id, c.document_id, d.title, c.section_number, c.chunk_text,
+         round((1 - (c.embedding <=> query_embedding))::numeric, 4)::float as similarity
+  from public.legal_chunks c
+  join public.legal_documents d on d.id = c.document_id
+  where d.verified = true
+    and c.embedding is not null
+  order by c.embedding <=> query_embedding
+  limit match_count;
+$$;
+
+-- ---------------------------------------------------------------------------
+-- Row Level Security: anonymous users may READ verified legal content only.
+-- (The app calls search functions with the public anon key — safe by design.)
+-- ---------------------------------------------------------------------------
+alter table public.legal_documents enable row level security;
+alter table public.legal_chunks enable row level security;
+alter table public.cases enable row level security;
+alter table public.citations enable row level security;
+alter table public.conversations enable row level security;
+alter table public.conversation_messages enable row level security;
+
+drop policy if exists "anon read verified documents" on public.legal_documents;
+create policy "anon read verified documents" on public.legal_documents
+  for select using (verified = true);
+
+drop policy if exists "anon read verified chunks" on public.legal_chunks;
+create policy "anon read verified chunks" on public.legal_chunks
+  for select using (
+    exists (select 1 from public.legal_documents d where d.id = document_id and d.verified = true)
+  );
+
+drop policy if exists "anon read verified cases" on public.cases;
+create policy "anon read verified cases" on public.cases
+  for select using (verified = true);
+
+drop policy if exists "anon read citations" on public.citations;
+create policy "anon read citations" on public.citations
+  for select using (verified = true);
+
+drop policy if exists "anon read own conversations" on public.conversations;
+create policy "anon read own conversations" on public.conversations
+  for select using (user_id = auth.uid());
+create policy "anon insert conversations" on public.conversations
+  for insert with check (user_id = auth.uid());
+
+drop policy if exists "anon read own messages" on public.conversation_messages;
+create policy "anon read own messages" on public.conversation_messages
+  for select using (
+    exists (select 1 from public.conversations c where c.id = conversation_id and c.user_id = auth.uid())
+  );
+create policy "anon insert messages" on public.conversation_messages
+  for insert with check (
+    exists (select 1 from public.conversations c where c.id = conversation_id and c.user_id = auth.uid())
+  );
+
+-- ---------------------------------------------------------------------------
+-- Grants: search functions run with definer rights (bypass RLS internally),
+-- callable by the anonymous frontend key.
+-- ---------------------------------------------------------------------------
+revoke execute on function public.search_legal_docs(text, vector, int) from public;
+grant execute on function public.search_legal_docs(text, vector, int) to anon, authenticated, service_role;
+revoke execute on function public.verify_citation(text) from public;
+grant execute on function public.verify_citation(text) to anon, authenticated, service_role;
+revoke execute on function public.match_legal_docs(vector, int) from public;
+grant execute on function public.match_legal_docs(vector, int) to anon, authenticated, service_role;
