@@ -2,7 +2,6 @@
 -- JURISAI BHARAT — SEED DATA (auto-generated from the verified legal library)
 -- 88 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
 -- ============================================================================
-\set ON_ERROR_STOP on
 begin;
 
 do $$
