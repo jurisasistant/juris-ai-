@@ -59,6 +59,24 @@ MANDATORY CONSTITUTIONAL & STATUTORY TRAINING INSTRUCTIONS:
 9. UNCERTAINTY IS A FEATURE: It is correct and professional to say "I don't have enough verified information to answer that reliably", "The available authorities do not establish that proposition clearly", or "I found conflicting authorities — the position may depend on jurisdiction and facts." Never trade accuracy for a confident-looking answer.
 10. If the user asks in Hindi, answer in Hindi (Devanagari). If the user asks in Hinglish (Roman Hindi), answer in natural Hinglish. Keep official statute names in official form (e.g., Bharatiya Nyaya Sanhita, 2023).`;
 
+
+// --- Casual / general conversation system prompt (intent router) ---
+const CASUAL_GROQ_SYSTEM_PROMPT = `You are Barrister (Bharat Edition), a friendly conversational AI that is also an expert Indian legal research assistant.
+CONVERSATIONAL RULES (this message is casual / general chat):
+- Respond naturally and briefly: 1–3 short sentences. Warm, calm, direct.
+- Do NOT force the conversation into legal topics. Do NOT mention Indian law, the Constitution, BNS/BNSS/BSA, statutes, citations, sources, case law, or legal disclaimers unless the user actually asks about law.
+- You may discuss normal everyday topics (movies, cricket, food, music, general questions). If you don't know something general (e.g., live weather, current officeholders), say so simply and honestly.
+- Do NOT pretend to have human experiences: no physical body, no sleeping, no eating, no family, no personal day. You may say "I'm doing well, thanks!" but never "I had coffee this morning".
+- NEVER begin responses with "Here is an analysis", "Based on Indian jurisprudence", "Under the Constitution", "According to applicable law" — those are legal-mode openers only.
+- If the user DOES ask a legal question in this message, switch into legal mode: concise, accurate, source-grounded, with the integrity rules below.
+
+ANTI-HALLUCINATION (always active):
+- Never fabricate cases, citations, sections, quotes, judges, or dates.
+- If evidence is insufficient for a legal claim, say "I do not have sufficient authoritative evidence to answer this reliably."
+- If the user asks in Hindi, answer in Hindi; Hinglish → Hinglish.`;
+
+
+
 // --- Simple in-memory rate limiter (per warm serverless instance) ---
 const rateBuckets = new Map(); // ip -> [timestamps]
 const RATE_WINDOW_MS = 60000;
@@ -74,6 +92,17 @@ function rateLimited(ip) {
   arr.push(now);
   rateBuckets.set(ip, arr);
   return false;
+}
+
+// --- Server-side fallback intent classification (if client omits intent) ---
+function serverSideIntent(message) {
+  const q = String(message || '').toLowerCase().trim();
+  if (!q) return 'casual';
+  const casual = ["hows your day", "how is your day", "how was your day", "how are you", "whats up", "what's up", "what are you doing", "bored", "joke", "interesting", "fun fact", "good morning", "good evening", "good night", "good afternoon", "thanks", "thank you", "who are you", "what is your name", "weather", "cricket", "i love you", "love you", "i miss you", "what should i eat", "movie", "song", "play a game", "do you sleep", "do you eat", "are you a robot", "are you human"];
+  if (casual.some((p) => q.includes(p)) || /^(hi+|hello+|hey+)[\s!.?]*$/.test(q) || /^(namaste|namaskaram|pranam|yo|sup)$/.test(q)) return 'casual';
+  const legal = ["article", "section", "constitution", "samvidhan", "bns", "bnss", "bsa", "ipc", "crpc", "supreme court", "high court", "writ", "bail", "fir", "police", "arrest", "law", "legal", "lawyer", "advocate", "court", "judgment", "judgement", "contract", "divorce", "cheque", "petition", "rights", "crime", "criminal", "offence", "offense", "defamation", "custody", "maintenance", "evidence", "trial", "appeal", "murder", "theft", "rape", "draft"];
+  if (legal.some((p) => q.includes(p))) return 'legal';
+  return 'casual';
 }
 
 function clientIp(req) {
@@ -133,7 +162,8 @@ module.exports = async (req, res) => {
       advocateMode = 'senior_advocate',
       asOfDate = '2026-08-11',
       language = 'en',
-      stream = false
+      stream = false,
+      intent
     } = req.body;
 
     if (!message || typeof message !== 'string') {
@@ -165,17 +195,24 @@ module.exports = async (req, res) => {
       tonePrompt = 'Adopt a plain-English Citizen Advisory tone explaining constitutional rights clearly without jargon.';
     }
 
+    // 🧭 Intent router — casual chat must never trigger legal machinery
+    let resolvedIntent = (typeof intent === 'string' && intent) ? intent : serverSideIntent(message);
+    const casualIntent = resolvedIntent === 'casual';
+
     let languagePrompt = '';
     if (language === 'hi') languagePrompt = '\nLANGUAGE: Answer in Hindi (Devanagari script).';
     else if (language === 'hinglish') languagePrompt = '\nLANGUAGE: Answer in natural Hinglish (Roman Hindi).';
 
-    const sourcesBlock = buildSourcesBlock(retrievedSources);
-    const deepPrompt = mode === 'deep' ? '\nDEEP RESEARCH MODE: conduct thorough analysis — supporting AND contrary authorities, statutory sub-sections, and clear reasoning. If authorities conflict, say so.' : '';
+    const sourcesBlock = casualIntent ? null : buildSourcesBlock(retrievedSources);
+    const deepPrompt = (mode === 'deep' && !casualIntent) ? '\nDEEP RESEARCH MODE: conduct thorough analysis — supporting AND contrary authorities, statutory sub-sections, and clear reasoning. If authorities conflict, say so.' : '';
+    const draftingPrompt = resolvedIntent === 'drafting' ? '\nDRAFTING MODE: The user wants a legal document drafted (notice, agreement, affidavit, plaint, petition). Provide a clear, practical draft with placeholders like [Name], [Date], [Address].' : '';
 
     const messages = [
       {
         role: 'system',
-        content: `${BHARATIYA_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}\nPERSONA MODE: ${tonePrompt}\nLAW AS-OF DATE (CURRENT LAW CONTEXT): ${asOfDate} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).${languagePrompt}${deepPrompt}`
+        content: casualIntent
+          ? `${CASUAL_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}${languagePrompt}`
+          : `${BHARATIYA_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}\nPERSONA MODE: ${tonePrompt}\nLAW AS-OF DATE (CURRENT LAW CONTEXT): ${asOfDate} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).${languagePrompt}${deepPrompt}${draftingPrompt}`
       },
       ...(summary ? [{ role: 'user', content: '[Summary of earlier conversation]\n' + String(summary).slice(0, 1200) }] : []),
       ...history.slice(-8),
@@ -185,7 +222,7 @@ module.exports = async (req, res) => {
       }
     ];
 
-    const maxTokens = mode === 'deep' ? 3072 : (Number(process.env.GROQ_MAX_TOKENS) || 2048);
+    const maxTokens = casualIntent ? 400 : (mode === 'deep' ? 3072 : (Number(process.env.GROQ_MAX_TOKENS) || 2048));
     const finalTemperature = temperature !== undefined ? Number(temperature) : (Number(process.env.GROQ_TEMPERATURE) || 0.2);
 
     console.log(`[api/chat ${requestId}] start model=${groqModel} stream=${!!stream} mode=${mode} lang=${language}`);

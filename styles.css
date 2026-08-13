@@ -2926,6 +2926,21 @@ body {
 }
 
 /* Print Styling for Legal Documents & Legal Research Opinions */
+
+.ai-legal-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 99px;
+  color: var(--accent-gold, #a0823f);
+  background: rgba(198, 168, 107, 0.12);
+  border: 1px solid rgba(198, 168, 107, 0.4);
+}
+
 /* ============================================================
    🛡️ BARRISTER AI TRUST ENGINE — Evidence Badges & Source Panels
    ============================================================ */

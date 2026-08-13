@@ -2,6 +2,17 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🧭 Conversation Intent Router
+
+Being a legal AI does **not** mean every message is about law:
+
+- **Casual chat** ("how's your day?", "tell me a joke", "what's the weather?") → natural 1–3 sentence reply. No RAG, no citations, no evidence panel, no legal disclaimers, no "Legal Analysis" header.
+- **Legal intent** (Article 21, BNS sections, bail, writs, drafting) → full retrieval + citation verification + confidence gate + "Why this answer?" sources.
+- **Context-aware**: "which cases expanded *it*?" after an Article 21 discussion resolves to legal; "anyway, how's your day?" flips back to casual.
+- **Honest AI**: no fake human experiences ("I had coffee"), no forced legal framing of general questions, and the fixed "BARRISTER AI (BHARAT)" header is now conditional — casual messages show just "✦ Barrister", legal answers get the "⚖️ Legal Analysis" tag.
+- Router lives in the app (`classifyIntent`) with a server-side fallback classifier, so the API stays correct even if a client omits intent.
+
+---
 ## ⚡ Production Legal AI Engine
 
 Real conversational legal AI — not a demo wrapper:

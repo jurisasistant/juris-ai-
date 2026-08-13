@@ -958,11 +958,14 @@ function buildEvidencePanel(pack) {
   return `<details class="evidence-panel"><summary>🔍 Why this answer? <span class="evidence-summary-note">${pack.sourceCount || 0} verified source${pack.sourceCount === 1 ? '' : 's'}</span></summary><div class="evidence-panel-body">${parts.join('')}</div></details>`;
 }
 
-function buildAIBubbleHTML(htmlContent, pack) {
-  const badge = pack && pack.level && pack.level !== 'CONV'
-    ? `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">🛡️ ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`
-    : '';
-  return `<div class="ai-bubble-header"><span>✦ BARRISTER AI (BHARAT)</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
+function buildAIBubbleHTML(htmlContent, pack, intent) {
+  const legal = isLegalIntent(intent);
+  let badge = '';
+  if (legal && pack && pack.level && pack.level !== 'CONV') {
+    badge = `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">🛡️ ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`;
+  }
+  const legalTag = legal ? '<span class="ai-legal-tag">⚖️ Legal Analysis</span>' : '';
+  return `<div class="ai-bubble-header"><span>✦ Barrister</span>${legalTag}${badge}</div>` + htmlContent + (legal ? buildEvidencePanel(pack) : '');
 }
 
 window.openEvidenceSource = function (id) {
@@ -971,6 +974,119 @@ window.openEvidenceSource = function (id) {
   switchView('knowledge-view');
   if (typeof openKnowledgeDrawer === 'function') openKnowledgeDrawer(art);
 };
+
+// ==========================================================================
+// 🧭 CONVERSATION INTENT ROUTER
+// Being a legal AI does NOT mean every message is about law.
+// Casual chat → natural short reply (no RAG, no citations, no disclaimer).
+// Legal intent → full retrieval + verification + evidence pipeline.
+// ==========================================================================
+
+const CASUAL_PHRASES = [
+  "hows your day", "how is your day", "how was your day", "how is it going", "hows it going",
+  "how are you", "how r u", "how are u", "whats up", "what's up", "what are you doing", "what you doing", "whatcha doing",
+  "i am bored", "im bored", "i am sad", "im sad", "i am happy", "im happy", "i am tired", "im tired", "i am angry", "im angry",
+  "tell me a joke", "a joke", "something interesting", "interesting fact", "fun fact",
+  "what should i eat", "eat tonight", "dinner ideas", "lunch ideas",
+  "weather", "cricket", "ipl", "movie", "film", "song", "music", "play a game",
+  "i love you", "love you", "i miss you", "you are cute", "you are sweet", "you are smart", "you are funny", "you are awesome",
+  "good morning", "good evening", "good afternoon", "good night", "see you", "goodbye",
+  "who are you", "what is your name", "who made you", "who created you", "your creator",
+  "are you human", "are you a robot", "are you real", "do you sleep", "do you eat", "do you have a life",
+  "how do you feel", "what do you think", "your opinion", "what are you", "sakshamfit", "what can you do", "how to use"
+];
+
+const LEGAL_PHRASES = [
+  "article", "section", "constitution", "samvidhan", "bns", "bnss", "bsa", "ipc", "crpc",
+  "supreme court", "high court", "session court", "district court", "tribunal",
+  "writ", "habeas corpus", "mandamus", "certiorari", "quo warranto",
+  "bail", "fir", "police", "arrest", "custody", "detention",
+  "law", "legal", "lawyer", "advocate", "attorney", "court", "judge", "judgment", "judgement",
+  "precedent", "case law", "jurisprudence", "statute", "ordinance",
+  "contract", "divorce", "alimony", "maintenance", "custody of",
+  "property dispute", "cheque", "check bounce", "petition", "sue", "lawsuit", "litigation",
+  "fundamental right", "dpdp", "posh", "rti", "pmla", "gst", "tax law",
+  "offence", "offense", "crime", "criminal", "civil suit", "murder", "theft", "robbery",
+  "defamation", "harassment", "succession", "inheritance", "arbitration",
+  "company law", "labour law", "labor law", "tenant", "landlord", "eviction",
+  "stamp duty", "registration", "notary", "affidavit", "power of attorney",
+  "trademark", "copyright", "patent", "cyber law", "evidence", "trial", "appeal",
+  "jurisdiction", "amendment", "parliament", "legislature", "government notification"
+];
+
+function classifyIntent(message, sessionMessages) {
+  const q = String(message || '').toLowerCase().trim();
+  if (!q) return 'casual';
+
+  // 1. Strong casual signals — always win, even mid-legal-conversation
+  if (isSmallTalkPrompt(q)) return 'casual';
+  if (CASUAL_PHRASES.some((p) => q.includes(p))) return 'casual';
+
+  // 2. Drafting intent
+  if (/\b(draft|prepare|format of|template of)\b/.test(q) &&
+      /(notice|agreement|affidavit|plaint|petition|deed|contract|mou|power of attorney|legal)/.test(q)) return 'drafting';
+
+  // 3. Strong legal signals
+  const legalHit = LEGAL_PHRASES.some((p) => q.includes(p));
+  const researchHit = /\b(compare|contrary|landmark|ratio decidendi|obiter|dissenting|research|which cases|case law|jurisprudence)\b/.test(q);
+  if (legalHit) return researchHit ? 'legal_research' : 'legal';
+
+  // 4. Referential follow-up inside an active legal conversation ("which cases expanded it?")
+  const referential = /\b(it|this|that|those|these|the second case|the first case|above|which cases|explain more|elaborate|expand|what about|continue|tell me more)\b/.test(q);
+  if (referential && Array.isArray(sessionMessages) && sessionMessages.length) {
+    for (let i = sessionMessages.length - 1; i >= 0; i--) {
+      const m = sessionMessages[i];
+      if (m.role === 'ai') {
+        if (/(article|section|constitution|supreme court|bns|bnss|bsa|ipc|writ|bail|fir|court|law|case)/i.test(String(m.content || '').slice(0, 300))) return 'legal';
+        break;
+      }
+      if (m.role === 'user') break; // only inspect the last exchange
+    }
+  }
+
+  // 5. Default: casual / general conversation — never force legal mode
+  return 'casual';
+}
+
+function isLegalIntent(intent) {
+  return intent === 'legal' || intent === 'legal_research' || intent === 'drafting';
+}
+
+// --- Natural casual replies (offline fallback + guaranteed natural tone) ---
+function getCasualAIResponse(prompt) {
+  const q = String(prompt || '').toLowerCase().trim();
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  if (/(how'?s|how is|how was) your (day|morning|evening|week|weekend)/.test(q)) return "Pretty good 😄 Thanks for asking. How's your day going?";
+  if (/how are you|how r u|how are u/.test(q)) return "I'm doing well! Thanks for asking. How about you?";
+  if (/what'?s up|whats up|\bsup\b/.test(q)) return "Not much — I'm here and ready to help 😄 What's up with you?";
+  if (/what are you doing|what you doing|whatcha doing/.test(q)) return "Just here and ready to help 😄 What are you working on?";
+  if (/bored/.test(q)) return "Let's fix that 😄 Want a quick game, something interesting to learn, or just chat?";
+  if (/joke/.test(q)) return pick([
+    "Why did the judge bring a ladder to court? To reach the higher court 😄",
+    "What did the lawyer name his daughter? Sue 😄",
+    "Why do lawyers never play hide and seek? Because good luck hiding when they always find the loophole 😄"
+  ]);
+  if (/interesting|fun fact/.test(q)) return pick([
+    "Here's one: octopuses have three hearts 🐙",
+    "The Constitution of India is the longest written constitution in the world 📜",
+    "India's courts have over 4 crore pending cases — one reason legal AI matters 😄"
+  ]);
+  if (/weather/.test(q)) return "I don't have live weather data here — tell me your city and I can point you to what to check. (I'm best at Indian law 😄)";
+  if (/prime minister|president|election/.test(q)) return "I can't reliably confirm current officeholders — please check official government sources for the latest. I'm specialized in Indian law.";
+  if (/cricket|ipl/.test(q)) return "I can chat about cricket casually, but I don't track live matches — I'm an Indian legal research assistant at heart 😄";
+  if (/good morning/.test(q)) return "Good morning! ☀️ Hope you're having a good one.";
+  if (/good evening/.test(q)) return "Good evening! 🌆 How's your day been?";
+  if (/good night/.test(q)) return "Good night! 😴";
+  if (/good afternoon/.test(q)) return "Good afternoon! 😊";
+  if (/thank|thanks/.test(q)) return "You're welcome! 👍";
+  if (/i love you|love you/.test(q)) return "That's sweet 😄 I'm here to help whenever you need.";
+  if (/who are you|what is your name|who made you|who created you|are you a robot|are you human/.test(q)) return "I'm Barrister (Bharat Edition) — an Indian legal research AI designed & developed with ❤️ by sakshamfit. Nice to meet you 😄";
+  return pick([
+    "I'm here and ready to help 😄 Ask me about Indian law — Constitution, BNS/BNSS, Supreme Court cases — or we can just chat.",
+    "Happy to help 😄 What would you like to know — or just chatting?",
+    "I'm all ears 😄"
+  ]);
+}
 
 // --- Streaming client: browser → /api/chat (SSE) → Groq ---
 async function streamBackendChat(prompt, jurisdictionCode, opts = {}) {
@@ -2627,19 +2743,28 @@ async function sendChatMessage(userText, options) {
   const bubbleRoot = targetElement.closest('.chat-message');
   const stopGenBtn = bubbleRoot ? bubbleRoot.querySelector('[data-action="stopgen"]') : null;
 
-  // === Pass 1 (Retrieval): pull verified sources from the legal library FIRST ===
-  const pack = computeEvidencePack(userText);
-  const sourceLimit = AppState.researchMode === 'deep' ? 5 : 3;
-  const retrievedSources = pack.sources.slice(0, sourceLimit).map((s) => {
-    const art = KNOWLEDGE_BASE_ARTICLES.find((a) => a.id === s.id);
-    const excerpt = art ? (art.executiveSummary || art.summary || '') : '';
-    return {
-      title: s.title,
-      statutes: s.statutes,
-      excerpt: excerpt.slice(0, 420),
-      authority_level: s.weight >= 1 ? 'primary' : 'secondary'
-    };
-  });
+  // === 🧭 Intent router: casual chat must NOT trigger legal machinery ===
+  const sessionMessages = currentSession ? currentSession.messages : [];
+  const intent = classifyIntent(userText, sessionMessages);
+  const legalIntent = isLegalIntent(intent);
+
+  // === Pass 1 (Retrieval): only for legal intent ===
+  let pack = null;
+  let retrievedSources = [];
+  if (legalIntent) {
+    pack = computeEvidencePack(userText);
+    const sourceLimit = AppState.researchMode === 'deep' ? 5 : 3;
+    retrievedSources = pack.sources.slice(0, sourceLimit).map((s) => {
+      const art = KNOWLEDGE_BASE_ARTICLES.find((a) => a.id === s.id);
+      const excerpt = art ? (art.executiveSummary || art.summary || '') : '';
+      return {
+        title: s.title,
+        statutes: s.statutes,
+        excerpt: excerpt.slice(0, 420),
+        authority_level: s.weight >= 1 ? 'primary' : 'secondary'
+      };
+    });
+  }
 
   const lang = localStorage.getItem('jurisai_language') || 'en';
   const savedPersona = localStorage.getItem('jurisai_advocate_mode') || 'senior_advocate';
@@ -2660,7 +2785,7 @@ async function sendChatMessage(userText, options) {
     renderPending = true;
     requestAnimationFrame(() => {
       renderPending = false;
-      targetElement.innerHTML = buildAIBubbleHTML(formatLegalMarkdown(aiText), null);
+      targetElement.innerHTML = buildAIBubbleHTML(formatLegalMarkdown(aiText), null, intent);
       if (messagesArea.scrollHeight - messagesArea.scrollTop - messagesArea.clientHeight < 180) {
         messagesArea.scrollTop = messagesArea.scrollHeight;
       }
@@ -2676,6 +2801,7 @@ async function sendChatMessage(userText, options) {
       advocateMode: advocateMode,
       language: lang,
       retrievedSources: retrievedSources,
+      intent: intent,
       signal: controller.signal,
       onDelta: (delta) => { aiText += delta; scheduleRender(); }
     });
@@ -2694,7 +2820,8 @@ async function sendChatMessage(userText, options) {
         asOfDate: AppState.asOfDate || '2026-08-11',
         advocateMode: advocateMode,
         language: lang,
-        retrievedSources: retrievedSources
+        retrievedSources: retrievedSources,
+        intent: intent
       });
     } catch (err) {
       aiText = '';
@@ -2702,8 +2829,10 @@ async function sendChatMessage(userText, options) {
   }
 
   if (!aiText && !stoppedEarly) {
-    // Fallback: embedded Smart Bharatiya Legal Simulation Engine (curated & verified)
-    aiText = getAILegalResponse(userText, AppState.jurisdiction);
+    // Fallback: legal simulation engine OR natural casual reply engine
+    aiText = legalIntent
+      ? getAILegalResponse(userText, AppState.jurisdiction)
+      : getCasualAIResponse(userText);
   }
 
   if (!aiText) {
@@ -2712,25 +2841,28 @@ async function sendChatMessage(userText, options) {
     return;
   }
 
-  // === Pass 3+4 (Verification + Confidence gate): source-grounded answer ===
-  const citationCheck = verifyAndCleanCitations(aiText);
-  pack.verifiedCites = citationCheck.verifiedCites;
-  pack.removedCites = citationCheck.removed;
-  let trustText = applyEvidenceGate(citationCheck.cleanedText, pack);
-  if (citationCheck.removed.length) {
-    trustText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
+  // === Pass 3+4 (Verification + Confidence gate): LEGAL intent only ===
+  let trustText = aiText;
+  if (legalIntent && pack) {
+    const citationCheck = verifyAndCleanCitations(aiText);
+    pack.verifiedCites = citationCheck.verifiedCites;
+    pack.removedCites = citationCheck.removed;
+    trustText = applyEvidenceGate(citationCheck.cleanedText, pack);
+    if (citationCheck.removed.length) {
+      trustText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
+    }
   }
   if (stoppedEarly) {
     trustText += '\n\n_⏹️ Generation stopped by you — showing what was completed._';
   }
 
   const formattedHTML = formatLegalMarkdown(trustText);
-  const finalHTML = buildAIBubbleHTML(formattedHTML, pack) + buildFollowUpChips(userText, pack, lang);
+  const finalHTML = buildAIBubbleHTML(formattedHTML, pack, intent) + (legalIntent ? buildFollowUpChips(userText, pack, lang) : '');
   targetElement.innerHTML = finalHTML;
   if (stopGenBtn) stopGenBtn.style.display = 'none';
   messagesArea.scrollTop = messagesArea.scrollHeight;
 
-  currentSession.messages.push({ role: 'ai', content: trustText });
+  currentSession.messages.push({ role: 'ai', content: trustText, intent: intent });
   if (currentSession.messages.length === 2) {
     // Auto-title the conversation after the first meaningful exchange
     currentSession.title = smartConversationTitle(userText);
@@ -2864,12 +2996,12 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
 
   if (isTyping && !contentText) {
     if (elementId) bubbleDiv.id = elementId;
-    bubbleDiv.innerHTML = `<span style="opacity:0.6;font-style:italic;">⚖️ Barrister is analyzing Bharatiya Constitution & Supreme Court precedents...</span>`;
+    bubbleDiv.innerHTML = `<span style="opacity:0.6;font-style:italic;">✦ Barrister is thinking…</span>`;
   } else if (role === 'user') {
     bubbleDiv.textContent = contentText;
   } else {
     bubbleDiv.className += ' ai-formatted-content';
-    bubbleDiv.innerHTML = `<div style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;"><span>✦ BARRISTER AI (BHARAT)</span></div>` + formatLegalMarkdown(contentText);
+    bubbleDiv.innerHTML = buildAIBubbleHTML(formatLegalMarkdown(contentText), null, isLegalIntent(contentText && contentText.intent) ? contentText.intent : 'casual');
   }
 
   contentWrapper.appendChild(bubbleDiv);
