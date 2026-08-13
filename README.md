@@ -2,6 +2,23 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🔎 Legal Search Engine & Evidence-First Architecture
+
+**SEARCH FIRST → VERIFY EVIDENCE → ANSWER SECOND.** The LLM is never the source of truth for Indian law.
+
+**Implemented (verified by 150 automated tests):**
+- **Query understanding** (`LegalSearchService`): entity extraction (courts, years, sections, citations), abbreviation expansion (IPC→IPC, art→article), synonym expansion (ram mandir→Ayodhya/Siddiq; triple talaq→talaq-e-biddat), verified IPC→BNS cross-referencing, and index-grounded spelling correction.
+- **Relevance-gated injection**: only sources with an actual match are injected (never the whole corpus). Zero relevant evidence → honest refusal: *"I couldn't verify this sufficiently from the available legal sources. Try a case name, citation, Act, section or legal issue."*
+- **Claim-level verification**: generated sentences carrying legal markers (case names, citations, section numbers) with zero overlap against retrieved passages are removed as unsupported, with a "Claim check" note.
+- **Citation verification**: every SCC/AIR/SCR/MANU/CriLJ citation is checked against the 108-case verified index; unverified citations are stripped.
+- **Adversarial defense**: "make up a case", "assume Section X exists", "ignore your sources" → LOW gate, refuses to fabricate.
+- **Supabase search engine v3**: exact citation/section priority, phrase + word + trigram-fuzzy + authority + freshness scoring, court/year/type filters, dedicated `search_citations`, `search_by_court`, `search_statutes`, `fuzzy_search` functions.
+- **Search UI**: Library now has court/year/type filters + "🌐 Search live corpus" — browse sources first, then "Ask AI about this". LIVE badges appear only for sources actually retrieved this request.
+- **Audit log**: every legal answer stores query, intent, evidence level and source IDs locally (for hallucination debugging; no secrets).
+
+**Honest status — NOT yet production-grade.** Real legal search requires far more than 88 authorities. Remaining roadmap: broad judgment corpus (full texts, not summaries), pgvector embeddings, case relationship graphs (overruled/followed), amendment timelines, judge data, and High Court coverage. Fine-tuning is **not** the fix for legal hallucinations — RAG + verification is, and that is the direction this codebase takes.
+
+---
 ## 🗄️ Supabase Integration (ready)
 
 The app is wired for a live legal corpus — setup takes ~10 minutes (`supabase/setup.md`):

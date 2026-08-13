@@ -17,7 +17,10 @@ const AppState = {
   analyzerSelectedSample: 'in_contract',
   kbCategory: 'all',
   kbJurisdictionFilter: 'IN',
-  kbSearchTerm: ''
+  kbSearchTerm: '',
+  kbCourtFilter: '',
+  kbYearFilter: '',
+  kbTypeFilter: ''
 };
 
 // ==========================================================================
@@ -36,41 +39,264 @@ function isSupabaseConfigured() {
     !String(SUPABASE_CONFIG.anonKey).includes('YOUR_'));
 }
 
-// --- Live corpus search: browser → Supabase PostgREST → hybrid retrieval ---
-async function supabaseSearchLegal(queryText, limit) {
-  if (!isSupabaseConfigured()) return [];
-  try {
-    const base = String(SUPABASE_CONFIG.url).replace(/\/$/, '');
-    const response = await fetch(base + '/rest/v1/rpc/search_legal_docs', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_CONFIG.anonKey,
-        'Authorization': 'Bearer ' + SUPABASE_CONFIG.anonKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query_text: queryText, match_count: limit || 8 })
-    });
-    if (!response.ok) return [];
-    const rows = await response.json();
-    if (!Array.isArray(rows) || !rows.length) return [];
-    return rows.map((r) => ({
-      id: 'sb_' + (r.chunk_id || Math.random().toString(36).slice(2)),
-      title: r.title || 'Legal source',
-      statutes: [r.section_number, r.citation].filter(Boolean).join(' · '),
-      excerpt: String(r.chunk_text || '').slice(0, 900),
-      authority_level: r.authority_level || 'primary',
-      weight: r.authority_level === 'primary' ? 1 : 0.8,
-      category: r.document_type || 'statute',
-      court: r.court || '',
-      judgment_date: r.judgment_date || '',
-      source_url: r.source_url || '',
-      official_source: r.official_source || '',
-      verified: !!r.verified,
-      remote: true
-    }));
-  } catch (err) {
-    return [];
+// ==========================================================================
+// 🔎 LEGAL SEARCH SERVICE
+// SEARCH FIRST → VERIFY EVIDENCE → ANSWER SECOND.
+// Query understanding: entity extraction, abbreviation expansion, synonym
+// expansion, IPC→BNS cross-referencing, citation detection, spelling correction.
+// ==========================================================================
+const LegalSearchService = (() => {
+  const SYNONYMS = {
+    'ram mandir': ['ayodhya', 'babri masjid', 'ram janmabhoomi', 'siddiq', 'mahant suresh das'],
+    'ayodhya': ['ram mandir', 'babri masjid', 'ram janmabhoomi', 'siddiq'],
+    'triple talaq': ['talaq-e-biddat', 'instant talaq', 'shayara bano', 'muslim women protection of rights on marriage act'],
+    'article 21': ['right to life', 'personal liberty', 'due process', 'maneka gandhi', 'puttaswamy'],
+    'article 14': ['equality', 'equal protection', 'non arbitrariness', 'royappa'],
+    'article 19': ['freedom of speech', 'free speech', 'expression', 'shreya singhal'],
+    'article 32': ['constitutional remedy', 'writ', 'writs', 'heart and soul'],
+    'article 226': ['writ petition', 'high court writ', 'writs'],
+    'basic structure': ['kesavananda', 'keshavananda', 'amendment power'],
+    'anticipatory bail': ['bail before arrest', 'sushila aggarwal', 'bnss 482', 'crpc 438'],
+    'bail': ['bnss 480', 'crpc 439', 'satender antil', 'release'],
+    'fir': ['first information report', 'e-fir', 'bnss 173', 'lalita kumari'],
+    'cheque bounce': ['section 138', 'ni act', 'dishonour'],
+    'dowry': ['dowry death', '304b', '498a', 'bnss 80'],
+    'rape': ['sexual assault', 'bnss 63', 'bnss 64', 'ipc 376'],
+    'murder': ['homicide', 'bnss 103', 'ipc 302', 'bachan singh'],
+    'defamation': ['bnss 356', 'ipc 499', 'ipc 500', 'reputation'],
+    'euthanasia': ['living will', 'passive euthanasia', 'common cause', 'die with dignity'],
+    'privacy': ['puttaswamy', 'data protection', 'dpdp', 'aadhaar'],
+    'reservation': ['quota', 'creamy layer', 'indra sawhney', 'ews', 'affirmative action'],
+    'divorce': ['hindu marriage act', 'mutual divorce', '13b', 'dissolution'],
+    'property': ['transfer of property', 'tpa', 'coparcenary', 'succession', 'inheritance'],
+    'cyber': ['cybercrime', 'it act', 'online fraud', 'hacking'],
+    'rti': ['right to information', 'information commission'],
+    'adoption': ['hama', 'cara', 'juvenile justice act'],
+    'maintenance': ['crpc 125', 'bnss 144', 'alimony', 'shah bano'],
+    'kidnapping': ['abduction', 'bnss 137', 'ipc 363'],
+    'custody': ['guardianship', 'welfare of child', 'hmga'],
+    'consumer': ['consumer protection', 'cpa 2019', 'deficiency in service'],
+    'writ': ['mandamus', 'habeas corpus', 'certiorari', 'quo warranto', 'prohibition'],
+    'sedition': ['bnss 152', 'ipc 124a', 'sovereignty'],
+    'theft': ['bnss 303', 'ipc 378', 'robbery', 'dacoity'],
+    'stalking': ['bnss 78', 'ipc 354d', 'harassment'],
+    'posh': ['sexual harassment at workplace', 'vishaka', 'internal committee'],
+    'pocso': ['child sexual abuse', 'child protection', 'skin to skin'],
+    'ibc': ['insolvency', 'cirp', 'moratorium', 'bankruptcy'],
+    'companies': ['companies act 2013', 'director duties', 'oppression', 'nclt'],
+    'labour': ['industrial disputes', 'retrenchment', 'workman', 'labour codes'],
+    'llp': ['limited liability partnership', 'partnership act'],
+    'transgender': ['nalsa', 'third gender'],
+    'death penalty': ['capital punishment', 'rarest of rare', 'bachan singh'],
+    'president rule': ['presidents rule', 'article 356', 'bommai'],
+    'collegium': ['njac', 'judicial appointments'],
+    'same sex': ['same-sex', 'supriyo', 'section 377', 'navtej'],
+    'adverse possession': ['12 years possession', 'limitation act', 'grewal']
+  };
+
+  const ABBREVIATIONS = {
+    'art': 'article', 'arts': 'article', 'sec': 'section', 's.': 'section',
+    'sc': 'supreme court', 'hc': 'high court', 'ipc': 'indian penal code',
+    'crpc': 'code of criminal procedure', 'ni act': 'negotiable instruments act',
+    'hama': 'hindu adoptions and maintenance act', 'hmga': 'hindu minority and guardianship act',
+    'hsa': 'hindu succession act', 'hma': 'hindu marriage act', 'sma': 'special marriage act',
+    'tpa': 'transfer of property act', 'cpa': 'consumer protection act',
+    'dpdp': 'digital personal data protection act', 'pmla': 'prevention of money laundering act',
+    'pocso': 'protection of children from sexual offences act',
+    'posh': 'sexual harassment of women at workplace act', 'rte': 'right to education',
+    'cpc': 'civil procedure code', 'iea': 'indian evidence act', 'bsa': 'bharatiya sakshya adhiniyam',
+    'bns': 'bharatiya nyaya sanhita', 'bnss': 'bharatiya nagarik suraksha sanhita',
+    'cbi': 'central bureau of investigation', 'ed': 'enforcement directorate',
+    'cvc': 'central vigilance commission', 'nclt': 'national company law tribunal',
+    'nclat': 'national company law appellate tribunal', 'cat': 'central administrative tribunal',
+    'drt': 'debts recovery tribunal', 'lokpal': 'lokpal and lokayuktas act',
+    'gst': 'goods and services tax', 'mact': 'motor accident claims tribunal'
+  };
+
+  const COURTS = ['supreme court', 'high court', 'session court', 'sessions court', 'district court', 'magistrate', 'nclt', 'nclat', 'cat', 'drt', 'tribunal', 'consumer commission'];
+
+  const CASE_TOKEN_RE = /\b(?:\d{4}\s+)?(?:\d+\s+)?(?:SCC|AIR|SCR|Cri\s*LJ|SCC\s+OnLine|MANU)\b[^\n,;]{0,60}|\b(?:\d{4})\s+(?:SCC|AIR)\s+\d+\b|\bSCC\s+OnLine\s+SC\s+\d+\b|\bMANU\/[A-Z]{2}\/\d{4}\/\d+\b/gi;
+  const SECTION_RE = /\b(?:section|sec\.?|s\.?)\s+(\d+[a-z]*(?:\s*\(\s*\d+[a-z]*\s*\))?)\b/gi;
+  const ARTICLE_RE = /\barticle\s+(\d+[a-z]?)\b/gi;
+  const YEAR_RE = /\b(19|20)\d{2}\b/g;
+
+  function normalize(q) {
+    let s = String(q || '').toLowerCase().trim();
+    // abbreviation expansion
+    s = s.replace(/\b(art|sec|s)\./g, (m) => ABBREVIATIONS[m.replace('.','')] || m);
+    // "v."/"vs." keeps its case-law meaning
+    return s;
   }
+
+  function extractEntities(query) {
+    const q = String(query || '');
+    const ql = q.toLowerCase();
+    const entities = { citations: [], sections: [], articles: [], courts: [], years: [], latest: false, mode: 'general' };
+    let m;
+    CASE_TOKEN_RE.lastIndex = 0;
+    while ((m = CASE_TOKEN_RE.exec(q)) !== null) entities.citations.push(m[0].trim());
+    SECTION_RE.lastIndex = 0;
+    while ((m = SECTION_RE.exec(q)) !== null) entities.sections.push(m[1]);
+    ARTICLE_RE.lastIndex = 0;
+    while ((m = ARTICLE_RE.exec(q)) !== null) entities.articles.push(m[1]);
+    COURTS.forEach((c) => { if (ql.includes(c)) entities.courts.push(c === 'supreme court' ? 'Supreme Court of India' : c); });
+    YEAR_RE.lastIndex = 0;
+    while ((m = YEAR_RE.exec(q)) !== null) {
+      const y = parseInt(m[0], 10);
+      if (y >= 1947 && y <= 2030 && !entities.years.includes(y)) entities.years.push(y);
+    }
+    if (/\b(latest|recent|current|newest)\b/i.test(q)) entities.latest = true;
+    if (entities.citations.length) entities.mode = 'citation';
+    else if (/\bv\.\s|\bvs\.?\s|\bversus\b/i.test(q) || CASE_NAME_TRIGGERS.some((n) => ql.includes(n))) entities.mode = 'case';
+    else if (entities.sections.length || entities.articles.length || /\b(act|code|statute|sanhita|adhiniyam)\b/.test(ql)) entities.mode = 'statute';
+    return entities;
+  }
+
+  function expandQuery(query) {
+    const q = String(query || '').toLowerCase();
+    const terms = [];
+    Object.keys(SYNONYMS).forEach((k) => {
+      if (q.includes(k) && !q.includes(k + 's')) {
+        SYNONYMS[k].forEach((s) => { if (!q.includes(s)) terms.push(s); });
+      }
+    });
+    // IPC/BNS cross-reference expansion (verified mappings only)
+    const numMatch = q.match(/\b(\d{3,4}[a-z]?)\b/g) || [];
+    numMatch.forEach((n) => {
+      if (typeof BHARATIYA_STATUTE_MAP === 'object' && BHARATIYA_STATUTE_MAP[n]) {
+        const entry = BHARATIYA_STATUTE_MAP[n];
+        const bits = (entry.old + ' ' + entry.newSection).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+        bits.forEach((b) => { if (b.length > 2 && !q.includes(b)) terms.push(b); });
+      }
+    });
+    return terms.slice(0, 10);
+  }
+
+  // Lightweight spelling correction against the indexed lexicon
+  let lexicon = null;
+  function buildLexicon() {
+    if (lexicon) return lexicon;
+    const words = new Set();
+    KNOWLEDGE_BASE_ARTICLES.forEach((a) => {
+      (a.title + ' ' + a.summary + ' ' + (a.statutes || []).join(' ')).toLowerCase().split(/[^a-z0-9]+/).forEach((w) => { if (w.length >= 5) words.add(w); });
+    });
+    VERIFIED_CASE_INDEX.forEach((c) => {
+      (c.name + ' ' + c.cite).toLowerCase().split(/[^a-z0-9]+/).forEach((w) => { if (w.length >= 5) words.add(w); });
+    });
+    Object.values(BHARATIYA_STATUTE_MAP || {}).forEach((e) => {
+      (e.title + ' ' + e.old + ' ' + e.newSection).toLowerCase().split(/[^a-z0-9]+/).forEach((w) => { if (w.length >= 5) words.add(w); });
+    });
+    lexicon = words;
+    return lexicon;
+  }
+
+  function editDistance(a, b) {
+    if (Math.abs(a.length - b.length) > 2) return 99;
+    const dp = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+    for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = Math.min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    }
+    return dp[a.length][b.length];
+  }
+
+  const COMMON_WORDS = new Set(['case','court','act','law','bail','fir','writ','rule','order','right','trial','appeal','crime','theft','fraud','judge','bench','date','year','code','bill','vote','seat','land','will','gift','sale','loan','deed','tax','fee','fine','jail','prison','wife','will','money','death','life','marriage','divorce','adoption','child','women','woman','person','state','union','india','delhi','high','supreme','appeal','notice','party','claim','proof','evidence','witness','hearing','verdict','criminal','civil']);
+  function correctSpelling(query) {
+    const words = String(query || '').toLowerCase().split(/\s+/);
+    const lex = buildLexicon();
+    let changed = false;
+    const corrected = words.map((w) => {
+      if (w.length < 4 || lex.has(w) || COMMON_WORDS.has(w)) return w;
+      let best = null, bestDist = (w.length >= 8 ? 2 : 1);
+      for (const lw of lex) {
+        if (lw[0] !== w[0]) continue;
+        const d = editDistance(w, lw);
+        if (d <= bestDist && (!best || d < bestDist || Math.abs(lw.length - w.length) < Math.abs(best.length - w.length))) { best = lw; bestDist = d; }
+      }
+      if (best) { changed = true; return best; }
+      return w;
+    });
+    return { text: corrected.join(' '), changed };
+  }
+
+  return { normalize, extractEntities, expandQuery, correctSpelling, detectCitation: (q) => extractEntities(q).mode === 'citation', SYNONYMS };
+})();
+
+// --- Live corpus search: browser → Supabase PostgREST → hybrid retrieval ---
+const SUPABASE_SEARCH_CACHE = new Map(); // key → { rows, ts } (TTL 10 min)
+
+function mapSupabaseRows(rows) {
+  if (!Array.isArray(rows)) return [];
+  return rows.map((r) => ({
+    id: 'sb_' + (r.chunk_id || Math.random().toString(36).slice(2)),
+    title: r.title || 'Legal source',
+    statutes: [r.section_number, r.citation].filter(Boolean).join(' · '),
+    excerpt: String(r.chunk_text || '').slice(0, 900),
+    authority_level: r.authority_level || 'primary',
+    weight: r.authority_level === 'primary' ? 1 : 0.8,
+    category: r.document_type || 'statute',
+    court: r.court || '',
+    judgment_date: r.judgment_date || '',
+    source_url: r.source_url || '',
+    official_source: r.official_source || '',
+    verified: !!r.verified,
+    relevance: typeof r.score === 'number' ? r.score : 0,
+    remote: true
+  }));
+}
+
+async function supabaseSearchLegal(queryText, limit, opts) {
+  if (!isSupabaseConfigured()) return [];
+  const { court, year, docType, latest } = opts || {};
+  const cacheKey = [queryText, court || '', year || '', docType || '', latest || ''].join('|').toLowerCase();
+  const cached = SUPABASE_SEARCH_CACHE.get(cacheKey);
+  if (cached && (Date.now() - cached.ts) < 600000) return cached.rows;
+
+  const doSearch = async (text) => {
+    try {
+      const base = String(SUPABASE_CONFIG.url).replace(/\/$/, '');
+      const response = await fetch(base + '/rest/v1/rpc/search_legal_docs', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': 'Bearer ' + SUPABASE_CONFIG.anonKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query_text: text,
+          match_count: limit || 8,
+          p_court: court || null,
+          p_year: year || null,
+          p_doc_type: docType || null,
+          prefer_latest: !!latest
+        })
+      });
+      if (!response.ok) return null;
+      const rows = await response.json();
+      return Array.isArray(rows) ? mapSupabaseRows(rows) : null;
+    } catch (err) {
+      return null;
+    }
+  };
+
+  let rows = await doSearch(queryText);
+
+  // Query-expansion fallback: if the original query returned weak results,
+  // search again with verified synonym/cross-reference expansion.
+  if (!rows || rows.length < 2) {
+    const expansion = LegalSearchService.expandQuery(queryText);
+    if (expansion.length) {
+      const expandedRows = await doSearch(expansion.slice(0, 6).join(' '));
+      if (expandedRows && expandedRows.length) {
+        const seen = new Set((rows || []).map((r) => r.title.toLowerCase().slice(0, 60)));
+        const merged = (rows || []).concat(expandedRows.filter((r) => !seen.has(r.title.toLowerCase().slice(0, 60))));
+        rows = merged.slice(0, limit || 8);
+      }
+    }
+  }
+
+  if (rows) SUPABASE_SEARCH_CACHE.set(cacheKey, { rows, ts: Date.now() });
+  return rows || [];
 }
 
 // --- Jurisdiction Display Metadata ---
@@ -2611,7 +2837,7 @@ function isSmallTalkPrompt(p) {
 }
 
 function tokenizeLegalQuery(q) {
-  const STOP_WORDS = new Set(['what', 'the', 'for', 'and', 'how', 'does', 'with', 'this', 'that', 'from', 'your', 'can', 'will', 'section', 'act', 'law', 'legal', 'case', 'court', 'under', 'when', 'where', 'which', 'why', 'who', 'penalty', 'about', 'rights', 'right', 'means', 'mean', 'apply', 'applies', 'explain', 'india', 'indian', 'tell', 'give', 'please', 'need', 'want', 'know', 'happens', 'happen', 'there', 'here', 'into', 'them', 'they', 'have', 'has', 'had', 'should', 'could', 'would', 'between', 'fictional', 'example']);
+  const STOP_WORDS = new Set(['what', 'the', 'for', 'and', 'how', 'does', 'with', 'this', 'that', 'from', 'your', 'can', 'will', 'section', 'act', 'law', 'legal', 'case', 'court', 'under', 'when', 'where', 'which', 'why', 'who', 'penalty', 'about', 'rights', 'right', 'means', 'mean', 'apply', 'applies', 'explain', 'india', 'indian', 'tell', 'give', 'please', 'need', 'want', 'know', 'happens', 'happen', 'there', 'here', 'into', 'them', 'they', 'have', 'has', 'had', 'should', 'could', 'would', 'between', 'fictional', 'example', 'scc', 'air', 'scr', 'manu', 'crilj', 'online', 'cite', 'citation', 'judgment', 'judgement', 'case', 'cases', 'supreme', 'high']);
   const out = [];
   q.replace(/[^a-z0-9\s]/g, ' ').toLowerCase().split(/\s+/).filter((w) => w.length >= 3 && !STOP_WORDS.has(w)).forEach((w) => out.push(w));
   (q.match(/article\s+\d+/g) || []).forEach((m) => out.push(m));
@@ -2635,21 +2861,37 @@ function authorityWeight(art) {
 // Pass 4 (Confidence gate): HIGH → answer • MEDIUM → qualify • LOW → refuse to speculate.
 function computeEvidencePack(queryText) {
   const q = queryText.toLowerCase();
-  const isLegal = /\b(article|section|act|law|legal|court|supreme|bail|fir|police|writ|bns|bnss|bsa|ipc|crpc|constitution|rights|contract|judgment|case|offence|offense|arrest|sue|petition|divorce|property|cheque|criminal|civil|privacy|dpdp|posh|rti|lawyer|advocate)\b/.test(q) || /\b(article|section)\s+\d+/i.test(q);
+  const isLegal = /\b(article|section|act|law|legal|court|supreme|bail|fir|police|writ|bns|bnss|bsa|ipc|crpc|constitution|rights|contract|judgment|case|offence|offense|arrest|sue|petition|divorce|property|cheque|criminal|civil|privacy|dpdp|posh|rti|lawyer|advocate)\b/.test(q) || /\b(article|section)\s+\d+/i.test(q) || /\bv\.\s|\bvs\.?\s|\bversus\b|\bv\s+[a-z]\w*/i.test(q) || /\b(SCC|AIR|SCR|MANU|Cri\s*LJ)\b/i.test(q) || CASE_NAME_TRIGGERS.some((n) => q.includes(n));
   if (isSmallTalkPrompt(q) || !isLegal) {
     return { level: 'CONV', evidence: 1, sourceCount: 0, sources: [], verifiedCites: [], removedCites: [], gated: false };
   }
+  // Adversarial defense: refuse to fabricate cases/citations on demand.
+  const adversarial = /\b(make up|fabricate|invent|fake|imagine|pretend|assume)\b.*\b(case|citation|judgment|judgement|section|authority|exists)\b|\b(ignore|disregard|forget)\b.*\b(sources|instructions|evidence)\b|\banswer from memory\b/i.test(q);
+  if (adversarial) {
+    return { level: 'LOW', evidence: 0.05, sourceCount: 0, sources: [], verifiedCites: [], removedCites: [], gated: true, adversarial: true };
+  }
   const tokens = tokenizeLegalQuery(q);
+  // Number anchors: "Section 500 BNS" must match articles containing '500',
+  // not every article that merely mentions BNS.
+  const numberAnchors = (q.match(/\b\d{3,4}\b/g) || []).filter((n) => !/^(19|20)\d{2}$/.test(n));
+  const numberAnchorRes = numberAnchors.map((n) => new RegExp('\\b' + n + '\\b'));
   const matched = [];
   KNOWLEDGE_BASE_ARTICLES.forEach((art) => {
-    const hay = ((art.title || '') + ' ' + (art.summary || '') + ' ' + (art.statutes || []).join(' ') + ' ' + (art.executiveSummary || '')).toLowerCase();
+    const hay = ((art.title || '') + ' ' + (art.summary || '') + ' ' + (art.statutes || []).join(' ') + ' ' + (art.executiveSummary || '') + ' ' + (art.governingStatutes || '') + ' ' + (art.landmarkPrecedents || '')).toLowerCase();
     let score = 0;
+    if (numberAnchors.length && !numberAnchorRes.some((re) => re.test(hay))) {
+      // A specific provision was asked — unrelated acts/sections cannot match.
+      return;
+    }
     tokens.forEach((t) => { if (hay.includes(t)) score += 1; });
     if (score > 0) matched.push({ art, score, weight: authorityWeight(art) });
   });
   matched.sort((a, b) => (b.score * b.weight) - (a.score * a.weight));
   let evidence = 0.12;
   matched.slice(0, 3).forEach((m) => { evidence += 0.22 * Math.min(1, m.score / 2); });
+  // Exact provision references are strong signals
+  if (numberAnchors.length && matched.some((m) => m.score > 0)) evidence += 0.3;
+  if (tokens.length <= 3 && matched.length === 1 && matched[0].score >= tokens.length) evidence += 0.15;
   const level = evidence >= 0.7 ? 'HIGH' : (evidence >= 0.4 ? 'MEDIUM' : 'LOW');
   return {
     level,
@@ -2667,8 +2909,52 @@ function applyEvidenceGate(answerText, pack) {
   if (pack.level === 'MEDIUM') {
     return answerText + '\n\n_📊 Evidence level: MEDIUM — grounded in the verified library, but check how it applies to your specific facts before relying on it._';
   }
-  const banner = '🛡️ **Evidence Gate (LOW):** I could not find sufficient authoritative sources in my verified library (Constitution of India, BNS/BNSS/BSA 2023, Supreme Court precedents) to establish a definitive position. The notes below are general guidance only — I will not speculate beyond them.\n\n';
-  return banner + answerText + '\n\n_For a definitive position on this, please consult a qualified advocate._';
+  const banner = '🛡️ **Evidence Gate (LOW):** I couldn\'t verify this sufficiently from the available legal sources, so I won\'t speculate.\n\nTry a case name, citation, Act, section, Article or legal issue — or ask in different words.';
+  return banner;
+}
+
+// --- Pass 5 (Claim verification): every factual legal claim must trace to evidence.
+// Lines carrying legal markers (case names, citations, section/article numbers)
+// that have ZERO overlap with the retrieved passages are removed as unsupported.
+const CLAIM_STOP_WORDS = new Set(['what','the','for','and','how','does','with','this','that','from','your','can','will','under','when','where','which','why','who','about','means','mean','apply','applies','explain','india','indian','tell','give','please','need','want','know','there','here','into','them','they','have','has','had','should','could','would','between','section','act','law','legal','case','court','article']);
+
+function tokenizeForOverlap(s) {
+  return new Set(String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length >= 3 && !CLAIM_STOP_WORDS.has(w)));
+}
+
+function verifyClaimsAgainstEvidence(answerText, pack) {
+  if (!answerText) return { text: answerText, removed: [], unsupported: 0 };
+  const evidence = [];
+  (pack && pack.sources || []).forEach((s) => {
+    evidence.push(String(s.title || ''), String(s.statutes || ''), String(s.excerpt || ''));
+  });
+  const evTokens = tokenizeForOverlap(evidence.join(' '));
+  const lines = String(answerText).split(/\r?\n/);
+  const removed = [];
+  const kept = [];
+  let unsupported = 0;
+
+  lines.forEach((line) => {
+    const hasLegalMarker = /\bv\.\s|\bvs\.?\s|\bversus\b|\bSCC\b|\bAIR\b|\bSCR\b|\bMANU\b|Cri\s*LJ|\bSCC\s+OnLine\b|\bArticle\s+\d+|\bSection\s+\d+|\bIPC\s+\d+|\bCrPC\s+\d+|\bBNS\s+\d+|\bBNSS\s+\d+|\bBSA\s+\d+/i.test(line);
+    if (!hasLegalMarker) { kept.push(line); return; }
+    const lineTokens = tokenizeForOverlap(line);
+    let overlap = 0;
+    lineTokens.forEach((w) => { if (evTokens.has(w)) overlap++; });
+    const ratio = lineTokens.size ? overlap / lineTokens.size : 0;
+    if (ratio === 0) {
+      // Claim with legal markers but zero evidence support → remove (never invent).
+      unsupported++;
+      removed.push(line.trim().slice(0, 120));
+    } else {
+      kept.push(line);
+    }
+  });
+
+  let text = kept.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  if (unsupported > 0) {
+    text += '\n\n⚠️ **Claim check:** ' + unsupported + ' statement(s) could not be verified against the retrieved sources and ' + (unsupported === 1 ? 'was' : 'were') + ' removed.';
+  }
+  return { text, removed, unsupported };
 }
 
 function barristerEscape(s) {
@@ -2682,9 +2968,13 @@ function buildEvidencePanel(pack) {
   if (pack.sources && pack.sources.length) {
     const items = pack.sources.map((s) => {
       const remote = !!s.remote;
+      // Truthful labels: LIVE = actually retrieved this request from Supabase.
+      // OFFICIAL = has an official_source recorded. VERIFIED = corpus-verified.
+      const primary = (s.weight >= 1);
+      const official = !!(s.official_source && String(s.official_source).length > 0);
       const typeLabel = remote
-        ? '🌐 LIVE · ' + ((s.weight >= 1) ? 'PRIMARY' : 'AUTHORITY')
-        : (s.weight >= 1 ? '📜 PRIMARY' : '📚 AUTHORITY');
+        ? '🌐 LIVE' + (official ? ' · OFFICIAL' : '') + ' · ' + (primary ? 'PRIMARY' : 'AUTHORITY')
+        : '📚 DATABASE · VERIFIED · ' + (primary ? 'PRIMARY' : 'AUTHORITY');
       const courtLine = (s.court || s.judgment_date) ? `<div class="evidence-source-statutes">${barristerEscape([s.court, s.judgment_date].filter(Boolean).join(' · '))}</div>` : '';
       const openAction = remote && s.source_url
         ? `<a class="evidence-source-open" href="${barristerEscape(s.source_url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>`
@@ -2725,6 +3015,15 @@ function buildAIBubbleHTML(htmlContent, pack, intent) {
     badge = `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">🛡️ ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`;
   }
   return `<div class="ai-bubble-header"><span class="ai-legal-tag">⚖️ Legal Analysis</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
+}
+
+// --- Audit log (internal metadata for hallucination debugging) ---
+function logAuditEvent(entry) {
+  try {
+    const log = JSON.parse(localStorage.getItem('jurisai_audit_log') || '[]');
+    log.unshift(Object.assign({ ts: new Date().toISOString() }, entry));
+    localStorage.setItem('jurisai_audit_log', JSON.stringify(log.slice(0, 150)));
+  } catch (err) { /* audit log is best-effort */ }
 }
 
 window.openEvidenceSource = function (id) {
@@ -2795,7 +3094,7 @@ function classifyIntent(message, sessionMessages) {
   if (CASUAL_PHRASES.some((p) => new RegExp('\\b' + p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(q))) return 'casual';
 
   // 2. Case-name / case-law patterns — the strongest legal-research signals
-  if (/\bv\.\s|\bvs\.?\s|\bversus\b/i.test(q)) return 'legal_research';
+  if (/\bv\.\s|\bvs\.?\s|\bversus\b|\bv\s+[a-z]\w*/i.test(q)) return 'legal_research';
   if (CASE_NAME_TRIGGERS.some((n) => q.includes(n))) return 'legal_research';
 
   // 3. Drafting intent
@@ -3927,7 +4226,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderChatHistoryList();
   renderKnowledgeBaseCards();
+  initLegalSearchEngine();
 });
+
+// ==========================================================================
+// 🗄️ LEGAL SEARCH ENGINE UI — court/year/type filters + live corpus search
+// Search results are separated from AI answers: browse sources first,
+// then ask the AI to summarize the ones you choose.
+// ==========================================================================
+let liveSearchResults = [];
+
+function initLegalSearchEngine() {
+  const courtSel = document.getElementById('kb-court-filter');
+  const yearSel = document.getElementById('kb-year-filter');
+  const typeSel = document.getElementById('kb-type-filter');
+  const liveBtn = document.getElementById('live-search-btn');
+  const statusEl = document.getElementById('live-search-status');
+  const grid = document.getElementById('kb-articles-grid');
+
+  if (courtSel) courtSel.addEventListener('change', () => { AppState.kbCourtFilter = courtSel.value; });
+  if (yearSel) yearSel.addEventListener('change', () => { AppState.kbYearFilter = yearSel.value; });
+  if (typeSel) typeSel.addEventListener('change', () => { AppState.kbTypeFilter = typeSel.value; });
+
+  if (!liveBtn || !grid) return;
+
+  liveBtn.addEventListener('click', async () => {
+    const query = (document.getElementById('kb-search-input') || {}).value || AppState.kbSearchTerm || '';
+    const trimmed = String(query).trim();
+    if (!trimmed) {
+      if (statusEl) { statusEl.style.display = 'block'; statusEl.textContent = 'Type a search term first (case name, citation, Act, section, or legal issue).'; }
+      return;
+    }
+    if (statusEl) { statusEl.style.display = 'block'; statusEl.textContent = '🌐 Searching the live legal corpus…'; }
+    liveBtn.disabled = true;
+
+    // Spelling correction before search (original query is preserved)
+    const correction = LegalSearchService.correctSpelling(trimmed);
+    const entities = LegalSearchService.extractEntities(trimmed);
+
+    liveSearchResults = await supabaseSearchLegal(
+      correction.text,
+      AppState.researchMode === 'deep' ? 12 : 8,
+      {
+        court: AppState.kbCourtFilter || entities.courts[0] || null,
+        year: AppState.kbYearFilter ? parseInt(AppState.kbYearFilter, 10) : (entities.years[0] || null),
+        docType: AppState.kbTypeFilter || null,
+        latest: entities.latest
+      }
+    );
+
+    liveBtn.disabled = false;
+    if (!liveSearchResults.length) {
+      if (statusEl) statusEl.textContent = "I couldn't find a sufficiently relevant legal authority for that query. Try a case name, citation, Act, section or legal issue.";
+      renderRemoteSearchCards([], grid);
+      return;
+    }
+
+    const note = correction.changed ? ' (spelling corrected to "' + correction.text + '")' : '';
+    if (statusEl) statusEl.textContent = '🌐 ' + liveSearchResults.length + ' live result(s) from the legal corpus' + note + ' — click a source to ask the AI about it.';
+    renderRemoteSearchCards(liveSearchResults, grid);
+  });
+}
+
+function renderRemoteSearchCards(rows, grid) {
+  // Remove previously injected remote cards (local cards stay untouched)
+  grid.querySelectorAll('.live-remote-card').forEach((el) => el.remove());
+  const firstLocal = grid.querySelector('.kb-article-card:not(.live-remote-card)');
+
+  rows.forEach((r) => {
+    const card = document.createElement('div');
+    card.className = 'kb-article-card live-remote-card';
+    const label = r.verified ? '🌐 LIVE · VERIFIED' : '🌐 LIVE';
+    const courtLine = r.court ? `<div class="kb-card-summary" style="font-size:11px;color:var(--text-muted);">${barristerEscape(r.court)}${r.judgment_date ? ' · ' + barristerEscape(r.judgment_date) : ''}</div>` : '';
+    card.innerHTML = `
+      <div class="kb-card-header">
+        <span class="kb-category-badge">§ ${barristerEscape(r.category || 'source')}</span>
+        <span class="kb-jurisdiction-badge">${label}</span>
+      </div>
+      <div class="kb-card-title">${barristerEscape(r.title)}</div>
+      <div class="kb-card-summary">${barristerEscape(String(r.excerpt || '').slice(0, 260))}${(r.excerpt || '').length > 260 ? '…' : ''}</div>
+      ${courtLine}
+      <div class="kb-card-footer">
+        ${r.source_url ? `<a class="btn-kb-read" href="${barristerEscape(r.source_url)}" target="_blank" rel="noopener noreferrer"><span>📖 Open source ↗</span></a>` : ''}
+        <button class="btn-kb-ask-ai" data-live-ask="1"><span>🤖 Ask AI about this</span></button>
+      </div>
+    `;
+    card.querySelector('[data-live-ask]').addEventListener('click', () => {
+      switchView('chat-view');
+      sendChatMessage('Based only on this retrieved source — ' + r.title + ' — explain: ' + (r.excerpt || '').slice(0, 300) + '. If the source does not establish a proposition, say so.');
+    });
+    if (firstLocal) grid.insertBefore(card, firstLocal);
+    else grid.appendChild(card);
+  });
+}
 
 // --- 🇮🇳 BHARATIYA STATUTE CONVERTER BAR WIRE-UP ---
 function initStatuteConverterBar() {
@@ -4596,14 +4987,22 @@ async function sendChatMessage(userText, options) {
   const legalIntent = isLegalIntent(intent);
 
   // === Pass 1 (Retrieval): only for legal intent ===
-  // Two layers: live Supabase corpus first, curated in-app library second.
+  // SEARCH FIRST: entity extraction → targeted retrieval (court/year/mode filters).
+  // Relevance gate: only sources that actually match are injected — never the whole corpus.
   let pack = null;
   let retrievedSources = [];
   if (legalIntent) {
-    pack = computeEvidencePack(userText);
+    const entities = LegalSearchService.extractEntities(userText);
     const sourceLimit = AppState.researchMode === 'deep' ? 8 : 4;
+
+    pack = computeEvidencePack(userText);
     try {
-      const remoteSources = await supabaseSearchLegal(userText, sourceLimit);
+      const remoteSources = await supabaseSearchLegal(userText, sourceLimit, {
+        court: entities.courts[0] || null,
+        year: entities.years[0] || null,
+        docType: entities.mode === 'case' || entities.mode === 'citation' ? 'judgment' : null,
+        latest: entities.latest
+      });
       if (remoteSources.length) {
         const seen = new Set(remoteSources.map((r) => String(r.title || '').toLowerCase().slice(0, 50)));
         const localRest = pack.sources.filter((s) => !seen.has(String(s.title || '').toLowerCase().slice(0, 50)));
@@ -4613,9 +5012,26 @@ async function sendChatMessage(userText, options) {
         pack.level = pack.evidence >= 0.7 ? 'HIGH' : (pack.evidence >= 0.4 ? 'MEDIUM' : 'LOW');
       }
     } catch (err) { /* live corpus optional — continue with local library */ }
+
+    // Relevance gate: only inject sources with an actual match.
+    const relevant = pack.sources.filter((s) => {
+      if (s.remote) return (s.relevance ?? 0) >= 0.5;
+      return (s.score ?? 0) >= 1; // local: at least one token overlap
+    });
+    if (relevant.length === 0) {
+      // Search failure: no sufficiently relevant authority — NEVER fill from memory.
+      pack.sources = [];
+      pack.sourceCount = 0;
+      pack.level = 'LOW';
+      pack.evidence = 0.12;
+    } else {
+      pack.sources = relevant;
+      pack.sourceCount = relevant.length;
+    }
+
     retrievedSources = pack.sources.slice(0, sourceLimit).map((s) => {
       const art = KNOWLEDGE_BASE_ARTICLES.find((a) => a.id === s.id);
-      // Feed the FULL authority: summary + statute text + landmark precedents
+      // Only the RELEVANT authority text is injected (summary + statute + precedents)
       const excerpt = art
         ? [art.executiveSummary, art.governingStatutes, art.landmarkPrecedents].filter(Boolean).join('\n')
         : (s.excerpt || s.title || '');
@@ -4707,10 +5123,22 @@ async function sendChatMessage(userText, options) {
     const citationCheck = verifyAndCleanCitations(aiText);
     pack.verifiedCites = citationCheck.verifiedCites;
     pack.removedCites = citationCheck.removed;
-    trustText = applyEvidenceGate(citationCheck.cleanedText, pack);
+    let checkedText = citationCheck.cleanedText;
     if (citationCheck.removed.length) {
-      trustText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
+      checkedText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
     }
+    trustText = applyEvidenceGate(checkedText, pack);
+    // Pass 5: claim-level verification — legal claims must trace to evidence
+    if (pack.level === 'HIGH' || pack.level === 'MEDIUM') {
+      const claimCheck = verifyClaimsAgainstEvidence(trustText, pack);
+      trustText = claimCheck.text;
+      pack.unsupportedClaims = claimCheck.unsupported;
+      if (claimCheck.unsupported > 0 && pack.level === 'HIGH') {
+        pack.level = 'MEDIUM';
+      }
+    }
+    // Audit log (internal — query, evidence level, sources; never secrets)
+    logAuditEvent({ query: userText, intent: intent, level: pack.level, sourceCount: pack.sourceCount, sources: pack.sources.slice(0, 5).map((s) => String(s.title || '').slice(0, 70)), unsupported: pack.unsupportedClaims || 0 });
   }
   if (stoppedEarly) {
     trustText += '\n\n_⏹️ Generation stopped by you — showing what was completed._';

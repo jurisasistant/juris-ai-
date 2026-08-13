@@ -2,6 +2,7 @@
 -- JURISAI BHARAT — SEED DATA (auto-generated from the verified legal library)
 -- 88 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
 -- ============================================================================
+\set ON_ERROR_STOP on
 begin;
 
 do $$
@@ -13,9 +14,9 @@ begin
 
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India: Fundamental Rights (Articles 14, 19, 21)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Constitution of India: Fundamental Rights (Articles 14, 19, 21)', 'constitution', null, 'IN', null, null, null, ARRAY['privacy','rti','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -36,9 +37,9 @@ Articles 14, 19, and 21 form the "Golden Triangle" of the Indian Constitution (B
     ', 'Const. India Art. 14, 19, 21', '{"kb_id":"kb-in-const-fundamental-rights","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Constitutional Writs & Judicial Review (Articles 32 & 226)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Constitutional Writs & Judicial Review (Articles 32 & 226)', 'constitution', null, 'IN', null, null, null, ARRAY['writ','rti','supreme court','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -58,9 +59,9 @@ Dr. B.R. Ambedkar termed Article 32 the "heart and soul" of the Constitution of 
     ', 'Const. India Art. 32 & 226', '{"kb_id":"kb-in-const-writs-remedies","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Bharatiya Nyaya Sanhita (BNS 2023) & Criminal Law Transition', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Bharatiya Nyaya Sanhita (BNS 2023) & Criminal Law Transition', 'statute', null, 'IN', null, null, null, ARRAY['bns','bnss','bsa','ipc','crpc']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -81,9 +82,9 @@ Effective July 1, 2024, India replaced its colonial criminal law trilogy with th
     ', 'BNS 2023 (replaces IPC)', '{"kb_id":"kb-in-bns-bnss-bsa-criminal-law","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Prevention of Money Laundering Act (PMLA 2002): Arrest & Bail Rigor', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Prevention of Money Laundering Act (PMLA 2002): Arrest & Bail Rigor', 'statute', null, 'IN', null, null, null, ARRAY['bail','arrest','bns','bnss']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -103,9 +104,9 @@ The Prevention of Money Laundering Act 2002 (PMLA) gives the Enforcement Directo
     ', 'PMLA 2002 Sec. 3, 19, 45', '{"kb_id":"kb-in-pmla-money-laundering","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Indian Contract Act 1872: Section 27 Restraint of Trade & Non-Competes', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Indian Contract Act 1872: Section 27 Restraint of Trade & Non-Competes', 'statute', null, 'IN', null, null, null, ARRAY['contract']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -126,9 +127,9 @@ Section 27 of the Indian Contract Act 1872 embodies a strict statutory prohibiti
     ', 'Indian Contract Act Sec. 27', '{"kb_id":"kb-in-contract-section-27","category":"contracts"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Companies Act 2013 & IBC 2016: Directors'' Duties & Corporate Insolvency', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Companies Act 2013 & IBC 2016: Directors'' Duties & Corporate Insolvency', 'statute', null, 'IN', null, null, null, ARRAY['ibc','companies']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -149,9 +150,9 @@ Section 166 of the Companies Act 2013 codifies the statutory fiduciary duties of
     ', 'Companies Act 2013 Sec. 166, 188, 241', '{"kb_id":"kb-in-companies-act-directors","category":"contracts"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('India Digital Personal Data Protection Act 2023 (DPDP Act)', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('India Digital Personal Data Protection Act 2023 (DPDP Act)', 'statute', null, 'IN', null, null, null, ARRAY['fir','cyber','it act']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -173,9 +174,9 @@ The Digital Personal Data Protection Act (DPDP Act 2023) establishes India''s mo
     ', 'DPDP Act 2023 Sec. 4, 6, 8', '{"kb_id":"kb-in-dpdp-act-privacy","category":"privacy"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Indian Commercial Leases: Stamp Duty Act 1899 & Registration Act 1908', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Indian Commercial Leases: Stamp Duty Act 1899 & Registration Act 1908', 'statute', null, 'IN', null, null, null, ARRAY['property']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -195,9 +196,9 @@ Under Section 107 of the Transfer of Property Act 1882 and Section 17 of the Reg
     ', 'Indian Stamp Act 1899', '{"kb_id":"kb-in-stamp-registration-leases","category":"realestate"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Arbitration & Conciliation Act 1996: Commercial Dispute Enforcement', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Arbitration & Conciliation Act 1996: Commercial Dispute Enforcement', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -217,9 +218,9 @@ The Arbitration and Conciliation Act 1996 governs domestic and international com
     ', 'Arbitration Act 1996 Sec. 9, 11, 34, 36', '{"kb_id":"kb-in-arbitration-act-1996","category":"disputes"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Negotiable Instruments Act Section 138: Cheque Bounce & Debt Recovery', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Negotiable Instruments Act Section 138: Cheque Bounce & Debt Recovery', 'statute', null, 'IN', null, null, null, ARRAY['cheque','bns','bnss']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -238,9 +239,9 @@ Section 138 of the Negotiable Instruments Act 1881 makes the dishonour of a cheq
     ', 'NI Act 1881 Sec. 138, 141, 143A', '{"kb_id":"kb-in-ni-act-cheque-bounce","category":"disputes"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Civil Procedure Code (CPC 1908): Injunctions, Summary Suits & Section 80', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Civil Procedure Code (CPC 1908): Injunctions, Summary Suits & Section 80', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -260,9 +261,9 @@ The Code of Civil Procedure (CPC 1908) governs civil litigation in India. Under 
     ', 'CPC 1908 Section 80', '{"kb_id":"kb-in-cpc-injunctions-notice","category":"disputes"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('POSH Act 2013 & Gender Equality in Indian Workplaces', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('POSH Act 2013 & Gender Equality in Indian Workplaces', 'statute', null, 'IN', null, null, null, ARRAY['posh','constitution','it act']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -282,9 +283,9 @@ The Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redress
     ', 'POSH Act 2013 Sec. 4, 19, 26', '{"kb_id":"kb-in-posh-workplace-equality","category":"employment"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('US & EU NDA & Trade Secret Protection Standard', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('US & EU NDA & Trade Secret Protection Standard', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -302,9 +303,9 @@ Non-Disclosure Agreements (NDAs) protect non-public commercial assets. Under the
     ', '18 U.S.C. § 1836 (DTSA)', '{"kb_id":"kb-nda-trade-secrets-us","category":"contracts"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('GDPR, CCPA/CPRA & Global Privacy Compliance', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('GDPR, CCPA/CPRA & Global Privacy Compliance', 'statute', null, 'IN', null, null, null, ARRAY['privacy']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -322,9 +323,9 @@ Data protection frameworks like EU GDPR and California CPRA impose strict operat
     ', 'GDPR Art. 6, 17, 28, & 44', '{"kb_id":"kb-gdpr-global-privacy-eu","category":"privacy"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India Article 12: Definition of "State" under Part III', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Constitution of India Article 12: Definition of "State" under Part III', 'constitution', null, 'IN', null, null, null, ARRAY['writ','rti','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -343,9 +344,9 @@ Article 12 defines "the State" for Part III Fundamental Rights to include the Go
     ', 'Const. India Art. 12', '{"kb_id":"kb-in-const-art12-state","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India Article 20: Protection in Conviction (Double Jeopardy & Self-Incrimination)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Constitution of India Article 20: Protection in Conviction (Double Jeopardy & Self-Incrimination)', 'constitution', null, 'IN', null, null, null, ARRAY['rti','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -364,9 +365,9 @@ Article 20 guarantees three inviolable criminal protections: (1) prohibition aga
     ', 'Const. India Art. 20(1), 20(2), 20(3)', '{"kb_id":"kb-in-const-art20-protection","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Constitution of India Article 22: Arrest Safeguards & 24-Hour Magistrate Remand', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Constitution of India Article 22: Arrest Safeguards & 24-Hour Magistrate Remand', 'constitution', null, 'IN', null, null, null, ARRAY['arrest','rti','bns','bnss','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -385,9 +386,9 @@ Article 22 protects arrested persons by requiring immediate notification of the 
     ', 'Const. India Art. 22(1) & 22(2)', '{"kb_id":"kb-in-const-art22-arrest","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Lalita Kumari v. Govt. of U.P. (2014): Mandatory FIR & Zero FIR', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Lalita Kumari v. Govt. of U.P. (2014): Mandatory FIR & Zero FIR', 'statute', null, 'IN', null, null, null, ARRAY['fir','bns','bnss','crpc','constitution']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -405,9 +406,9 @@ In Lalita Kumari v. Govt. of U.P. (2014), a 5-Judge Constitution Bench ruled una
     ', 'BNSS 2023 Section 173', '{"kb_id":"kb-in-sc-lalita-kumari-fir","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Satender Kumar Antil v. CBI (2022): Bail Reform Guidelines', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Satender Kumar Antil v. CBI (2022): Bail Reform Guidelines', 'statute', null, 'IN', null, null, null, ARRAY['article 21','bail','rti','bns','bnss','supreme court']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -426,9 +427,9 @@ In Satender Kumar Antil v. CBI (2022), the Supreme Court laid down structured gu
     ', 'BNSS 2023 Section 480', '{"kb_id":"kb-in-sc-satender-antil-bail","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('BNS 2023 Section 113: Terrorist Act in General Penal Code', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('BNS 2023 Section 113: Terrorist Act in General Penal Code', 'statute', null, 'IN', null, null, null, ARRAY['fir','bns']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -446,9 +447,9 @@ Section 113 of the Bharatiya Nyaya Sanhita (BNS 2023) defines a Terrorist Act as
     ', 'BNS 2023 Section 113', '{"kb_id":"kb-in-bns-sec113-terrorist-act","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('CPC 1908 Section 11: Res Judicata & Finality of Litigation', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('CPC 1908 Section 11: Res Judicata & Finality of Litigation', 'statute', null, 'IN', null, null, null, ARRAY['article 14','rti']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -466,9 +467,9 @@ Section 11 of the Code of Civil Procedure 1908 embodies the principle of Res Jud
     ', 'CPC 1908 Section 11', '{"kb_id":"kb-in-cpc-res-judicata-sec11","category":"disputes"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Indian Stamp Act Section 35: Inadmissibility & NN Global SC Bench', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Indian Stamp Act Section 35: Inadmissibility & NN Global SC Bench', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -486,9 +487,9 @@ Under Section 35 of the Indian Stamp Act 1899, no instrument chargeable with dut
     ', 'Indian Stamp Act 1899 Sec. 35', '{"kb_id":"kb-in-stamp-act-sec35-nn-global","category":"realestate"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Ram Janmabhoomi–Babri Masjid (Ayodhya) Case — M. Siddiq v. Mahant Suresh Das', 'judgment', 'Supreme Court of India', 'IN', null, 'M. Siddiq (D) Thr. Lrs. v. Mahant Suresh Das & Ors., (2020) 1 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Ram Janmabhoomi–Babri Masjid (Ayodhya) Case — M. Siddiq v. Mahant Suresh Das', 'judgment', 'Supreme Court of India', 'IN', '2019-11-09', 'M. Siddiq (D) Thr. Lrs. v. Mahant Suresh Das & Ors., (2020) 1 SCC 1', '5-judge Constitution Bench', ARRAY['article 14','rti','supreme court','judgment','constitution','ayodhya']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -507,9 +508,9 @@ On 9 November 2019, a 5-judge Constitution Bench of the Supreme Court decided th
     ', null, '{"kb_id":"kb-in-case-ayodhya-ram-janmabhoomi","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Sabarimala Temple Entry Case — Indian Young Lawyers Assn. v. State of Kerala', 'judgment', 'Supreme Court of India', 'IN', null, 'Indian Young Lawyers Assn. v. State of Kerala, (2019) 11 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Sabarimala Temple Entry Case — Indian Young Lawyers Assn. v. State of Kerala', 'judgment', 'Supreme Court of India', 'IN', '2018-09-28', 'Indian Young Lawyers Assn. v. State of Kerala, (2019) 11 SCC 1', '4:1', ARRAY['rti','supreme court','constitution','sabarimala']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -528,9 +529,9 @@ In Indian Young Lawyers Assn. v. State of Kerala ((2019) 11 SCC 1), a 4:1 majori
     ', null, '{"kb_id":"kb-in-case-sabarimala","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Triple Talaq Case — Shayara Bano v. Union of India', 'judgment', 'Supreme Court of India', 'IN', null, 'Shayara Bano v. Union of India, (2017) 9 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Triple Talaq Case — Shayara Bano v. Union of India', 'judgment', 'Supreme Court of India', 'IN', '2017-08-22', 'Shayara Bano v. Union of India, (2017) 9 SCC 1', '3:2', ARRAY['supreme court','constitution','talaq']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -549,9 +550,9 @@ In Shayara Bano v. Union of India ((2017) 9 SCC 1), a 3:2 majority of a 5-judge 
     ', null, '{"kb_id":"kb-in-case-triple-talaq","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Section 377 Case — Navtej Singh Johar v. Union of India', 'judgment', 'Supreme Court of India', 'IN', null, 'Navtej Singh Johar v. Union of India, (2018) 10 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Section 377 Case — Navtej Singh Johar v. Union of India', 'judgment', 'Supreme Court of India', 'IN', '2018-09-06', 'Navtej Singh Johar v. Union of India, (2018) 10 SCC 1', '5-judge Constitution Bench', ARRAY['rti','ipc','supreme court','constitution','section 377']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -570,9 +571,9 @@ In Navtej Singh Johar v. Union of India ((2018) 10 SCC 1), a 5-judge Constitutio
     ', null, '{"kb_id":"kb-in-case-section377","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Aadhaar Case — K.S. Puttaswamy (Aadhaar-5J) v. Union of India', 'judgment', 'Supreme Court of India', 'IN', null, 'K.S. Puttaswamy (Aadhaar-5J) v. Union of India, (2019) 1 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Aadhaar Case — K.S. Puttaswamy (Aadhaar-5J) v. Union of India', 'judgment', 'Supreme Court of India', 'IN', '2018-09-26', 'K.S. Puttaswamy (Aadhaar-5J) v. Union of India, (2019) 1 SCC 1', '5-judge bench', ARRAY['supreme court','aadhaar']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -591,9 +592,9 @@ In K.S. Puttaswamy (Aadhaar-5J) v. Union of India ((2019) 1 SCC 1), a 4:1 majori
     ', null, '{"kb_id":"kb-in-case-aadhaar","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Adultery Case — Joseph Shine v. Union of India', 'judgment', 'Supreme Court of India', 'IN', null, 'Joseph Shine v. Union of India, (2019) 3 SCC 39', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Adultery Case — Joseph Shine v. Union of India', 'judgment', 'Supreme Court of India', 'IN', '2018-09-27', 'Joseph Shine v. Union of India, (2019) 3 SCC 39', '5-judge Constitution Bench', ARRAY['rti','ipc','supreme court','constitution']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -612,9 +613,9 @@ In Joseph Shine v. Union of India ((2019) 3 SCC 39), a 5-judge Constitution Benc
     ', null, '{"kb_id":"kb-in-case-joseph-shine","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Preamble of the Constitution & Basic Structure', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Preamble of the Constitution & Basic Structure', 'constitution', null, 'IN', null, null, null, ARRAY['constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -634,9 +635,9 @@ The Preamble declares India a Sovereign, Socialist, Secular, Democratic Republic
     ', 'Constitution Preamble', '{"kb_id":"kb-in-const-preamble-basic-structure","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Articles 15 & 16 — Equality & Reservation Law', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Articles 15 & 16 — Equality & Reservation Law', 'constitution', null, 'IN', null, null, null, ARRAY['reservation','rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -658,9 +659,9 @@ Article 15 prohibits discrimination on grounds of religion, race, caste, sex or 
     ', 'Const. India Art. 15 & 16', '{"kb_id":"kb-in-const-art15-16-reservations","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Articles 17, 23 & 24 — Untouchability, Forced Labour & Child Labour', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Articles 17, 23 & 24 — Untouchability, Forced Labour & Child Labour', 'constitution', null, 'IN', null, null, null, ARRAY['rti','labour']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -680,9 +681,9 @@ Article 17 abolishes untouchability and makes its practice an offence, enforced 
     ', 'Const. India Art. 17, 23, 24', '{"kb_id":"kb-in-const-art17-23-24","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Article 20 — Protection in Respect of Conviction (Double Jeopardy & Self-Incrimination)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Article 20 — Protection in Respect of Conviction (Double Jeopardy & Self-Incrimination)', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -703,9 +704,9 @@ Article 20 gives three protections: (1) no conviction under an ex-post-facto law
     ', 'Const. India Art. 20', '{"kb_id":"kb-in-const-art20","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Article 22 — Arrest Safeguards & Preventive Detention', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Article 22 — Arrest Safeguards & Preventive Detention', 'constitution', null, 'IN', null, null, null, ARRAY['arrest','rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -725,9 +726,9 @@ Article 22 protects persons against arrest and detention: right to be informed o
     ', 'Const. India Art. 22', '{"kb_id":"kb-in-const-art22-preventive","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Articles 25–28 — Freedom of Religion', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Articles 25–28 — Freedom of Religion', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -749,9 +750,9 @@ Articles 25-28 guarantee freedom of conscience, free profession and practice of 
     ', 'Const. India Art. 25-28', '{"kb_id":"kb-in-const-art25-28","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Articles 29 & 30 — Minority Rights & Minority Institutions', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Articles 29 & 30 — Minority Rights & Minority Institutions', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -772,9 +773,9 @@ Article 29 protects the distinct language, script and culture of any section of 
     ', 'Const. India Art. 29, 30', '{"kb_id":"kb-in-const-art29-30","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Article 21A & Right to Education (RTE Act 2009)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Article 21A & Right to Education (RTE Act 2009)', 'constitution', null, 'IN', null, null, null, ARRAY['article 21','rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -795,9 +796,9 @@ Article 21A (inserted by the 86th Amendment, 2002) makes free and compulsory edu
     ', 'Const. India Art. 21A', '{"kb_id":"kb-in-const-art21a-education","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Directive Principles (DPSP) & Fundamental Duties (Article 51A)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Directive Principles (DPSP) & Fundamental Duties (Article 51A)', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -818,9 +819,9 @@ Part IV Directive Principles of State Policy (Articles 36-51) are non-justiciabl
     ', 'Const. India Part IV & Art. 51A', '{"kb_id":"kb-in-const-dpsp-fundamental-duties","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Article 356 — Presidents Rule & the S.R. Bommai Doctrine', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Article 356 — Presidents Rule & the S.R. Bommai Doctrine', 'constitution', null, 'IN', null, null, null, ARRAY['article 356','rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -839,9 +840,9 @@ Article 356 empowers the President to impose Presidents rule in a state on Gover
     ', 'Const. India Art. 356', '{"kb_id":"kb-in-const-art356-bommai","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Article 368 — Constitutional Amendments (Shankari Prasad → Kesavananda)', 'constitution', null, 'IN', null, null, 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+    ('Article 368 — Constitutional Amendments (Shankari Prasad → Kesavananda)', 'constitution', null, 'IN', null, null, null, ARRAY['article 368','rti','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -862,9 +863,9 @@ Article 368 provides the amendment procedure. The judicial journey: Shankari Pra
     ', 'Const. India Art. 368', '{"kb_id":"kb-in-const-art368-amendment","category":"constitution"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Dowry Death & Dowry Prohibition Act 1961', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Dowry Death & Dowry Prohibition Act 1961', 'statute', null, 'IN', null, null, null, ARRAY['dowry','bns','ipc']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -884,9 +885,9 @@ Dowry death (IPC 304B, now BNS Section 80) punishes the death of a woman by burn
     ', 'IPC 304B → BNS 80 (Dowry Death)', '{"kb_id":"kb-in-cr-dowry-death","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Theft, Robbery & Dacoity — BNS 303, 309, 310', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Theft, Robbery & Dacoity — BNS 303, 309, 310', 'statute', null, 'IN', null, null, null, ARRAY['bns','ipc','property','theft','dacoity']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -906,9 +907,9 @@ Theft (BNS 303, old IPC 378) is dishonest taking of movable property out of some
     ', 'BNS 303 (old IPC 378-382 Theft)', '{"kb_id":"kb-in-cr-theft-robbery-dacoity","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Kidnapping & Abduction — BNS 137, 138, 140', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Kidnapping & Abduction — BNS 137, 138, 140', 'statute', null, 'IN', null, null, null, ARRAY['bns','ipc','guardianship','kidnapping']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -928,9 +929,9 @@ Kidnapping (BNS 137, old IPC 359-363) is taking a minor (below 16 for males, 18 
     ', 'BNS 137 (old IPC 359-363 Kidnapping)', '{"kb_id":"kb-in-cr-kidnapping","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Defamation & Criminal Intimidation — BNS 356 & 351', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Defamation & Criminal Intimidation — BNS 356 & 351', 'statute', null, 'IN', null, null, null, ARRAY['bns','ipc','property','defamation']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -949,9 +950,9 @@ Defamation (BNS 356, old IPC 499-500) is imputing anything to harm a persons rep
     ', 'BNS 356 (old IPC 499-500 Defamation)', '{"kb_id":"kb-in-cr-defamation-intimidation","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Sexual Harassment at Workplace — Vishaka & POSH Act 2013', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Sexual Harassment at Workplace — Vishaka & POSH Act 2013', 'statute', null, 'IN', null, null, null, ARRAY['posh','bns','ipc']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -972,9 +973,9 @@ In Vishaka v. State of Rajasthan (1997), the Supreme Court laid down binding gui
     ', 'POSH Act 2013', '{"kb_id":"kb-in-cr-posh","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('POCSO Act 2012 — Child Sexual Offences', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('POCSO Act 2012 — Child Sexual Offences', 'statute', null, 'IN', null, null, null, ARRAY['pocso']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -994,9 +995,9 @@ The Protection of Children from Sexual Offences (POCSO) Act 2012 protects childr
     ', 'POCSO Act 2012', '{"kb_id":"kb-in-cr-pocso","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Domestic Violence Act 2005 (PWDVA)', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Domestic Violence Act 2005 (PWDVA)', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1016,9 +1017,9 @@ The Protection of Women from Domestic Violence Act 2005 (PWDVA) protects women f
     ', 'Protection of Women from Domestic Violence Act 2005', '{"kb_id":"kb-in-cr-domestic-violence","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Bail Law — BNSS 2023 (Regular, Anticipatory & Default Bail)', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Bail Law — BNSS 2023 (Regular, Anticipatory & Default Bail)', 'statute', null, 'IN', null, null, null, ARRAY['bail','bns','bnss','crpc']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1039,9 +1040,9 @@ Under BNSS 2023, regular bail for non-bailable offences (BNSS 480, old CrPC 439)
     ', 'BNSS 480 (old CrPC 439 Regular Bail)', '{"kb_id":"kb-in-cr-bail-bnss","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Cybercrime & IT Act 2000 — Sections 43, 66, 67, 69', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Cybercrime & IT Act 2000 — Sections 43, 66, 67, 69', 'statute', null, 'IN', null, null, null, ARRAY['bsa','cyber','it act','theft']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1062,9 +1063,9 @@ The Information Technology Act 2000 criminalizes unauthorized access and hacking
     ', 'IT Act 2000 s.43, 66, 66C-66F, 67, 69', '{"kb_id":"kb-in-cr-cyber-itact","category":"criminal"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Hindu Marriage Act 1955 — Marriage, Divorce Grounds & Cooling Period', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Hindu Marriage Act 1955 — Marriage, Divorce Grounds & Cooling Period', 'statute', null, 'IN', null, null, null, ARRAY['divorce']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1084,9 +1085,9 @@ The Hindu Marriage Act 1955 governs marriage and divorce for Hindus. Section 5 c
     ', 'Hindu Marriage Act 1955 s.5, 9, 13, 13B', '{"kb_id":"kb-in-fam-hindu-marriage","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Hindu Succession Act 1956 — Coparcenary & Daughters Rights', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Hindu Succession Act 1956 — Coparcenary & Daughters Rights', 'statute', null, 'IN', null, null, null, ARRAY['property','succession']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1106,9 +1107,9 @@ The 2005 amendment to Section 6 of the Hindu Succession Act made daughters copar
     ', 'Hindu Succession Act 1956 s.6 (2005 Amendment)', '{"kb_id":"kb-in-fam-hindu-succession","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Special Marriage Act 1954 — Inter-Faith Marriage & Conversion', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Special Marriage Act 1954 — Inter-Faith Marriage & Conversion', 'statute', null, 'IN', null, null, null, ARRAY['fir','divorce','succession']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1128,9 +1129,9 @@ The Special Marriage Act 1954 allows civil marriage irrespective of religion —
     ', 'Special Marriage Act 1954 s.4, 19, 27, 28', '{"kb_id":"kb-in-fam-special-marriage","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Muslim Personal Law — Maintenance, Talaq & Shah Bano', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Muslim Personal Law — Maintenance, Talaq & Shah Bano', 'statute', null, 'IN', null, null, null, ARRAY['divorce','maintenance','bns','bnss','crpc','talaq']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1151,9 +1152,9 @@ In Mohd. Ahmed Khan v. Shah Bano Begum (1985), the Supreme Court held a divorced
     ', 'Muslim Women (Protection of Rights on Divorce) Act 1986', '{"kb_id":"kb-in-fam-muslim-personal-law","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Guardianship & Custody — HMGA 1956 & GWA 1890', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Guardianship & Custody — HMGA 1956 & GWA 1890', 'statute', null, 'IN', null, null, null, ARRAY['guardianship']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1173,9 +1174,9 @@ Under the Hindu Minority and Guardianship Act 1956, the father is the natural gu
     ', 'Hindu Minority & Guardianship Act 1956', '{"kb_id":"kb-in-fam-guardianship","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Adoption Law — HAMA 1956 & Juvenile Justice Act 2015', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Adoption Law — HAMA 1956 & Juvenile Justice Act 2015', 'statute', null, 'IN', null, null, null, ARRAY['maintenance','adoption']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1194,9 +1195,9 @@ The Hindu Adoptions and Maintenance Act 1956 (HAMA) governs adoption for Hindus 
     ', 'Hindu Adoptions & Maintenance Act 1956', '{"kb_id":"kb-in-fam-adoption","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Right to Marry & Live-in Relationships', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Right to Marry & Live-in Relationships', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1216,9 +1217,9 @@ The Supreme Court has repeatedly held that the right to marry a person of ones c
     ', 'Const. India Art. 21 & 19', '{"kb_id":"kb-in-fam-right-to-marry","category":"family"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Indian Contract Act 1872 — Essentials & Minors Agreements', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Indian Contract Act 1872 — Essentials & Minors Agreements', 'statute', null, 'IN', null, null, null, ARRAY['contract']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1240,9 +1241,9 @@ Section 10 Contract Act: agreements are contracts when made by competent parties
     ', 'Contract Act 1872 s.2, 10, 11, 23, 25', '{"kb_id":"kb-in-civil-contract-essentials","category":"civil"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Specific Relief Act 1963 — Specific Performance & Injunctions', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Specific Relief Act 1963 — Specific Performance & Injunctions', 'statute', null, 'IN', null, null, null, ARRAY['contract','property']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1262,9 +1263,9 @@ The Specific Relief Act 1963 provides specific performance of contracts (Section
     ', 'Specific Relief Act 1963 s.10, 14, 41', '{"kb_id":"kb-in-civil-specific-relief","category":"civil"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Transfer of Property Act 1882 — Sale, Mortgage, Lease & Gift', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Transfer of Property Act 1882 — Sale, Mortgage, Lease & Gift', 'statute', null, 'IN', null, null, null, ARRAY['property']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1285,9 +1286,9 @@ The Transfer of Property Act 1882 governs transfer of immovable property: sale (
     ', 'TP Act 1882 s.53A, 54, 58, 105, 122', '{"kb_id":"kb-in-civil-tpa","category":"civil"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Limitation Act 1963 — Deadlines for Filing Suits', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Limitation Act 1963 — Deadlines for Filing Suits', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1308,9 +1309,9 @@ The Limitation Act 1963 bars remedies after prescribed periods — Section 3 req
     ', 'Limitation Act 1963 s.3, 5, 27', '{"kb_id":"kb-in-civil-limitation","category":"civil"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Adverse Possession — 12 Years & the Grewal Doctrine', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Adverse Possession — 12 Years & the Grewal Doctrine', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1330,9 +1331,9 @@ Adverse possession requires possession that is continuous, open, notorious, and 
     ', 'Limitation Act 1963 s.27 & Art. 65', '{"kb_id":"kb-in-civil-adverse-possession","category":"civil"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Consumer Protection Act 2019 — Rights, E-Commerce & Commissions', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Consumer Protection Act 2019 — Rights, E-Commerce & Commissions', 'statute', null, 'IN', null, null, null, ARRAY['consumer']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1352,9 +1353,9 @@ The Consumer Protection Act 2019 replaced the 1986 Act — covering defective go
     ', 'Consumer Protection Act 2019 s.2, 35, 47', '{"kb_id":"kb-in-consumer-cpa2019","category":"consumer"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('RTI Act 2005 — Filing, Exemptions & Penalties', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('RTI Act 2005 — Filing, Exemptions & Penalties', 'statute', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1374,9 +1375,9 @@ The Right to Information Act 2005 gives every citizen the right to information f
     ', 'RTI Act 2005 s.2, 6, 8, 19, 20', '{"kb_id":"kb-in-consumer-rti","category":"consumer"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Motor Vehicle Accident Claims — MVA 1988 & Compensation', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Motor Vehicle Accident Claims — MVA 1988 & Compensation', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1396,9 +1397,9 @@ The Motor Vehicles Act 1988 provides compensation for road accident victims — 
     ', 'Motor Vehicles Act 1988 s.166', '{"kb_id":"kb-in-consumer-mva","category":"consumer"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Medical Negligence — Jacob Mathew & Bolam Standard', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Medical Negligence — Jacob Mathew & Bolam Standard', 'statute', null, 'IN', null, null, null, ARRAY['consumer']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1417,9 +1418,9 @@ In Jacob Mathew v. State of Punjab (2005), the Supreme Court held a doctor is no
     ', 'Consumer Protection Act 2019', '{"kb_id":"kb-in-consumer-medical-negligence","category":"consumer"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Insolvency & Bankruptcy Code 2016 — CIRP & Creditors', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Insolvency & Bankruptcy Code 2016 — CIRP & Creditors', 'statute', null, 'IN', null, null, null, ARRAY['ibc']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1440,9 +1441,9 @@ The Insolvency and Bankruptcy Code 2016 provides time-bound resolution: financia
     ', 'IBC 2016 s.7, 9, 10, 14, 29A', '{"kb_id":"kb-in-biz-ibc","category":"business"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Companies Act 2013 — Directors Duties & Corporate Governance', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Companies Act 2013 — Directors Duties & Corporate Governance', 'statute', null, 'IN', null, null, null, ARRAY['companies']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1463,9 +1464,9 @@ The Companies Act 2013 governs incorporation, management and winding up. Section
     ', 'Companies Act 2013 s.166, 447', '{"kb_id":"kb-in-biz-companies","category":"business"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Partnership Act 1932 & LLP Act 2008', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Partnership Act 1932 & LLP Act 2008', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1485,9 +1486,9 @@ A partnership (Partnership Act 1932, Section 4) is the relation between persons 
     ', 'Indian Partnership Act 1932 s.4, 9, 19, 32', '{"kb_id":"kb-in-biz-partnership","category":"business"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Labour Law — ID Act & the Four Labour Codes 2020', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Labour Law — ID Act & the Four Labour Codes 2020', 'statute', null, 'IN', null, null, null, ARRAY['labour']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1507,9 +1508,9 @@ The Industrial Disputes Act 1947 protects workmen — Bangalore Water Supply (19
     ', 'Industrial Disputes Act 1947', '{"kb_id":"kb-in-biz-labour-codes","category":"business"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Cheque Bounce — Section 138 NI Act & Interim Compensation', 'statute', null, 'IN', null, null, 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Cheque Bounce — Section 138 NI Act & Interim Compensation', 'statute', null, 'IN', null, null, null, ARRAY['cheque']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1529,9 +1530,9 @@ Section 138 NI Act punishes cheque dishonour for insufficiency of funds — up t
     ', 'Negotiable Instruments Act 1881 s.138, 143A, 148', '{"kb_id":"kb-in-biz-ni-act","category":"business"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('S.R. Bommai v. Union of India (1994) 3 SCC 1', 'judgment', 'Supreme Court of India', 'IN', null, 'S.R. Bommai v. Union of India, (1994) 3 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('S.R. Bommai v. Union of India (1994) 3 SCC 1', 'judgment', 'Supreme Court of India', 'IN', '1994-03-11', 'S.R. Bommai v. Union of India, (1994) 3 SCC 1', '9-judge Constitution Bench', ARRAY['rti','constitution']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1550,9 +1551,9 @@ In S.R. Bommai v. Union of India (1994), a 9-judge Constitution Bench held: (1) 
     ', null, '{"kb_id":"kb-in-case-bommai","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('NALSA v. Union of India (2014) 5 SCC 438 — Transgender Rights', 'judgment', 'Supreme Court of India', 'IN', null, 'NALSA v. Union of India, (2014) 5 SCC 438', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('NALSA v. Union of India (2014) 5 SCC 438 — Transgender Rights', 'judgment', 'Supreme Court of India', 'IN', '2014-04-15', 'NALSA v. Union of India, (2014) 5 SCC 438', null, ARRAY['transgender']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1571,9 +1572,9 @@ In NALSA v. Union of India (2014), the Supreme Court recognized transgender pers
     ', null, '{"kb_id":"kb-in-case-nalsa","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Common Cause v. Union of India (2018) 5 SCC 1 — Passive Euthanasia', 'judgment', 'Supreme Court of India', 'IN', null, 'Common Cause v. Union of India, (2018) 5 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Common Cause v. Union of India (2018) 5 SCC 1 — Passive Euthanasia', 'judgment', 'Supreme Court of India', 'IN', '2018-03-09', 'Common Cause v. Union of India, (2018) 5 SCC 1', '5-judge Constitution Bench', ARRAY['euthanasia']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1593,9 +1594,9 @@ In Common Cause (A Registered Society) v. Union of India (2018), a 5-judge Const
     ', null, '{"kb_id":"kb-in-case-common-cause","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Bachan Singh v. State of Punjab (1980) 2 SCC 684 — Death Penalty', 'judgment', 'Supreme Court of India', 'IN', null, 'Bachan Singh v. State of Punjab, (1980) 2 SCC 684', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Bachan Singh v. State of Punjab (1980) 2 SCC 684 — Death Penalty', 'judgment', 'Supreme Court of India', 'IN', '1980-05-09', 'Bachan Singh v. State of Punjab, (1980) 2 SCC 684', '5-Judge Bench', ARRAY['bns','constitution','death penalty']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1615,9 +1616,9 @@ In Bachan Singh v. State of Punjab (1980), the Supreme Court upheld the constitu
     ', null, '{"kb_id":"kb-in-case-bachan-singh","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('I.R. Coelho v. State of Tamil Nadu (2007) 2 SCC 1 — Ninth Schedule', 'judgment', 'Supreme Court of India', 'IN', null, 'I.R. Coelho v. State of Tamil Nadu, (2007) 2 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('I.R. Coelho v. State of Tamil Nadu (2007) 2 SCC 1 — Ninth Schedule', 'judgment', 'Supreme Court of India', 'IN', '1973-04-24', 'I.R. Coelho v. State of Tamil Nadu, (2007) 2 SCC 1', '9-judge Constitution Bench', ARRAY['constitution']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1636,9 +1637,9 @@ In I.R. Coelho v. State of Tamil Nadu (2007), a 9-judge Constitution Bench held 
     ', null, '{"kb_id":"kb-in-case-icoelho","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('NJAC Judgment — Supreme Court Advocates-on-Record Assn. v. Union of India (2016) 5 SCC 1', 'judgment', 'Supreme Court of India', 'IN', null, 'Supreme Court Advocates-on-Record Assn. v. Union of India, (2016) 5 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('NJAC Judgment — Supreme Court Advocates-on-Record Assn. v. Union of India (2016) 5 SCC 1', 'judgment', 'Supreme Court of India', 'IN', '2016-01-01', 'Supreme Court Advocates-on-Record Assn. v. Union of India, (2016) 5 SCC 1', '5-judge Constitution Bench', ARRAY['supreme court','judgment']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1659,9 +1660,9 @@ In Supreme Court Advocates-on-Record Association v. Union of India (2016), a 5-j
     ', null, '{"kb_id":"kb-in-case-njac","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Hussainara Khatoon v. State of Bihar (1980) 1 SCC 81 — Undertrials & Speedy Trial', 'judgment', 'Supreme Court of India', 'IN', null, 'Hussainara Khatoon v. State of Bihar, (1980) 1 SCC 81', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Hussainara Khatoon v. State of Bihar (1980) 1 SCC 81 — Undertrials & Speedy Trial', 'judgment', 'Supreme Court of India', 'IN', '1979-03-09', 'Hussainara Khatoon v. State of Bihar, (1980) 1 SCC 81', null, ARRAY['article 21','rti']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1681,9 +1682,9 @@ Hussainara Khatoon v. Home Secretary, State of Bihar (1980) exposed lakhs of und
     ', null, '{"kb_id":"kb-in-case-hussainara","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Vineet Narain v. Union of India (1998) 1 SCC 226 — CBI Autonomy', 'judgment', 'Supreme Court of India', 'IN', null, 'Vineet Narain v. Union of India, (1998) 1 SCC 226', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Vineet Narain v. Union of India (1998) 1 SCC 226 — CBI Autonomy', 'judgment', 'Supreme Court of India', 'IN', '1998-01-01', 'Vineet Narain v. Union of India, (1998) 1 SCC 226', null, ARRAY[NULL]::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1702,9 +1703,9 @@ In Vineet Narain v. Union of India (1998), the Supreme Court (Jain Hawala case) 
     ', null, '{"kb_id":"kb-in-case-vineet-narain","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('ADM Jabalpur v. Shivkant Shukla (1976) 2 SCC 521 — Habeas Corpus Emergency Case', 'judgment', 'Supreme Court of India', 'IN', null, 'ADM Jabalpur v. Shivkant Shukla, (1976) 2 SCC 521', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('ADM Jabalpur v. Shivkant Shukla (1976) 2 SCC 521 — Habeas Corpus Emergency Case', 'judgment', 'Supreme Court of India', 'IN', '1976-04-28', 'ADM Jabalpur v. Shivkant Shukla, (1976) 2 SCC 521', '4:1', ARRAY['article 21','rti']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1723,9 +1724,9 @@ In ADM Jabalpur v. Shivkant Shukla (1976), a 4:1 majority held that during an em
     ', null, '{"kb_id":"kb-in-case-jabalpur","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('I.C. Golaknath v. State of Punjab (AIR 1967 SC 1643)', 'judgment', 'Supreme Court of India', 'IN', null, 'I.C. Golaknath v. State of Punjab, AIR 1967 SC 1643', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('I.C. Golaknath v. State of Punjab (AIR 1967 SC 1643)', 'judgment', 'Supreme Court of India', 'IN', '1967-01-01', 'I.C. Golaknath v. State of Punjab, AIR 1967 SC 1643', '11-judge bench', ARRAY[NULL]::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1744,9 +1745,9 @@ In I.C. Golaknath v. State of Punjab (1967), an 11-judge bench held (6:5) that P
     ', null, '{"kb_id":"kb-in-case-golaknath","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Government of NCT of Delhi v. Union of India (2023) 9 SCC 1 — Delhi Services', 'judgment', 'Supreme Court of India', 'IN', null, 'Government of NCT of Delhi v. Union of India, (2023) 9 SCC 1', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Government of NCT of Delhi v. Union of India (2023) 9 SCC 1 — Delhi Services', 'judgment', 'Supreme Court of India', 'IN', '2023-05-11', 'Government of NCT of Delhi v. Union of India, (2023) 9 SCC 1', '5-judge Constitution Bench', ARRAY['rti','delhi']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1765,9 +1766,9 @@ In Government of NCT of Delhi v. Union of India (2023), a 5-judge Constitution B
     ', null, '{"kb_id":"kb-in-case-delhi-services","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Anoop Baranwal v. Union of India (2023) 6 SCC 161 — Election Commission Appointments', 'judgment', 'Supreme Court of India', 'IN', null, 'Anoop Baranwal v. Union of India, (2023) 6 SCC 161', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Anoop Baranwal v. Union of India (2023) 6 SCC 161 — Election Commission Appointments', 'judgment', 'Supreme Court of India', 'IN', '2023-03-02', 'Anoop Baranwal v. Union of India, (2023) 6 SCC 161', '5-judge Constitution Bench', ARRAY['article 32','rti','election commission']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1786,9 +1787,9 @@ In Anoop Baranwal v. Union of India (2023), a 5-judge Constitution Bench held th
     ', null, '{"kb_id":"kb-in-case-anoop-baranwal","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Supriyo v. Union of India (2023 SCC OnLine SC 1348) — Same-Sex Marriage', 'judgment', 'Supreme Court of India', 'IN', null, 'Supriyo @ Supriya Chakraborty v. Union of India, 2023 SCC OnLine SC 1348', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Supriyo v. Union of India (2023 SCC OnLine SC 1348) — Same-Sex Marriage', 'judgment', 'Supreme Court of India', 'IN', '2023-10-17', 'Supriyo @ Supriya Chakraborty v. Union of India, 2023 SCC OnLine SC 1348', '5-judge Constitution Bench', ARRAY[NULL]::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1808,9 +1809,9 @@ In Supriyo v. Union of India (2023), a 5-judge Constitution Bench unanimously he
     ', null, '{"kb_id":"kb-in-case-supriyo","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Mohori Bibee v. Dharmodas Ghose (1903) 30 IA 114 — Minor s Contract', 'judgment', 'Supreme Court of India', 'IN', null, 'Mohori Bibee v. Dharmodas Ghose, (1903) 30 IA 114 (Privy Council)', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Mohori Bibee v. Dharmodas Ghose (1903) 30 IA 114 — Minor s Contract', 'judgment', 'Supreme Court of India', 'IN', '1903-01-01', 'Mohori Bibee v. Dharmodas Ghose, (1903) 30 IA 114 (Privy Council)', null, ARRAY['contract']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1829,9 +1830,9 @@ In Mohori Bibee v. Dharmodas Ghose (1903), the Privy Council held that a minor s
     ', null, '{"kb_id":"kb-in-case-mohori-bibee","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Carlill v. Carbolic Smoke Ball Co. [1893] 1 QB 256 — Unilateral Contracts', 'judgment', 'Supreme Court of India', 'IN', null, 'Carlill v. Carbolic Smoke Ball Co., [1893] 1 QB 256', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Carlill v. Carbolic Smoke Ball Co. [1893] 1 QB 256 — Unilateral Contracts', 'judgment', 'Supreme Court of India', 'IN', '1893-01-01', 'Carlill v. Carbolic Smoke Ball Co., [1893] 1 QB 256', null, ARRAY['contract']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1850,9 +1851,9 @@ In Carlill v. Carbolic Smoke Ball Co. (1893), the company advertised a £100 rew
     ', null, '{"kb_id":"kb-in-case-carlill","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Donoghue v. Stevenson [1932] AC 562 — Negligence & Duty of Care', 'judgment', 'Supreme Court of India', 'IN', null, 'Donoghue v. Stevenson, [1932] AC 562', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Donoghue v. Stevenson [1932] AC 562 — Negligence & Duty of Care', 'judgment', 'Supreme Court of India', 'IN', '1932-01-01', 'Donoghue v. Stevenson, [1932] AC 562', null, ARRAY['consumer']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1871,9 +1872,9 @@ In Donoghue v. Stevenson (1932), the House of Lords held that a manufacturer owe
     ', null, '{"kb_id":"kb-in-case-donoghue","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Vishaka v. State of Rajasthan (1997) 6 SCC 241 — Workplace Harassment Guidelines', 'judgment', 'Supreme Court of India', 'IN', null, 'Vishaka v. State of Rajasthan, (1997) 6 SCC 241', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Vishaka v. State of Rajasthan (1997) 6 SCC 241 — Workplace Harassment Guidelines', 'judgment', 'Supreme Court of India', 'IN', '1997-01-01', 'Vishaka v. State of Rajasthan, (1997) 6 SCC 241', null, ARRAY['rti','posh','judgment']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1892,9 +1893,9 @@ In Vishaka v. State of Rajasthan (1997), the Supreme Court — in the absence of
     ', null, '{"kb_id":"kb-in-case-vishaka","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('M.C. Mehta v. Union of India (1987) 1 SCC 395 — Absolute Liability & Environment', 'judgment', 'Supreme Court of India', 'IN', null, 'M.C. Mehta v. Union of India, (1987) 1 SCC 395', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('M.C. Mehta v. Union of India (1987) 1 SCC 395 — Absolute Liability & Environment', 'judgment', 'Supreme Court of India', 'IN', '1987-01-01', 'M.C. Mehta v. Union of India, (1987) 1 SCC 395', null, ARRAY['article 21','rti']::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1914,9 +1915,9 @@ In M.C. Mehta v. Union of India (Oleum Gas Leak, 1987), after the Shriram chemic
     ', null, '{"kb_id":"kb-in-case-mc-mehta","category":"caselaw"}'::jsonb);
 
   insert into public.legal_documents
-    (title, document_type, court, jurisdiction, judgment_date, citation, source_url, official_source, authority_level, verified)
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Lily Thomas v. Union of India (2013) 7 SCC 653 — Disqualification on Conviction', 'judgment', 'Supreme Court of India', 'IN', null, 'Lily Thomas v. Union of India, (2013) 7 SCC 653', 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
+    ('Lily Thomas v. Union of India (2013) 7 SCC 653 — Disqualification on Conviction', 'judgment', 'Supreme Court of India', 'IN', '2013-01-01', 'Lily Thomas v. Union of India, (2013) 7 SCC 653', null, ARRAY[NULL]::text[], 'https://main.sci.gov.in/judgments', 'Supreme Court of India', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
