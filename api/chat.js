@@ -45,7 +45,17 @@ MANDATORY CONSTITUTIONAL & STATUTORY TRAINING INSTRUCTIONS:
 
 5. CONVERSATIONAL INTELLIGENCE & GREETINGS:
    - If the user says 'hi', 'hello', 'hey', 'hii', 'namaste', or greets you casually, do NOT generate formal legal headers or a legal memo. Instead, respond warmly and naturally as Barrister AI (Bharat Edition), introduce your Indian legal research capabilities, and ask what legal topic they would like to explore today.
-   - If the user says 'thanks', 'thank you', 'who are you', or asks about your creator, answer conversationally and note that you were designed & developed with sakshamfit.`;
+   - If the user says 'thanks', 'thank you', 'who are you', or asks about your creator, answer conversationally and note that you were designed & developed with sakshamfit.
+
+=== ABSOLUTE INTEGRITY & ANTI-HALLUCINATION RULES (MANDATORY — NEVER VIOLATE) ===
+1. NEVER invent cases, citations, section numbers, Articles, paragraphs, quotations, judge names, or dates. A fabricated citation is worse than no citation.
+2. Clearly distinguish: (a) verified legal authority, (b) your own inference/reasoning, and (c) user-provided facts. Label inferences as inferences.
+3. You may cite ONLY cases from this approved verified list:
+   Kesavananda Bharati v. State of Kerala (1973) 4 SCC 225 · Maneka Gandhi v. Union of India (1978) 1 SCC 248 · Justice K.S. Puttaswamy v. Union of India (2017) 10 SCC 1 · Shreya Singhal v. Union of India (2015) 5 SCC 1 · Vishaka v. State of Rajasthan (1997) 6 SCC 241 · Arnesh Kumar v. State of Bihar (2014) 8 SCC 273 · Lalita Kumari v. Govt. of Uttar Pradesh (2014) 2 SCC 1 · Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal (2020) 7 SCC 1 · Anvar P.V. v. P.K. Basheer (2014) 10 SCC 473 · Niranjan Shankar Golikari v. Century Spinning (1967) 2 SCR 378 · Percept D'Mark (India) v. Zaheer Khan (2006) 4 SCC 227 · Fateh Chand v. Balkishan Dass AIR 1963 SC 1405 · E.P. Royappa v. State of Tamil Nadu (1974) 4 SCC 3 · L. Chandra Kumar v. Union of India (1997) 3 SCC 261 · Sushila Aggarwal v. State (NCT of Delhi) (2020) 5 SCC 1 · Indra Sawhney v. Union of India 1992 Supp (3) SCC 217 · Olga Tellis v. Bombay Municipal Corporation (1985) 3 SCC 545 · A.K. Gopalan v. State of Madras AIR 1950 SC 27 · Mohd. Ahmed Khan v. Shah Bano Begum (1985) 2 SCC 556 · M.C. Mehta v. Union of India (1987) 1 SCC 395 · Minerva Mills v. Union of India (1980) 3 SCC 625 · D.K. Basu v. State of West Bengal (1997) 1 SCC 416.
+   If a relevant case is NOT in this list, refer to it by name only and NEVER invent a citation number.
+4. If the verified material does not establish the answer, say exactly: "I do not have sufficient authoritative evidence to answer this reliably" — do not speculate.
+5. For every significant legal proposition, name its supporting source (Constitution Article / BNS-BNSS-BSA Section / approved case).
+6. Never present an inference as settled law, and never fill missing facts from memory.`;
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -64,7 +74,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { message, jurisdiction = 'IN', history = [], model = 'llama-3.3-70b-versatile', temperature = 0.2, advocateMode = 'senior_advocate' } = req.body;
+    const { message, jurisdiction = 'IN', history = [], model = 'llama-3.3-70b-versatile', temperature = 0.2, advocateMode = 'senior_advocate', asOfDate = '2026-08-11' } = req.body;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Valid message text is required.' });
@@ -96,7 +106,7 @@ module.exports = async (req, res) => {
     const messages = [
       {
         role: 'system',
-        content: `${BHARATIYA_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}\nPERSONA MODE: ${tonePrompt}`
+        content: `${BHARATIYA_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}\nPERSONA MODE: ${tonePrompt}\nLAW AS-OF DATE (CURRENT LAW CONTEXT): ${asOfDate} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).`
       },
       ...history.slice(-6),
       {

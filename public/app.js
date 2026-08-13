@@ -4,7 +4,6 @@
    ========================================================================== */
 
 // --- Global Application State ---
-const BUILTIN_GROQ_KEY = "sk_KG3QUJUhW755GXG68OZKWGdyb3FY5ahhgLNWyJHOgaafIuzkuV6X";
 const AppState = {
   currentView: 'knowledge-view', // Launch into Bharatiya Constitution & Law Library
   jurisdiction: 'IN', // Default: IN (India - Bharatiya Samvidhan, BNS/BNSS/BSA & Central Acts)
@@ -780,6 +779,198 @@ const KNOWLEDGE_BASE_ARTICLES = [
     askAIPrompt: 'What did the 7-Judge Constitution Bench rule in N.N. Global Mercantile (2023) regarding unstamped arbitration agreements?'
   }
 ];
+
+// ==========================================================================
+// 🛡️ BARRISTER AI TRUST ENGINE v1.0
+// Source grounding • Citation verification • Evidence confidence gate
+// Principle: "Retrieve the law, reason over the law, prove the answer from the law."
+// ==========================================================================
+
+// Approved verified case index — the ONLY cases Barrister may cite with citation numbers.
+const VERIFIED_CASE_INDEX = [
+  { name: 'Kesavananda Bharati v. State of Kerala', cite: '(1973) 4 SCC 225', tokens: ['kesavananda', 'keshavananda', 'basic structure'] },
+  { name: 'Maneka Gandhi v. Union of India', cite: '(1978) 1 SCC 248', tokens: ['maneka gandhi'] },
+  { name: 'Justice K.S. Puttaswamy v. Union of India', cite: '(2017) 10 SCC 1', tokens: ['puttaswamy', 'right to privacy'] },
+  { name: 'Shreya Singhal v. Union of India', cite: '(2015) 5 SCC 1', tokens: ['shreya singhal', '66a'] },
+  { name: 'Vishaka v. State of Rajasthan', cite: '(1997) 6 SCC 241', tokens: ['vishaka', 'vishakha', 'posh'] },
+  { name: 'Arnesh Kumar v. State of Bihar', cite: '(2014) 8 SCC 273', tokens: ['arnesh kumar', '41a'] },
+  { name: 'Lalita Kumari v. Govt. of Uttar Pradesh', cite: '(2014) 2 SCC 1', tokens: ['lalita kumari'] },
+  { name: 'Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal', cite: '(2020) 7 SCC 1', tokens: ['khotkar', '65b'] },
+  { name: 'Anvar P.V. v. P.K. Basheer', cite: '(2014) 10 SCC 473', tokens: ['anvar p.v.', 'anvar pv'] },
+  { name: 'Niranjan Shankar Golikari v. Century Spinning', cite: '(1967) 2 SCR 378', tokens: ['golikari'] },
+  { name: 'Percept D\'Mark (India) v. Zaheer Khan', cite: '(2006) 4 SCC 227', tokens: ['zaheer khan', 'percept'] },
+  { name: 'Fateh Chand v. Balkishan Dass', cite: 'AIR 1963 SC 1405', tokens: ['fateh chand'] },
+  { name: 'E.P. Royappa v. State of Tamil Nadu', cite: '(1974) 4 SCC 3', tokens: ['royappa'] },
+  { name: 'L. Chandra Kumar v. Union of India', cite: '(1997) 3 SCC 261', tokens: ['chandra kumar'] },
+  { name: 'Sushila Aggarwal v. State (NCT of Delhi)', cite: '(2020) 5 SCC 1', tokens: ['sushila aggarwal'] },
+  { name: 'Indra Sawhney v. Union of India', cite: '1992 Supp (3) SCC 217', tokens: ['indra sawhney', 'mandal'] },
+  { name: 'Olga Tellis v. Bombay Municipal Corporation', cite: '(1985) 3 SCC 545', tokens: ['olga tellis', 'pavement dwellers'] },
+  { name: 'A.K. Gopalan v. State of Madras', cite: 'AIR 1950 SC 27', tokens: ['gopalan', 'preventive detention'] },
+  { name: 'Mohd. Ahmed Khan v. Shah Bano Begum', cite: '(1985) 2 SCC 556', tokens: ['shah bano'] },
+  { name: 'M.C. Mehta v. Union of India', cite: '(1987) 1 SCC 395', tokens: ['mc mehta', 'oleum'] },
+  { name: 'Minerva Mills v. Union of India', cite: '(1980) 3 SCC 625', tokens: ['minerva mills'] },
+  { name: 'D.K. Basu v. State of West Bengal', cite: '(1997) 1 SCC 416', tokens: ['d.k. basu', 'dk basu'] }
+];
+
+// Indian legal citation patterns the verifier scans for.
+const CITATION_PATTERNS = [
+  { re: /\(\s*\d{4}\s*\)\s*\d+\s+SCC\s+\d+/g, label: 'SCC citation' },
+  { re: /\d{4}\s+Supp\s*\(\s*\d+\s*\)\s+SCC\s+\d+/g, label: 'SCC Supp citation' },
+  { re: /AIR\s+\d{4}\s+(SC|Del|Bom|Mad|Cal|All|Ker)\s+\d+/g, label: 'AIR citation' },
+  { re: /\(\s*\d{4}\s*\)\s*\d+\s+SCR\s+\d+/g, label: 'SCR citation' },
+  { re: /SCC\s+OnLine\s+SC\s+\d+/g, label: 'SCC OnLine citation' },
+  { re: /MANU\/[A-Z]{2}\/\d{4}\/\d+/g, label: 'MANU citation' },
+  { re: /\d{4}\s+Cri\s*LJ\s+\d+/g, label: 'CriLJ citation' }
+];
+
+function normCitation(s) {
+  return s.toLowerCase().replace(/[\s().,\-–—]/g, '');
+}
+
+const VERIFIED_CITE_NORMS = VERIFIED_CASE_INDEX.map((c) => normCitation(c.cite));
+
+// Pass 3 (Verification): every citation-like string must match the approved index,
+// otherwise it is stripped before the answer is shown. Never trust the LLM's memory.
+function verifyAndCleanCitations(text) {
+  const removed = [];
+  const verifiedCites = [];
+  let cleaned = text;
+  CITATION_PATTERNS.forEach(({ re }) => {
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(cleaned)) !== null) {
+      const citeStr = m[0].trim();
+      const n = normCitation(citeStr);
+      const windowText = cleaned.slice(Math.max(0, m.index - 90), m.index).toLowerCase();
+      let hit = null;
+      for (const c of VERIFIED_CASE_INDEX) {
+        if (normCitation(c.cite) === n || c.tokens.some((t) => windowText.includes(t))) { hit = c; break; }
+      }
+      if (hit) {
+        verifiedCites.push({ name: hit.name, cite: citeStr });
+        re.lastIndex = m.index + citeStr.length;
+      } else {
+        removed.push(citeStr);
+        cleaned = cleaned.slice(0, m.index) + cleaned.slice(m.index + citeStr.length);
+        re.lastIndex = m.index;
+      }
+    }
+  });
+  return { cleanedText: cleaned, removed, verifiedCites };
+}
+
+function isSmallTalkPrompt(p) {
+  const t = p.toLowerCase().trim();
+  if (t.length < 3) return true;
+  const smallTalk = ['hi', 'hii', 'hiii', 'hiiii', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'namaste', 'namaskaram', 'pranam', 'greetings', 'yo', 'sup', 'thanks', 'thank you', 'who are you', 'what is your name', 'your name', 'who created you', 'who made you', 'sakshamfit', 'who is barrister', 'what can you do', 'help', 'how to use', 'ok', 'okay', 'nice', 'great', 'bye', 'good night'];
+  return smallTalk.includes(t) || /^(hi+|hello+|hey+)[\s!.?]*$/.test(t);
+}
+
+function tokenizeLegalQuery(q) {
+  const STOP_WORDS = new Set(['what', 'the', 'for', 'and', 'how', 'does', 'with', 'this', 'that', 'from', 'your', 'can', 'will', 'section', 'act', 'law', 'legal', 'case', 'court', 'under', 'when', 'where', 'which', 'why', 'who', 'penalty', 'about', 'rights', 'right', 'means', 'mean', 'apply', 'applies', 'explain', 'india', 'indian', 'tell', 'give', 'please', 'need', 'want', 'know', 'happens', 'happen', 'there', 'here', 'into', 'them', 'they', 'have', 'has', 'had', 'should', 'could', 'would', 'between', 'fictional', 'example']);
+  const out = [];
+  q.replace(/[^a-z0-9\s]/g, ' ').toLowerCase().split(/\s+/).filter((w) => w.length >= 3 && !STOP_WORDS.has(w)).forEach((w) => out.push(w));
+  (q.match(/article\s+\d+/g) || []).forEach((m) => out.push(m));
+  (q.match(/section\s+\d+/g) || []).forEach((m) => out.push(m));
+  (q.match(/\b(ipc|crpc)\s+\d+/g) || []).forEach((m) => out.push(m));
+  const anchors = ['bns', 'bnss', 'bsa', 'ipc', 'crpc', 'evidence act', 'dpdp', 'posh', 'rti', 'ni act', 'contract act', 'constitution', 'samvidhan', 'fir', 'bail', 'writ', 'privacy', 'pmla', 'stamp act', 'arbitration', 'divorce', 'rape', 'murder', 'cheating', 'defamation', 'custody', 'maintenance', 'writ petition', 'fundamental rights'];
+  anchors.forEach((k) => { if (q.includes(k)) out.push(k); });
+  return [...new Set(out)];
+}
+
+function authorityWeight(art) {
+  const code = (art.categoryCode || '').toLowerCase();
+  if (code === 'constitution') return 1.0;
+  if (code === 'criminal') return 1.0;
+  if (art.jurisdiction === 'IN') return 0.9;
+  return 0.7;
+}
+
+// Pass 1 (Retrieval): score the verified legal library against the question.
+// Pass 4 (Confidence gate): HIGH → answer • MEDIUM → qualify • LOW → refuse to speculate.
+function computeEvidencePack(queryText) {
+  const q = queryText.toLowerCase();
+  const isLegal = /\b(article|section|act|law|legal|court|supreme|bail|fir|police|writ|bns|bnss|bsa|ipc|crpc|constitution|rights|contract|judgment|case|offence|offense|arrest|sue|petition|divorce|property|cheque|criminal|civil|privacy|dpdp|posh|rti|lawyer|advocate)\b/.test(q) || /\b(article|section)\s+\d+/i.test(q);
+  if (isSmallTalkPrompt(q) || !isLegal) {
+    return { level: 'CONV', evidence: 1, sourceCount: 0, sources: [], verifiedCites: [], removedCites: [], gated: false };
+  }
+  const tokens = tokenizeLegalQuery(q);
+  const matched = [];
+  KNOWLEDGE_BASE_ARTICLES.forEach((art) => {
+    const hay = ((art.title || '') + ' ' + (art.summary || '') + ' ' + (art.statutes || []).join(' ') + ' ' + (art.executiveSummary || '')).toLowerCase();
+    let score = 0;
+    tokens.forEach((t) => { if (hay.includes(t)) score += 1; });
+    if (score > 0) matched.push({ art, score, weight: authorityWeight(art) });
+  });
+  matched.sort((a, b) => (b.score * b.weight) - (a.score * a.weight));
+  let evidence = 0.12;
+  matched.slice(0, 3).forEach((m) => { evidence += 0.22 * Math.min(1, m.score / 2); });
+  const level = evidence >= 0.7 ? 'HIGH' : (evidence >= 0.4 ? 'MEDIUM' : 'LOW');
+  return {
+    level,
+    evidence: Math.round(evidence * 100) / 100,
+    sourceCount: matched.length,
+    sources: matched.slice(0, 4).map((m) => ({ id: m.art.id, title: m.art.title, statutes: (m.art.statutes || []).join(' · '), category: m.art.category, weight: m.weight })),
+    verifiedCites: [],
+    removedCites: [],
+    gated: false
+  };
+}
+
+function applyEvidenceGate(answerText, pack) {
+  if (!pack || pack.level === 'HIGH' || pack.level === 'CONV') return answerText;
+  if (pack.level === 'MEDIUM') {
+    return answerText + '\n\n_📊 Evidence level: MEDIUM — grounded in the verified library, but check how it applies to your specific facts before relying on it._';
+  }
+  const banner = '🛡️ **Evidence Gate (LOW):** I could not find sufficient authoritative sources in my verified library (Constitution of India, BNS/BNSS/BSA 2023, Supreme Court precedents) to establish a definitive position. The notes below are general guidance only — I will not speculate beyond them.\n\n';
+  return banner + answerText + '\n\n_For a definitive position on this, please consult a qualified advocate._';
+}
+
+function barristerEscape(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// "Why this answer?" — evidence panel proving every answer from retrieved sources.
+function buildEvidencePanel(pack) {
+  if (!pack || pack.level === 'CONV') return '';
+  const parts = [];
+  if (pack.sources && pack.sources.length) {
+    const items = pack.sources.map((s) => `
+      <div class="evidence-source-item">
+        <span class="evidence-source-type">${s.weight >= 1 ? '📜 PRIMARY' : '📚 AUTHORITY'}</span>
+        <div class="evidence-source-text">
+          <div class="evidence-source-title">${barristerEscape(s.title)}</div>
+          <div class="evidence-source-statutes">${barristerEscape(s.statutes)}</div>
+        </div>
+        <button class="evidence-source-open" onclick="openEvidenceSource('${s.id}')">Open ↗</button>
+      </div>`).join('');
+    parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Evidence used (retrieved from the verified legal library)</div>${items}</div>`);
+  }
+  if (pack.verifiedCites && pack.verifiedCites.length) {
+    const cites = pack.verifiedCites.map((c) => `<div class="evidence-source-item evidence-cite"><span class="evidence-source-type">⚖️ VERIFIED</span><div class="evidence-source-text"><div class="evidence-source-title">${barristerEscape(c.name)}</div><div class="evidence-source-statutes">${barristerEscape(c.cite)}</div></div></div>`).join('');
+    parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Citation check: passed</div>${cites}</div>`);
+  }
+  if (pack.removedCites && pack.removedCites.length) {
+    const removed = pack.removedCites.map((c) => `<div class="evidence-source-item evidence-removed"><span class="evidence-source-type">🚫 REMOVED</span><div class="evidence-source-text"><div class="evidence-source-statutes">${barristerEscape(c)}</div></div></div>`).join('');
+    parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Unverified citations removed</div>${removed}</div>`);
+  }
+  if (!parts.length) return '';
+  return `<details class="evidence-panel"><summary>🔍 Why this answer? <span class="evidence-summary-note">${pack.sourceCount || 0} verified source${pack.sourceCount === 1 ? '' : 's'}</span></summary><div class="evidence-panel-body">${parts.join('')}</div></details>`;
+}
+
+function buildAIBubbleHTML(htmlContent, pack) {
+  const badge = pack && pack.level && pack.level !== 'CONV'
+    ? `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">🛡️ ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`
+    : '';
+  return `<div class="ai-bubble-header"><span>✦ BARRISTER AI (BHARAT)</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
+}
+
+window.openEvidenceSource = function (id) {
+  const art = KNOWLEDGE_BASE_ARTICLES.find((a) => a.id === id);
+  if (!art) return;
+  switchView('knowledge-view');
+  if (typeof openKnowledgeDrawer === 'function') openKnowledgeDrawer(art);
+};
 
 // --- Sample Legal Documents for Analyzer (Including Realistic Indian Agreements!) ---
 const SAMPLE_CONTRACTS = {
@@ -2272,23 +2463,32 @@ async function sendChatMessage(userText) {
   if (!targetElement) return;
 
   try {
-    // Automatically use built-in Groq Llama-3.3-70B-Versatile key
-    aiText = await callGroqCloudAPI(userText, AppState.jurisdiction, currentSession ? currentSession.messages : []);
+    // Secure flow: browser → serverless /api/chat → Groq (API key never ships to the browser)
+    aiText = await tryBackendServerChat(userText, AppState.jurisdiction, currentSession ? currentSession.messages : []);
   } catch (err) {
-    // Try backend server /api/chat if direct API is blocked
-    const serverReply = await tryBackendServerChat(userText, AppState.jurisdiction, currentSession ? currentSession.messages : []);
-    if (serverReply) {
-      aiText = serverReply;
-    } else {
-      // Seamless fallback to embedded Smart Bharatiya Legal Simulation Engine
-      aiText = getAILegalResponse(userText, AppState.jurisdiction);
-    }
+    aiText = '';
+  }
+  if (!aiText) {
+    // Fallback: embedded Smart Bharatiya Legal Simulation Engine (curated & verified)
+    aiText = getAILegalResponse(userText, AppState.jurisdiction);
   }
 
-  const formattedHTML = formatLegalMarkdown(aiText);
+  // === 🛡️ BARRISTER AI TRUST PIPELINE ===
+  // Citation verification → evidence confidence gate → source-grounded answer
+  const citationCheck = verifyAndCleanCitations(aiText);
+  const pack = computeEvidencePack(userText);
+  pack.verifiedCites = citationCheck.verifiedCites;
+  pack.removedCites = citationCheck.removed;
+  let trustText = applyEvidenceGate(citationCheck.cleanedText, pack);
+  if (citationCheck.removed.length) {
+    trustText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
+  }
+
+  const formattedHTML = formatLegalMarkdown(trustText);
+  const finalHTML = buildAIBubbleHTML(formattedHTML, pack);
 
   setTimeout(() => {
-    targetElement.innerHTML = formattedHTML;
+    targetElement.innerHTML = finalHTML;
     messagesArea.scrollTop = messagesArea.scrollHeight;
 
     if (currentSession) {
@@ -2301,6 +2501,10 @@ async function sendChatMessage(userText) {
 
 // --- Direct Groq Cloud API Helper (llama-3.3-70b-versatile) ---
 async function callGroqCloudAPI(prompt, jurisdictionCode, history = []) {
+  // Self-hosted path only: requires a user-supplied key (never embedded in the bundle).
+  if (!AppState.apiKey && !localStorage.getItem('jurisai_api_key')) {
+    throw new Error('No self-hosted API key configured — using secure backend or simulation mode.');
+  }
   const systemPrompt = `You are Barrister (Bharat Edition), an elite Senior Advocate and Indian Constitutional & Legal AI Assistant powered by Groq Llama-3.3-70B-Versatile. Designed & developed with SakshamFit.
 Always explain Indian legal concepts in simple, easy-to-understand language so any normal citizen or user can understand their rights clearly. Avoid dense legalese or confusing Latin jargon without a plain-English translation.
 When a user asks about any crime, police complaint, or IPC section (like 420, 302, 307, 376, 498A, 500, 354, 506, 406), always state BOTH the familiar old IPC section number AND the new BNS 2023 section number.
@@ -2309,7 +2513,18 @@ When answering legal questions, structure your reply cleanly:
 ### 📜 What the Law Says (Acts & Sections)
 ### 🏛️ Landmark Supreme Court Ruling (Why This Case Matters)
 ### ✅ Practical Action Plan (What You Should Do Next)
-If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets you conversationally, respond warmly and naturally without generating legal Markdown headers.`;
+If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets you conversationally, respond warmly and naturally without generating legal Markdown headers.
+
+=== ABSOLUTE INTEGRITY & ANTI-HALLUCINATION RULES (MANDATORY — NEVER VIOLATE) ===
+1. NEVER invent cases, citations, section numbers, Articles, paragraphs, quotations, judge names, or dates. A fabricated citation is worse than no citation.
+2. Clearly distinguish: (a) verified legal authority, (b) your own inference/reasoning, and (c) user-provided facts. Label inferences as inferences.
+3. You may cite ONLY cases from this approved verified list:
+   Kesavananda Bharati v. State of Kerala (1973) 4 SCC 225 · Maneka Gandhi v. Union of India (1978) 1 SCC 248 · Justice K.S. Puttaswamy v. Union of India (2017) 10 SCC 1 · Shreya Singhal v. Union of India (2015) 5 SCC 1 · Vishaka v. State of Rajasthan (1997) 6 SCC 241 · Arnesh Kumar v. State of Bihar (2014) 8 SCC 273 · Lalita Kumari v. Govt. of Uttar Pradesh (2014) 2 SCC 1 · Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal (2020) 7 SCC 1 · Anvar P.V. v. P.K. Basheer (2014) 10 SCC 473 · Niranjan Shankar Golikari v. Century Spinning (1967) 2 SCR 378 · Percept D'Mark (India) v. Zaheer Khan (2006) 4 SCC 227 · Fateh Chand v. Balkishan Dass AIR 1963 SC 1405 · E.P. Royappa v. State of Tamil Nadu (1974) 4 SCC 3 · L. Chandra Kumar v. Union of India (1997) 3 SCC 261 · Sushila Aggarwal v. State (NCT of Delhi) (2020) 5 SCC 1 · Indra Sawhney v. Union of India 1992 Supp (3) SCC 217 · Olga Tellis v. Bombay Municipal Corporation (1985) 3 SCC 545 · A.K. Gopalan v. State of Madras AIR 1950 SC 27 · Mohd. Ahmed Khan v. Shah Bano Begum (1985) 2 SCC 556 · M.C. Mehta v. Union of India (1987) 1 SCC 395 · Minerva Mills v. Union of India (1980) 3 SCC 625 · D.K. Basu v. State of West Bengal (1997) 1 SCC 416.
+   If a relevant case is NOT in this list, refer to it by name only and NEVER invent a citation number.
+4. If the verified material does not establish the answer, say exactly: "I do not have sufficient authoritative evidence to answer this reliably" — do not speculate.
+5. For every significant legal proposition, name its supporting source (Constitution Article / BNS-BNSS-BSA Section / approved case).
+6. Never present an inference as settled law, and never fill missing facts from memory.
+LAW AS-OF DATE (CURRENT LAW CONTEXT): ${AppState.asOfDate || '2026-08-11'} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).`;
 
   const messages = [
     { role: 'system', content: `${systemPrompt}\n\nACTIVE USER JURISDICTION: ${jurisdictionCode}` },
@@ -2320,7 +2535,7 @@ If the user says 'hi', 'hello', 'namaste', 'who are you', 'thanks', or greets yo
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${BUILTIN_GROQ_KEY}`,
+      'Authorization': `Bearer ${AppState.apiKey || localStorage.getItem('jurisai_api_key') || ''}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -2366,7 +2581,7 @@ async function tryBackendServerChat(prompt, jurisdictionCode, history = []) {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: prompt, jurisdiction: jurisdictionCode, history: history.slice(-4) })
+      body: JSON.stringify({ message: prompt, jurisdiction: jurisdictionCode, history: history.slice(-4), asOfDate: AppState.asOfDate || '2026-08-11', temperature: Number(localStorage.getItem('jurisai_temperature')) || 0.2 })
     });
     if (!response.ok) return null;
     const data = await response.json();

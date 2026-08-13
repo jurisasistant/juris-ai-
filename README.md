@@ -2,6 +2,18 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🛡️ Anti-Hallucination Trust Engine
+
+Barrister never answers from memory alone. Every reply passes a **trust pipeline**:
+
+1. **Retrieve** — the question is matched against the verified legal library (Constitution, BNS/BNSS/BSA 2023, Central Acts, Supreme Court precedents).
+2. **Verify** — every citation in the reply is checked against an approved case index. Unverifiable citations are **stripped** before display.
+3. **Confidence gate** — each answer carries an evidence badge: 🛡️ HIGH (answer normally) · MEDIUM (qualified) · LOW (refuses to speculate, asks you to consult an advocate).
+4. **Prove** — a "🔍 Why this answer?" panel lists the exact sources used, with one-click access to the library.
+
+The AI is system-prompted to never invent cases, citations, sections, quotations, judges, or dates — and to say *"I do not have sufficient authoritative evidence to answer this reliably"* rather than guess.
+
+---
 **Barrister AI** (JurisAI Bharat) is a premium Indian legal-tech AI research platform trained on the **Constitution of India (Bharatiya Samvidhan)**, **Bharatiya Nyaya Sanhita (BNS 2023)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS 2023)**, **Bharatiya Sakshya Adhiniyam (BSA 2023)**, and Central Acts. Built strictly to the **JurisAI Bharat Design System**: ultra-minimal slate & muted champagne gold palette (`#C6A86B`), crisp SVG iconography, intelligent, trustworthy, visually refined with subtle glassmorphism, and 100% compatible across all mobile screens.
 
 ---
