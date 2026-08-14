@@ -92,7 +92,8 @@ const LegalSearchService = (() => {
     'president rule': ['presidents rule', 'article 356', 'bommai'],
     'collegium': ['njac', 'judicial appointments'],
     'same sex': ['same-sex', 'supriyo', 'section 377', 'navtej'],
-    'adverse possession': ['12 years possession', 'limitation act', 'grewal']
+    'adverse possession': ['12 years possession', 'limitation act', 'grewal'],
+    'land acquisition': ['larr', 'fair compensation', 'rehabilitation', 'resettlement', 'indore development authority', 'public purpose']
   };
 
   const ABBREVIATIONS = {
@@ -2851,6 +2852,33 @@ const KNOWLEDGE_BASE_ARTICLES = [
     `,
     complianceChecklist: ['Conviction + 2-year sentence = immediate disqualification.', 'Stay of conviction (not sentence) is required to retain the seat.', 'Candidates must disclose criminal cases in nomination papers.'],
     askAIPrompt: 'Explain Lily Thomas v. Union of India — disqualification of convicted legislators.'
+  },
+
+  {
+    id: 'kb-in-civil-land-acquisition',
+    title: 'Land Acquisition — LARR Act 2013 (Right to Fair Compensation)',
+    category: 'Civil & Property Law',
+    categoryCode: 'civil',
+    jurisdiction: 'IN',
+    statutes: ['LARR Act 2013 s.24, 26, 31, 38', 'Indore Development Authority v. Manoharlal, (2020) 8 SCC 129', 'Constitution Art. 300A'],
+    summary: 'Fair compensation, Social Impact Assessment, consent and rehabilitation for land acquisition — and when acquisitions lapse (Section 24).',
+    executiveSummary: 'The Right to Fair Compensation and Transparency in Land Acquisition, Rehabilitation and Resettlement Act 2013 (LARR Act) replaced the Land Acquisition Act 1894. Landowners get fair market value compensation (with 100% solatium and a rural multiplier), a mandatory Social Impact Assessment (SIA), consent requirements for public-private projects (70%) and private projects (80%), and rehabilitation & resettlement (R&R) entitlements. In Indore Development Authority v. Manoharlal (2020), a 5-judge Constitution Bench held that an acquisition does not lapse under Section 24(2) merely because compensation was not deposited — overruling Pune Municipal Corporation (2014).',
+    governingStatutes: `
+      * **LARR Act 2013 Section 24:** Acquisition lapses only where NEITHER possession was taken NOR compensation paid — Indore Development Authority (2020).
+      * **Section 26:** Determination of market value and the compensation award.
+      * **Section 31:** Payment of compensation before taking possession.
+      * **Section 38:** Public purpose — infrastructure, housing, planned development.
+    `,
+    landmarkPrecedents: `
+      * **Indore Development Authority v. Manoharlal (SC Constitution Bench 2020):** Section 24(2) lapsing re-interpreted — possession OR payment of compensation saves the acquisition.
+      * **Pune Municipal Corporation v. Harakchand Misirimal Solanki (2014):** Earlier view on lapsing — overruled in 2020.
+    `,
+    complianceChecklist: [
+      'For acquisition challenges: check possession taken OR compensation paid — either saves the acquisition (Indore Development Authority).',
+      'Landowners: verify SIA, consent (70%/80%) and R&R entitlements before acquisition proceedings.',
+      'Compensation disputes go to the Collector / Land Acquisition Rehabilitation and Resettlement Authority under the 2013 Act.'
+    ],
+    askAIPrompt: 'Explain land acquisition law in India under the LARR Act 2013 — compensation, consent, rehabilitation, and when acquisitions lapse.'
   }
 ];
 
@@ -2969,7 +2997,8 @@ const VERIFIED_CASE_INDEX = [
   { name: 'Union of India v. Tulsiram Patel', cite: '(1985) 3 SCC 398', tokens: ['tulsiram patel'] },
   { name: 'S.P. Sampath Kumar v. Union of India', cite: '(1987) 1 SCC 124', tokens: ['sampath kumar', 'tribunal'] },
   { name: 'Madras Bar Association v. Union of India', cite: '(2014) 10 SCC 1', tokens: ['madras bar', 'ntt'] },
-  { name: 'Rojer Mathew v. South Indian Bank', cite: '(2020) 6 SCC 1', tokens: ['rojer mathew', 'tribunals'] }
+  { name: 'Rojer Mathew v. South Indian Bank', cite: '(2020) 6 SCC 1', tokens: ['rojer mathew', 'tribunals'] },
+  { name: 'Indore Development Authority v. Manoharlal', cite: '(2020) 8 SCC 129', tokens: ['indore development', 'land acquisition', 'larr', 'lapsing'] }
 ];
 
 // Indian legal citation patterns the verifier scans for.
@@ -3073,7 +3102,11 @@ function computeEvidencePack(queryText) {
       // A specific provision was asked — unrelated acts/sections cannot match.
       return;
     }
-    tokens.forEach((t) => { if (hay.includes(t)) score += 1; });
+    const titleHay = (art.title || '').toLowerCase();
+    tokens.forEach((t) => {
+      if (hay.includes(t)) score += 1;
+      if (titleHay.includes(t)) score += 1.2; // title matches weigh more
+    });
     if (score > 0) matched.push({ art, score, weight: authorityWeight(art) });
   });
   matched.sort((a, b) => (b.score * b.weight) - (a.score * a.weight));
@@ -3285,7 +3318,8 @@ const LEGAL_PHRASES = [
   "company law", "labour law", "labor law", "tenant", "landlord", "eviction",
   "stamp duty", "registration", "notary", "affidavit", "power of attorney",
   "trademark", "copyright", "patent", "cyber law", "evidence", "trial", "appeal",
-  "jurisdiction", "amendment", "parliament", "legislature", "government notification"
+  "jurisdiction", "amendment", "parliament", "legislature", "government notification",
+  "land acquisition", "larr", "compensation", "rehabilitation", "resettlement", "public purpose", "acquisition"
 ];
 
 // Known Indian case names → strong case-law research signals
@@ -5781,16 +5815,19 @@ async function sendChatMessage(userText, options) {
   }
 
   if (!aiText && !stoppedEarly) {
-    // Fallback: legal simulation engine OR general-knowledge engine OR casual engine.
-    // Legal/general offline answers are clearly labelled — they are NOT the live AI.
-    const offlineWhy = backendError
-      ? ' (' + backendError + ')'
-      : (AppState.backendStatus === 'missing_key' ? ' — server key missing' : '');
-    aiText = legalIntent
-      ? '⚙️ **Offline answer** (live AI backend not connected' + offlineWhy + ' — this is my built-in verified legal engine):\n\n' + getAILegalResponse(userText, AppState.jurisdiction)
-      : (backendIntent === 'general'
-          ? getGeneralFallbackResponse(userText, backendError)
-          : getCasualAIResponse(userText, detectedLang));
+    if (legalIntent) {
+      // NO automated legal templates. Live AI or nothing — clean error + retry.
+      if (stopGenBtn) stopGenBtn.style.display = 'none';
+      const reasonText = lastChatHttpStatus === 429
+        ? 'too many requests right now — wait a minute and try again'
+        : (backendError || 'no reply from the AI');
+      targetElement.innerHTML = '<div class="chat-error-box">⚖️ Couldn\'t reach the live AI (' + barristerEscape(reasonText) + ').</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
+      return;
+    }
+    // Non-legal: general-knowledge engine or natural casual engine (no legal templates)
+    aiText = (backendIntent === 'general')
+      ? getGeneralFallbackResponse(userText, backendError)
+      : getCasualAIResponse(userText, detectedLang);
   }
 
   if (!aiText) {
