@@ -87,27 +87,28 @@
   --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.08);
 }
 
-/* Bright Mode: Top Written Section is White with Yellow Strip in Background */
+/* Bright Mode: clean off-white header (claymorphism, no yellow) */
 [data-theme="light"] .top-navbar {
-  background: linear-gradient(180deg, #facc15 0%, #facc15 6px, #ffffff 6px, #ffffff 100%) !important;
-  background-color: #ffffff !important;
-  border-top: 4px solid #facc15 !important;
-  border-bottom: 1px solid #ebebeb !important;
+  background: #f7f4ee !important;
+  background-image: none !important;
+  background-color: #f7f4ee !important;
+  border-top: none !important;
+  border-bottom: 1px solid #e7e2d8 !important;
 }
 
 [data-theme="light"] .page-title {
-  background: linear-gradient(90deg, #fef08a 0%, #fef08a 6px, #ffffff 6px, #ffffff 100%);
-  background-color: #ffffff;
-  padding: 0.35rem 0.85rem;
-  border-radius: 6px;
-  border-left: 4px solid #eab308;
-  color: #171717;
+  background: #ece8de;
+  background-image: none;
+  padding: 0.3rem 0.85rem;
+  border-radius: 12px;
+  border: none;
+  color: #2b2822;
 }
 
 [data-theme="light"] .chat-persona-toolbar {
-  background: #ffffff !important;
-  border-top: 3px solid #facc15 !important;
-  border-bottom: 1px solid #ebebeb !important;
+  background: transparent !important;
+  border-top: none !important;
+  border-bottom: none !important;
 }
 
 /* Base Style & Resets */
@@ -2803,9 +2804,10 @@ body {
   background: rgba(18, 18, 18, 0.82) !important;
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 }
-/* Ensure Bright Mode Top Written Section keeps its Yellow Strip background in 3D Glassmorphism */
+/* Bright Mode: clean off-white clay header */
 [data-theme="light"] .top-navbar {
-  background: linear-gradient(180deg, #facc15 0%, #facc15 6px, rgba(255, 255, 255, 0.88) 6px, rgba(255, 255, 255, 0.88) 100%) !important;
+  background: #f7f4ee !important;
+  background-image: none !important;
 }
 
 /* 2. 3D Frosted Glass Sidebar */
@@ -3826,6 +3828,146 @@ body.sidebar-open::before {
 }
 @media (max-width: 480px) {
   .mobile-bottom-nav .nav-icon-svg { width: 22px; height: 22px; }
+}
+
+/* ============================================================
+   🤎 BRIGHT MODE — CLAYMORPHISM + MINIMALISM
+   Yellow strip removed. Warm off-white canvas, soft puffy 3D
+   surfaces, muted hairlines. Dark mode untouched.
+   ============================================================ */
+[data-theme="light"] body {
+  background: #f5f2ec !important;
+}
+[data-theme="light"] .main-wrapper {
+  background: transparent !important;
+}
+
+/* --- Top header: clean off-white clay, no yellow --- */
+[data-theme="light"] .top-navbar {
+  background: #f7f4ee !important;
+  background-image: none !important;
+  border-top: none !important;
+  border-bottom: 1px solid #e7e2d8 !important;
+  box-shadow:
+    0 1px 2px rgba(60, 50, 30, 0.04),
+    0 6px 18px -8px rgba(60, 50, 30, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+[data-theme="light"] .page-title {
+  background: #ece8de !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 12px;
+  padding: 0.3rem 0.85rem;
+  color: #2b2822;
+  box-shadow:
+    0 1px 1px rgba(60, 50, 30, 0.05),
+    0 5px 12px -6px rgba(60, 50, 30, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+[data-theme="light"] .chat-persona-toolbar {
+  background: transparent !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* --- Sidebar: soft clay slab --- */
+[data-theme="light"] .sidebar {
+  background: #f1eee6 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow:
+    8px 0 28px rgba(60, 50, 30, 0.08),
+    inset -1px 0 0 rgba(255, 255, 255, 0.8) !important;
+  border-right: 1px solid #e7e2d8;
+}
+[data-theme="light"] .sidebar .nav-link {
+  border-radius: 12px;
+}
+[data-theme="light"] .sidebar .nav-link.active {
+  background: #e8e4d9;
+  box-shadow: inset 0 1px 2px rgba(60, 50, 30, 0.06), inset 0 -1px 0 rgba(255,255,255,0.8);
+}
+[data-theme="light"] .sidebar .history-item {
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 2px rgba(60, 50, 30, 0.05), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+[data-theme="light"] .sidebar-new-chat-btn {
+  background: #2b2822;
+  box-shadow: 0 2px 4px rgba(60, 50, 30, 0.15), 0 8px 16px -8px rgba(60, 50, 30, 0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+/* --- Composer: puffy clay pill --- */
+[data-theme="light"] .chat-input-box {
+  background: #ede9df !important;
+  border: 1px solid #e0dbcf !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 9999px !important;
+  box-shadow:
+    0 1px 2px rgba(60, 50, 30, 0.05),
+    0 10px 26px -12px rgba(60, 50, 30, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+[data-theme="light"] .chat-input-box:focus-within {
+  border-color: #cfc8b8 !important;
+  box-shadow:
+    0 1px 2px rgba(60, 50, 30, 0.05),
+    0 14px 32px -12px rgba(60, 50, 30, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+[data-theme="light"] .composer-mode-btn.active {
+  background: #e3ded2 !important;
+  color: #2b2822 !important;
+  box-shadow: inset 0 1px 2px rgba(60, 50, 30, 0.08), inset 0 -1px 0 rgba(255,255,255,0.7);
+}
+[data-theme="light"] .send-btn {
+  background: #2b2822 !important;
+  color: #faf7f0 !important;
+  box-shadow: 0 2px 4px rgba(60, 50, 30, 0.18), 0 6px 14px -6px rgba(60, 50, 30, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+/* --- User bubble: warm clay tone --- */
+[data-theme="light"] .chat-message.user .message-bubble {
+  background: #e9e5db !important;
+  box-shadow: 0 1px 2px rgba(60, 50, 30, 0.05), inset 0 1px 0 rgba(255,255,255,0.85);
+}
+
+/* --- Cards & panels: soft clay surfaces --- */
+[data-theme="light"] .kb-article-card,
+[data-theme="light"] .evidence-panel,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .history-item {
+  background: #faf8f2 !important;
+  border: 1px solid #e7e2d8 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow:
+    0 1px 2px rgba(60, 50, 30, 0.04),
+    0 8px 20px -10px rgba(60, 50, 30, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+[data-theme="light"] .evidence-source-item {
+  border-bottom-color: #e7e2d8 !important;
+}
+
+/* --- Mobile bottom nav: clay slab --- */
+[data-theme="light"] .mobile-bottom-nav {
+  background: #f1eee6 !important;
+  border-top: 1px solid #e7e2d8 !important;
+  box-shadow: 0 -6px 18px -8px rgba(60, 50, 30, 0.18), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+[data-theme="light"] .mobile-bottom-nav .mobile-nav-btn.active {
+  color: #2b2822;
+}
+
+/* --- Inputs/selects on light: clay chips --- */
+[data-theme="light"] .legal-search-filters select,
+[data-theme="light"] .knowledge-search-input-wrapper {
+  background: #ece8de !important;
+  border: 1px solid #e0dbcf !important;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 2px rgba(60, 50, 30, 0.05), inset 0 -1px 0 rgba(255,255,255,0.8);
 }
 
 @media print {
