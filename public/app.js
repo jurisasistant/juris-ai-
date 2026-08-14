@@ -5624,7 +5624,7 @@ async function sendChatMessage(userText, options) {
       } catch (err) { /* hybrid panel optional */ }
     }
 
-    const providerName = { groq: 'Web', brave: 'Web · Brave', wikipedia: 'Web · Wikipedia' }[(webData && webData.webProvider)] || 'Web';
+    const providerName = { groq: 'Web', langsearch: 'Web · LangSearch', brave: 'Web · Brave', wikipedia: 'Web · Wikipedia' }[(webData && webData.webProvider)] || 'Web';
     const searchedBadge = webData && webData.webSearched
       ? `<span class="evidence-badge evidence-web">🌐 ${providerName}${webSources.length ? ' · ' + webSources.length + ' sources' : ''}</span>`
       : `<span class="evidence-badge evidence-low">🌐 Search unavailable</span>`;

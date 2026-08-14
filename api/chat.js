@@ -271,6 +271,63 @@ async function generateGroundedWebAnswer(groqApiKey, query, context, language, r
   }
 }
 
+// --- LangSearch Web Search API (api.langsearch.com/v1/web-search) ---
+// Real web results (Bing-style response) + strictly grounded llama answer.
+async function callLangSearchWebSearch(groqApiKey, query, language, requestId) {
+  const key = process.env.LANGSEARCH_API_KEY;
+  if (!key) return { reply: '', webSources: [], searched: false, error: null, skipped: true };
+  try {
+    const response = await fetch('https://api.langsearch.com/v1/web-search', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: query,
+        freshness: 'noLimit',
+        summary: true,
+        count: 8
+      }),
+      signal: AbortSignal.timeout(9000)
+    });
+    if (!response.ok) {
+      const msg = response.status === 401 ? 'invalid LANGSEARCH_API_KEY' : response.statusText;
+      return { reply: '', webSources: [], searched: false, error: webErrorMessage(response.status, 'LangSearch', msg) };
+    }
+    const data = await response.json();
+
+    // Bing-style shape: data.webPages.value (page.name / page.url / page.summary / page.snippet)
+    let pages = [];
+    if (data && data.data && data.data.webPages && Array.isArray(data.data.webPages.value)) {
+      pages = data.data.webPages.value.map((p) => ({
+        title: p.name || p.title || '',
+        url: p.url || '',
+        text: p.summary || p.snippet || ''
+      }));
+    }
+    // Simple shape: data.webpages or data.results arrays
+    if (!pages.length && data && Array.isArray(data.data && data.data.webpages)) {
+      pages = data.data.webpages.map((p) => ({ title: p.title || p.name || '', url: p.url || '', text: p.snippet || p.summary || p.content || '' }));
+    }
+    // Top-level array shape
+    if (!pages.length && Array.isArray(data)) {
+      pages = data.map((p) => ({ title: p.title || p.name || '', url: p.url || '', text: p.snippet || p.summary || p.content || '' }));
+    }
+
+    const sources = pages.slice(0, 8).map((p) => ({ title: String(p.title || '').slice(0, 160), url: String(p.url || ''), score: null })).filter((p) => p.url);
+    if (!sources.length) {
+      return { reply: '', webSources: [], searched: false, error: 'LangSearch: no results' };
+    }
+    const context = pages.slice(0, 6).map((p, i) => `[${i + 1}] ${p.title}\n${p.url}\n${String(p.text || '').slice(0, 600)}`).join('\n\n');
+    const gen = await generateGroundedWebAnswer(groqApiKey, query, context, language, requestId);
+    if (!gen.ok) return { reply: '', webSources: [], searched: false, error: gen.error };
+    return { reply: gen.content, webSources: sources, searched: true, model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile', provider: 'langsearch', error: null };
+  } catch (err) {
+    return { reply: '', webSources: [], searched: false, error: 'LangSearch: ' + err.message };
+  }
+}
+
 async function callBraveWebSearch(groqApiKey, query, language, requestId) {
   const key = process.env.BRAVE_API_KEY;
   if (!key) return { reply: '', webSources: [], searched: false, error: null, skipped: true };
@@ -475,7 +532,13 @@ module.exports = async (req, res) => {
           if (g && g.error && g.error.includes('413')) providerHealth.mini = false;
         }
       }
-      // 3. Brave Search (real web results + grounded llama answer)
+      // 3. LangSearch (real web results + grounded llama answer)
+      if (!webResult) {
+        const l = await callLangSearchWebSearch(groqApiKey, message, language, requestId);
+        if (l && l.searched) webResult = l;
+        else if (l && l.error) lastError = l.error;
+      }
+      // 4. Brave Search (real web results + grounded llama answer)
       if (!webResult) {
         const b = await callBraveWebSearch(groqApiKey, message, language, requestId);
         if (b && b.searched) webResult = b;

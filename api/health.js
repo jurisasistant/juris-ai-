@@ -39,6 +39,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({
         status: 'ok',
         ai: hasCompound || hasMini ? 'connected' : 'connected_no_compound',
+        webSearch: !!process.env.LANGSEARCH_API_KEY ? 'langsearch' : (hasCompound || hasMini ? 'groq' : 'none'),
         model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
       });
     }
