@@ -3236,6 +3236,8 @@ const CASUAL_PHRASES = [
   "tell me a joke", "a joke", "something interesting", "interesting fact", "fun fact",
   "what should i eat", "eat tonight", "dinner ideas", "lunch ideas",
   "weather", "play a game",
+  "kaise ho", "kaisi ho", "kya kar rhe", "kya kar rahe", "kya kar rahi", "kya kar rhi",
+  "kya chal raha", "kya ho raha", "kya haal hai", "kya haal chaal",
   "i love you", "love you", "i miss you", "you are cute", "you are sweet", "you are smart", "you are funny", "you are awesome",
   "good morning", "good evening", "good afternoon", "good night", "see you", "goodbye",
   "who are you", "what is your name", "who made you", "who created you", "your creator",
@@ -3279,11 +3281,16 @@ function isCasualMessage(q) {
   if (CASUAL_PHRASES.some((p) => new RegExp('\\b' + p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(q))) return true;
   // Opinion / preference chat ("what do you think about cricket?") is casual.
   if (/\b(what do you think|do you like|your opinion|i think|i like|i love watching|favourite|favorite)\b/.test(q)) return true;
-  // Short Hinglish chit-chat with no legal words is casual ("kya kar rhe ho").
+  // Short Hinglish chit-chat with no legal/question/math content is casual.
   const words = q.split(/\s+/).filter(Boolean);
   if (words.length <= 6 && detectLanguage(q) === 'hinglish') {
     const hinglishLegal = ['jamanat','girftari','girafftari','kanoon','kanun','mukadma','muqadma','dafa','dhara','talaq','dahej','chori','hatya','balatkar','haq','adhikar','adhikaar','fir','police','cheque','court','vakeel','wakeel','nafka','gujara','kabza','kiraya','sampatti','jaaydad','jaydad','zameen','jameen','vasiyat','bail','article','section','case','law','rights','saza','ilzaam','gawah','saboot'];
-    if (!hinglishLegal.some((h) => q.includes(h))) return true;
+    if (hinglishLegal.some((h) => q.includes(h))) return false;
+    // Real questions are never chit-chat: interrogatives, numbers, dates
+    if (/\b(kaun|kya|kitna|kitne|kab|kaise|kahan|kyu|kyon|kiska|kiske)\b/.test(q)) return false;
+    if (/\d/.test(q)) return false;
+    if (/\b(din|date|tarikh|time|samay|baje|sal|saal|mahina|hafte|hafta|kal|aaj)\b/.test(q)) return false;
+    return true;
   }
   return false;
 }
@@ -3340,6 +3347,9 @@ function classifyIntent(message, sessionMessages) {
 const CURRENT_MARKERS = /\b(today|yesterday|tonight|now\b|right now|latest|recent|recently|current|currently|this week|this month|this year|breaking|news|live|score|result|won|lost|last night|update|2026|2027|election|verdict today)\b/i;
 const ENTITY_MARKERS = /\bwho is\b|\bwho was\b|\bwho are\b|\bwho won\b|\bwho will\b|\bprime minister\b|\bpresident\b|\bchief minister\b|\bceo of\b|\bowner of\b|\bfounder of\b|\bcaptain of\b|\bcoach of\b|\bpopulation of\b|\bprice of\b|\bstock of\b|\bmatch\b|\bipl\b|\bcricket\b|\bscore\b|\bweather\b|\bnews about\b|\bfilm\b|\bmovie\b|\bactor\b|\bsinger\b|\bplayer\b|\bteam\b/i;
 
+const CURRENCY_RE = /\b(usd|dollar|dollars|euro|euros|pound|sterling|gbp|inr|rupee|rupees|currency|exchange rate|convert)\b/i;
+const PRICE_RE = /\b(price of|price\b|rate of|rate\b|share price|stock price|gold price|silver price|bitcoin price|petrol price|diesel price|sensex|nifty)\b/i;
+
 function classifyQuery(message) {
   const q = String(message || '').trim();
   const ql = q.toLowerCase();
@@ -3353,6 +3363,15 @@ function classifyQuery(message) {
   // Only genuine small talk is CASUAL — classifyIntent's default 'casual'
   // fallthrough must NOT capture real questions.
   if (isCasualMessage(ql)) return 'CASUAL';
+
+  // 🧮 Deterministic math (percentages, interest, arithmetic — incl. Hinglish/Hindi)
+  if (solveMathQuery(ql)) return 'MATH';
+
+  // 🕐 Deterministic date/time — the model does not know today's date.
+  if (TIME_QUERY_RE.test(q)) return 'TIME';
+
+  // 💱 Currency & live prices are volatile → always live web
+  if ((CURRENCY_RE.test(ql) || PRICE_RE.test(ql)) && !isLegal) return 'WEB_CURRENT';
 
   // Legal + freshness → hybrid (legal RAG + web)
   if (isLegal && current) return 'LEGAL_CURRENT';
@@ -3422,6 +3441,171 @@ function buildWebSourcesSection(webSources) {
   return `<details class="evidence-panel" open><summary>🌐 Web sources <span class="evidence-summary-note">${webSources.length} live</span></summary><div class="evidence-panel-body">${items}</div></details>`;
 }
 
+// ==========================================================================
+// 🧮 DETERMINISTIC TOOLKIT — exact answers for math, percentages, interest,
+// dates and time. Computed locally: these answers can NEVER hallucinate.
+// ==========================================================================
+const DEVA_DIGITS = '०१२३४५६७८९';
+
+function devaToLatin(s) {
+  return String(s || '').replace(/[०-९]/g, (d) => String(DEVA_DIGITS.indexOf(d)));
+}
+
+// Safe recursive-descent arithmetic parser (no eval, ever).
+function safeCalc(expr) {
+  const tokens = String(expr).replace(/,/g, '').match(/\d+\.?\d*|[+\-*/^()]/g);
+  if (!tokens || tokens.length < 3) return null;
+  let pos = 0;
+  const peek = () => tokens[pos];
+  const next = () => tokens[pos++];
+  function parseExpr() {
+    let v = parseTerm();
+    while (peek() === '+' || peek() === '-') {
+      const op = next(); const r = parseTerm();
+      v = op === '+' ? v + r : v - r;
+    }
+    return v;
+  }
+  function parseTerm() {
+    let v = parsePower();
+    while (peek() === '*' || peek() === '/') {
+      const op = next(); const r = parsePower();
+      if (op === '*') v *= r; else { if (r === 0) return NaN; v /= r; }
+    }
+    return v;
+  }
+  function parsePower() {
+    let v = parseFactor();
+    if (peek() === '^') { next(); v = Math.pow(v, parsePower()); }
+    return v;
+  }
+  function parseFactor() {
+    if (peek() === '-') { next(); return -parseFactor(); }
+    if (peek() === '+') { next(); return parseFactor(); }
+    if (peek() === '(') { next(); const v = parseExpr(); if (peek() === ')') next(); return v; }
+    const t = next();
+    return parseFloat(t);
+  }
+  try {
+    const r = parseExpr();
+    if (pos !== tokens.length || !isFinite(r)) return null;
+    return r;
+  } catch (e) { return null; }
+}
+
+const NUM_RE = '(\\d[\\d,]*(?:\\.\\d+)?)';
+const fmtNum = (x) => Number(x).toLocaleString('en-IN', { maximumFractionDigits: 4 });
+
+function solveMathQuery(q) {
+  const s = devaToLatin(String(q || '')).replace(/\s+/g, ' ');
+  let m;
+
+  // Simple interest: P, R, T → P*R*T/100
+  if (/\b(simple interest|interest|byaj|ब्याज)\b/i.test(s)) {
+    const nums = s.match(/\d[\d,]*(?:\.\d+)?/g) || [];
+    if (nums.length >= 3) {
+      const P = parseFloat(nums[0].replace(/,/g, '')), R = parseFloat(nums[1].replace(/,/g, '')), T = parseFloat(nums[2].replace(/,/g, ''));
+      return { t: 'interest', P, R, T, ans: (P * R * T) / 100 };
+    }
+  }
+
+  // X% of Y  /  X% off Y  /  Y ka X%
+  if ((m = s.match(new RegExp(NUM_RE + '\\s*(?:%|percent)\\s*of\\s*' + NUM_RE, 'i')))) {
+    const x = parseFloat(m[1].replace(/,/g, '')), y = parseFloat(m[2].replace(/,/g, ''));
+    return { t: 'pctOf', x, y, ans: (x / 100) * y };
+  }
+  if ((m = s.match(new RegExp(NUM_RE + '\\s*(?:%|percent)\\s*off\\s*' + NUM_RE, 'i')))) {
+    const x = parseFloat(m[1].replace(/,/g, '')), y = parseFloat(m[2].replace(/,/g, ''));
+    return { t: 'off', x, y, ans: y - (x / 100) * y };
+  }
+  if ((m = s.match(new RegExp(NUM_RE + '\\s*(?:ka|का)\\s*' + NUM_RE + '\\s*(?:%|percent|प्रतिशत)', 'i')))) {
+    const y = parseFloat(m[1].replace(/,/g, '')), x = parseFloat(m[2].replace(/,/g, ''));
+    return { t: 'pctOf', x, y, ans: (x / 100) * y };
+  }
+
+  // Square root
+  if ((m = s.match(/square root of\s*(\d[\d,]*)/i))) {
+    const x = parseFloat(m[1].replace(/,/g, ''));
+    return { t: 'sqrt', x, ans: Math.sqrt(x) };
+  }
+  // Word operators (English + Hinglish)
+  const wordOp = s.match(new RegExp(NUM_RE + '\\s*(plus|minus|times|into|divided by|jod|ghata|guna|bhaag)\\s*' + NUM_RE, 'i'));
+  if (wordOp) {
+    const a = parseFloat(wordOp[1].replace(/,/g, '')), b = parseFloat(wordOp[3].replace(/,/g, ''));
+    const opMap = { plus: '+', minus: '-', times: '*', into: '*', 'divided by': '/', jod: '+', ghata: '-', guna: '*', bhaag: '/' };
+    const op = opMap[wordOp[2].toLowerCase()];
+    let ans;
+    if (op === '+') ans = a + b; else if (op === '-') ans = a - b; else if (op === '*') ans = a * b; else ans = b === 0 ? NaN : a / b;
+    if (!isFinite(ans)) return null;
+    return { t: 'word', a, b, op, ans };
+  }
+  // Pure expression: strip words, must contain an operator
+  const stripped = s.replace(/[a-z?]+/gi, '').replace(/\s+/g, ' ').trim();
+  if (/[+\-*/^]/.test(stripped)) {
+    const ans = safeCalc(stripped);
+    if (ans !== null) return { t: 'expr', expr: stripped, ans };
+  }
+  return null;
+}
+
+function formatMathAnswer(sol, lang) {
+  const n = fmtNum;
+  if (lang === 'hi') {
+    switch (sol.t) {
+      case 'pctOf': return `${n(sol.y)} का ${n(sol.x)} प्रतिशत = **${n(sol.ans)}** होता है।`;
+      case 'off': return `${n(sol.y)} में ${n(sol.x)}% की छूट = **${n(sol.ans)}** होती है।`;
+      case 'interest': return `साधारण ब्याज = **₹${n(sol.ans)}** (मूलधन ₹${n(sol.P)} पर ${n(sol.R)}% वार्षिक दर से ${n(sol.T)} साल के लिए)।`;
+      case 'sqrt': return `√${n(sol.x)} = **${n(sol.ans)}**`;
+      case 'word': return `${n(sol.a)} ${sol.op === '+' ? 'जोड़' : sol.op === '-' ? 'घटा' : sol.op === '*' ? 'गुणा' : 'भाग'} ${n(sol.b)} = **${n(sol.ans)}**`;
+      default: return `${sol.expr} = **${n(sol.ans)}**`;
+    }
+  }
+  if (lang === 'hinglish') {
+    switch (sol.t) {
+      case 'pctOf': return `${n(sol.y)} ka ${n(sol.x)} percent = **${n(sol.ans)}** hota hai.`;
+      case 'off': return `${n(sol.y)} me ${n(sol.x)}% ki chhoot = **${n(sol.ans)}** hoti hai.`;
+      case 'interest': return `Simple interest = **₹${n(sol.ans)}** (₹${n(sol.P)} pe ${n(sol.R)}% saalana dar se ${n(sol.T)} saal ke liye).`;
+      case 'sqrt': return `Square root of ${n(sol.x)} = **${n(sol.ans)}**`;
+      case 'word': return `${n(sol.a)} ${sol.op} ${n(sol.b)} = **${n(sol.ans)}**`;
+      default: return `${sol.expr} = **${n(sol.ans)}**`;
+    }
+  }
+  switch (sol.t) {
+    case 'pctOf': return `${n(sol.x)}% of ${n(sol.y)} = **${n(sol.ans)}**`;
+    case 'off': return `${n(sol.y)} minus ${n(sol.x)}% = **${n(sol.ans)}**`;
+    case 'interest': return `Simple interest = **₹${n(sol.ans)}** (on ₹${n(sol.P)} at ${n(sol.R)}% per year for ${n(sol.T)} years).`;
+    case 'sqrt': return `Square root of ${n(sol.x)} = **${n(sol.ans)}**`;
+    case 'word': return `${n(sol.a)} ${sol.op} ${n(sol.b)} = **${n(sol.ans)}**`;
+    default: return `${sol.expr} = **${n(sol.ans)}**`;
+  }
+}
+
+const TIME_QUERY_RE = /\b(what day is|what\'s the date|whats the date|today\'?s date|current date|current time|what\'?s the time|what time is|kitne baje|aaj kaun sa (din|day)|aaj kya (date|din|tarikh|time)|aaj kitna (time|samay)|आज कौन सा|आज क्या|समय क्या|आज की तारीख)/i;
+
+const HI_DAYS = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+const HI_MONTHS = ['जनवरी', 'फरवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'];
+
+function solveTimeQuery(q, lang) {
+  const isTimeAsk = /time|baje|समय|बजे/i.test(q) && !/day|date|din|tarikh|दिन|तारीख|kaun sa|कौन सा/i.test(q);
+  const now = new Date();
+  if (isTimeAsk) {
+    const h = now.getHours();
+    const hh = h % 12 === 0 ? 12 : h % 12;
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    if (lang === 'hi') return `अभी समय है **${hh}:${mm} ${ampm}**।`;
+    if (lang === 'hinglish') return `Abhi time hai **${hh}:${mm} ${ampm}**.`;
+    return `The current time is **${hh}:${mm} ${ampm}**.`;
+  }
+  const wd = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const day = now.getDate();
+  const monthEn = now.toLocaleDateString('en-US', { month: 'long' });
+  const year = now.getFullYear();
+  if (lang === 'hi') return `आज **${HI_DAYS[now.getDay()]}**, ${day} ${HI_MONTHS[now.getMonth()]} ${year} है।`;
+  if (lang === 'hinglish') return `Aaj **${wd}**, ${day} ${monthEn} ${year} hai.`;
+  return `Today is **${wd}**, ${day} ${monthEn} ${year}.`;
+}
+
 function isLegalIntent(intent) {
   return intent === 'legal' || intent === 'legal_research' || intent === 'drafting';
 }
@@ -3448,6 +3632,39 @@ function detectLanguage(text) {
   if (strongHit && (hits >= 2 || words.length <= 3)) return 'hinglish';
   if (hits >= 3) return 'hinglish';
   return 'en';
+}
+
+// --- Offline general-knowledge engine (small, honest — never guesses) ---
+const GENERAL_OFFLINE_KB = [
+  { re: /capital of india/i, a: 'The capital of India is **New Delhi**.' },
+  { re: /capital of france/i, a: 'The capital of France is **Paris**.' },
+  { re: /capital of (the )?usa|capital of america/i, a: 'The capital of the USA is **Washington, D.C.**' },
+  { re: /capital of (the )?uk|capital of england/i, a: 'The capital of the UK is **London**.' },
+  { re: /capital of japan/i, a: 'The capital of Japan is **Tokyo**.' },
+  { re: /capital of china/i, a: 'The capital of China is **Beijing**.' },
+  { re: /capital of russia/i, a: 'The capital of Russia is **Moscow**.' },
+  { re: /capital of australia/i, a: 'The capital of Australia is **Canberra** (not Sydney).' },
+  { re: /largest planet/i, a: 'The largest planet in the Solar System is **Jupiter**.' },
+  { re: /how many planets/i, a: 'There are **8 planets** in the Solar System.' },
+  { re: /photosynthesis/i, a: '**Photosynthesis** is the process by which green plants use sunlight, water and carbon dioxide to make their own food (glucose), releasing oxygen.' },
+  { re: /what is gravity/i, a: '**Gravity** is the force that attracts objects with mass toward each other — on Earth it pulls everything toward the ground (Newton described it as a universal force).' },
+  { re: /h2o|formula of water/i, a: 'The chemical formula of water is **H₂O** — two hydrogen atoms and one oxygen atom.' },
+  { re: /tallest mountain|highest peak/i, a: 'The tallest mountain on Earth is **Mount Everest** (8,849 m).' },
+  { re: /longest river/i, a: 'The **Nile** is generally considered the longest river in the world.' },
+  { re: /national animal of india/i, a: 'The national animal of India is the **Bengal Tiger**.', },
+  { re: /national bird of india/i, a: 'The national bird of India is the **Indian Peacock**.' },
+  { re: /speed of light/i, a: 'The speed of light is about **3,00,000 km/s** (299,792,458 m/s in vacuum).' },
+  { re: /who wrote (the )?(indian )?(constitution|samvidhan)/i, a: 'The Constitution of India was drafted by the Constituent Assembly under the chairmanship of **Dr. B.R. Ambedkar** (Drafting Committee Chairman).' },
+  { re: /first prime minister of india/i, a: 'The first Prime Minister of India was **Jawaharlal Nehru**.' },
+  { re: /first president of india/i, a: 'The first President of India was **Dr. Rajendra Prasad**.' }
+];
+
+function getGeneralFallbackResponse(prompt) {
+  const q = String(prompt || '');
+  for (const entry of GENERAL_OFFLINE_KB) {
+    if (entry.re.test(q)) return entry.a;
+  }
+  return "I can't answer that reliably right now — the live AI backend isn't reachable from this device. Ask again when the backend is connected, or try a legal question (my legal library works offline).";
 }
 
 // --- Natural casual replies: English / Hinglish / Hindi ---
@@ -5258,6 +5475,7 @@ async function sendChatMessage(userText, options) {
 
   const currentSession = AppState.chatHistory.find((c) => c.id === AppState.activeChatId);
   if (!currentSession) return;
+  const backendIntent = channel === 'STATIC_GENERAL' ? 'general' : intent;
 
   if (isRegenerate) {
     // Replace/version the previous answer — do not duplicate the user message.
@@ -5290,6 +5508,21 @@ async function sendChatMessage(userText, options) {
 
   const detectedLang = detectLanguage(userText);
   const lang = (detectedLang !== 'en') ? detectedLang : (localStorage.getItem('jurisai_language') || 'en');
+
+  // === 🧮 DETERMINISTIC CHANNELS: exact local answers (never hallucinate) ===
+  if (channel === 'MATH' || channel === 'TIME') {
+    const deterministicText = channel === 'MATH'
+      ? formatMathAnswer(solveMathQuery(userText), detectedLang)
+      : solveTimeQuery(userText, detectedLang);
+    targetElement.innerHTML = formatLegalMarkdown(deterministicText);
+    if (stopGenBtn) stopGenBtn.style.display = 'none';
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+
+    currentSession.messages.push({ role: 'ai', content: deterministicText, intent: 'deterministic' });
+    localStorage.setItem('jurisai_chat_history', JSON.stringify(AppState.chatHistory));
+    renderChatHistoryList();
+    return;
+  }
 
   // === 🌐 REAL-TIME WEB CHANNEL (current/factual questions) ===
   // Server-side Groq web search; legal questions may still add RAG evidence.
@@ -5445,7 +5678,7 @@ async function sendChatMessage(userText, options) {
       advocateMode: advocateMode,
       language: lang,
       retrievedSources: retrievedSources,
-      intent: intent,
+      intent: backendIntent,
       signal: controller.signal,
       onDelta: (delta) => { aiText += delta; scheduleRender(); }
     });
@@ -5465,7 +5698,7 @@ async function sendChatMessage(userText, options) {
         advocateMode: advocateMode,
         language: lang,
         retrievedSources: retrievedSources,
-        intent: intent
+        intent: backendIntent
       });
     } catch (err) {
       aiText = '';
@@ -5473,10 +5706,12 @@ async function sendChatMessage(userText, options) {
   }
 
   if (!aiText && !stoppedEarly) {
-    // Fallback: legal simulation engine OR natural casual reply engine
+    // Fallback: legal simulation engine OR general-knowledge engine OR casual engine
     aiText = legalIntent
       ? getAILegalResponse(userText, AppState.jurisdiction)
-      : getCasualAIResponse(userText, detectedLang);
+      : (backendIntent === 'general'
+          ? getGeneralFallbackResponse(userText)
+          : getCasualAIResponse(userText, detectedLang));
   }
 
   if (!aiText) {
@@ -5512,6 +5747,13 @@ async function sendChatMessage(userText, options) {
     trustText += '\n\n_⏹️ Generation stopped by you — showing what was completed._';
   }
 
+  if (backendIntent === 'general' && !legalIntent) {
+    // General answers never carry sources — strip any link the model invented.
+    const linkCheck = verifyWebLinks(trustText, []);
+    if (linkCheck.removed.length) {
+      trustText = linkCheck.text + '\n\n🔗 **Link check:** removed ' + linkCheck.removed.length + ' unverified link(s).';
+    }
+  }
   const formattedHTML = formatLegalMarkdown(trustText);
   const finalHTML = buildAIBubbleHTML(formattedHTML, pack, intent) + (legalIntent ? buildFollowUpChips(userText, pack, lang) : '');
   targetElement.innerHTML = finalHTML;

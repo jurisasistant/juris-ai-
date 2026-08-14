@@ -2,6 +2,21 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🧮 Any-Question Engine (deterministic answers, zero hallucination)
+
+Literally any query is now routed to the right engine:
+
+| Channel | Examples | Engine |
+|---|---|---|
+| MATH | "15% of 8500", "8500 ka 15 percent", "८५०० का १५ प्रतिशत", "simple interest on 10000 at 10% for 2 years", "2^10" | **Local calculator** (safe parser, Indian number formatting) — computed, never guessed |
+| TIME | "what day is it", "aaj kaun sa din hai", "kitne baje hain" | **Local clock** — the model doesn't know today's date, so the app answers it exactly |
+| CURRENCY / PRICE | "100 usd to inr", "gold price", "price of bitcoin" | Live web (volatile data is never served from memory) |
+| STATIC_GENERAL | "what is photosynthesis?", "capital of France", translations | Dedicated general prompt: cut-to-cut, 80–250 words, language mirroring, integrity rules — plus a small honest offline KB (never guesses figures) |
+| Everything else | legal / web / casual | Existing channels |
+
+General answers **cannot carry invented links**: any URL the model writes in a general answer is stripped unless it came from an actual web search. Offline fallback honestly says *"I can't answer that reliably right now"* instead of guessing.
+
+---
 ## 🌐 Real-Time Web Intelligence
 
 JurisAI now combines **three knowledge channels** behind an 8-way query router:

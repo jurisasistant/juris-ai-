@@ -130,6 +130,22 @@ ANTI-HALLUCINATION (always active):
 - LANGUAGE MIRRORING (always): Reply in the EXACT language the user writes. If the user writes Hinglish (Roman Hindi like 'kya kar rhe ho'), reply in Hinglish. If the user writes Hindi (Devanagari), reply in Devanagari. If English, reply in English. Never mix languages mid-answer.
 - LEGAL ANSWER REQUIREMENT: If the user's message actually contains a legal question (about a case, court, judgment, law, section, article), ANSWER IT directly — never deflect with a generic 'How can I help?'. Only chat casually when the message is genuinely casual.`;
 
+// --- General-knowledge system prompt (STATIC_GENERAL channel) ---
+const GENERAL_GROQ_SYSTEM_PROMPT = `You are Barrister (Bharat Edition), an Indian AI assistant answering a general-knowledge or everyday question.
+CUT-TO-CUT STYLE (mandatory):
+- The FIRST line is the direct answer. Never open with "Certainly!", "Great question!", "Sure!", or filler.
+- Keep it short: 80–250 words unless the question genuinely needs more.
+- Use bullets for lists. Use headings only when they genuinely help.
+- Answer in the language the user wrote: Hinglish in → Hinglish out; Hindi (Devanagari) in → Devanagari out; English in → English out.
+
+INTEGRITY (never violate):
+- NEVER fabricate statistics, exact dates, names, URLs, prices, scores, or precise figures you are not certain of. If unsure about an exact number, say "I'm not certain about the exact figure" and give the closest reliable knowledge with that caveat.
+- NEVER invent sources, links, or citations.
+- If you don't know something, say "I'm not sure about that" — never guess to appear confident.
+- Do not force legal topics unless the user asks about law.`;
+
+
+
 
 // --- Server-side fallback intent classification (if client omits intent) ---
 function serverSideIntent(message) {
@@ -218,6 +234,7 @@ app.post('/api/chat', async (req, res) => {
     // 🧭 Intent router — casual chat must never trigger legal machinery
     let resolvedIntent = (typeof intent === 'string' && intent) ? intent : serverSideIntent(message);
     const casualIntent = resolvedIntent === 'casual';
+    const generalIntent = resolvedIntent === 'general';
 
     let languagePrompt = '';
     if (language === 'hi') languagePrompt = '\nLANGUAGE: Answer in Hindi (Devanagari script).';
@@ -267,7 +284,9 @@ app.post('/api/chat', async (req, res) => {
         role: 'system',
         content: casualIntent
           ? `${CASUAL_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}${languagePrompt}`
-          : `${BHARATIYA_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}\nPERSONA MODE: ${tonePrompt}\nLAW AS-OF DATE (CURRENT LAW CONTEXT): ${asOfDate} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).${languagePrompt}${deepPrompt}${draftingPrompt}`
+          : generalIntent
+            ? `${GENERAL_GROQ_SYSTEM_PROMPT}\n\nLANGUAGE: ${language}${languagePrompt}`
+            : `${BHARATIYA_GROQ_SYSTEM_PROMPT}\n\nACTIVE USER JURISDICTION: ${jurisdiction}\nPERSONA MODE: ${tonePrompt}\nLAW AS-OF DATE (CURRENT LAW CONTEXT): ${asOfDate} — prefer the law in force on this date (BNS/BNSS/BSA 2023 effective 2024-07-01).${languagePrompt}${deepPrompt}${draftingPrompt}`
       },
       ...(summary ? [{ role: 'user', content: '[Summary of earlier conversation]\n' + String(summary).slice(0, 1200) }] : []),
       ...history.slice(-8),
@@ -287,7 +306,7 @@ app.post('/api/chat', async (req, res) => {
         model: groqModel,
         messages: messages,
         temperature: temperature !== undefined ? Number(temperature) : (Number(process.env.GROQ_TEMPERATURE) || 0.2),
-        max_tokens: casualIntent ? 400 : (mode === 'deep' ? 3072 : (Number(process.env.GROQ_MAX_TOKENS) || 2048)),
+        max_tokens: casualIntent ? 400 : (generalIntent ? 700 : (mode === 'deep' ? 3072 : (Number(process.env.GROQ_MAX_TOKENS) || 2048))),
         top_p: 0.95,
         stream: !!stream
       })
