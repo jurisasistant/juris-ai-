@@ -13,14 +13,15 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // PRIMARY provider: NVIDIA NIM (z-ai/glm-5.2), fallback: Groq.
+  // PRIMARY provider: Groq (instant, verified working from Vercel).
+  // Fallback: NVIDIA NIM (z-ai/glm-5.2).
   const nvidiaKey = process.env.NVIDIA_NIM_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const primary = nvidiaKey
-    ? { id: 'nvidia', key: nvidiaKey, baseUrl: 'https://integrate.api.nvidia.com/v1', model: process.env.NVIDIA_MODEL || 'z-ai/glm-5.2' }
-    : (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE')
-      ? { id: 'groq', key: groqKey, baseUrl: 'https://api.groq.com/openai/v1', model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile' }
+  const primary = (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE')
+    ? { id: 'groq', key: groqKey, baseUrl: 'https://api.groq.com/openai/v1', model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile' }
+    : nvidiaKey
+      ? { id: 'nvidia', key: nvidiaKey, baseUrl: 'https://integrate.api.nvidia.com/v1', model: process.env.NVIDIA_MODEL || 'z-ai/glm-5.2' }
       : null;
 
   if (!primary) {

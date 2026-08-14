@@ -122,7 +122,19 @@ function rateLimited(ip) {
 // ==========================================================================
 function getAIProvider(env) {
   const providers = [];
-  // PRIMARY: NVIDIA NIM (z-ai/glm-5.2 — OpenAI-compatible /v1 endpoint).
+  // PRIMARY: Groq (instant, verified working from Vercel).
+  const groqKey = env.GROQ_API_KEY;
+  if (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE') {
+    providers.push({
+      id: 'groq',
+      baseUrl: 'https://api.groq.com/openai/v1',
+      apiKey: groqKey,
+      model: env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+    });
+  }
+  // FALLBACK: NVIDIA NIM (z-ai/glm-5.2 — OpenAI-compatible /v1 endpoint).
+  // Note: Vercel→NVIDIA POST connectivity is currently unreliable; the
+  // cooldown system handles it automatically and re-tries every 3 minutes.
   const nvidiaKey = env.NVIDIA_NIM_API_KEY;
   if (nvidiaKey) {
     providers.push({
@@ -131,16 +143,6 @@ function getAIProvider(env) {
       apiKey: nvidiaKey,
       model: env.NVIDIA_MODEL || 'z-ai/glm-5.2',
       seed: Number(env.NVIDIA_SEED) || 42
-    });
-  }
-  // FALLBACK: Groq.
-  const groqKey = env.GROQ_API_KEY;
-  if (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE') {
-    providers.push({
-      id: 'groq',
-      baseUrl: 'https://api.groq.com/openai/v1',
-      apiKey: groqKey,
-      model: env.GROQ_MODEL || 'llama-3.3-70b-versatile'
     });
   }
   return providers;
