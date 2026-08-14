@@ -13,7 +13,7 @@ const AppState = {
   asOfDate: '2026-08-11', // '2026-08-11' | '2024-07-01' | '2023-08-11' | '2017-08-24'
   chatHistory: JSON.parse(localStorage.getItem('jurisai_chat_history') || '[]'),
   activeChatId: null,
-  disclaimerAccepted: localStorage.getItem('jurisai_disclaimer') === 'true',
+  disclaimerAccepted: true, // Never auto-block the clean UI — footer disclaimer covers it
   analyzerSelectedSample: 'in_contract',
   kbCategory: 'all',
   kbJurisdictionFilter: 'IN',
