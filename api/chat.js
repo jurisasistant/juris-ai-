@@ -122,6 +122,18 @@ function rateLimited(ip) {
 // ==========================================================================
 function getAIProvider(env) {
   const providers = [];
+  // PRIMARY: NVIDIA NIM (z-ai/glm-5.2 — OpenAI-compatible /v1 endpoint).
+  const nvidiaKey = env.NVIDIA_NIM_API_KEY;
+  if (nvidiaKey) {
+    providers.push({
+      id: 'nvidia',
+      baseUrl: 'https://integrate.api.nvidia.com/v1',
+      apiKey: nvidiaKey,
+      model: env.NVIDIA_MODEL || 'z-ai/glm-5.2',
+      seed: Number(env.NVIDIA_SEED) || 42
+    });
+  }
+  // FALLBACK: Groq.
   const groqKey = env.GROQ_API_KEY;
   if (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE') {
     providers.push({
@@ -129,15 +141,6 @@ function getAIProvider(env) {
       baseUrl: 'https://api.groq.com/openai/v1',
       apiKey: groqKey,
       model: env.GROQ_MODEL || 'llama-3.3-70b-versatile'
-    });
-  }
-  const nvidiaKey = env.NVIDIA_NIM_API_KEY;
-  if (nvidiaKey) {
-    providers.push({
-      id: 'nvidia',
-      baseUrl: 'https://integrate.api.nvidia.com/v1',
-      apiKey: nvidiaKey,
-      model: env.NVIDIA_MODEL || 'meta/llama-3.3-70b-instruct'
     });
   }
   return providers;
@@ -266,39 +269,45 @@ function webErrorMessage(status, provider, message) {
   return `${provider}: ${status ? 'HTTP ' + status + ' ' : ''}${message}`;
 }
 
-async function generateGroundedWebAnswer(groqApiKey, query, context, language, requestId) {
+async function generateGroundedWebAnswer(_ignoredKey, query, context, language, requestId) {
   const langLine = language === 'hi'
     ? '\nAnswer in Hindi (Devanagari script).'
     : language === 'hinglish'
       ? '\nAnswer in natural Hinglish (Roman Hindi).'
       : '\nAnswer in English.';
-  try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${groqApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-        messages: [
-          { role: 'system', content: 'You are Barrister (Bharat Edition) answering a current/factual question using live search results.\nSTRICT GROUNDING: State ONLY facts that appear in the supplied search results. NEVER invent names, numbers, dates, scores, prices or statistics that are not in the results. If the results do not cover the question, say exactly: "I couldn\'t verify that from the available search results."\nSTYLE: direct first line, 120–300 words, cut-to-cut, no filler openers.' + langLine },
-          { role: 'user', content: `QUESTION: ${query}\n\nSEARCH RESULTS (the only facts you may use):\n${context}` }
-        ],
-        temperature: 0.2,
-        max_tokens: 700,
-        top_p: 0.95
-      })
-    });
-    if (!response.ok) {
-      return { ok: false, error: webErrorMessage(response.status, 'Groq (generation)', response.statusText) };
+  const providerChain = getAIProvider(process.env);
+  let lastError = '';
+  for (const provider of providerChain) {
+    try {
+      const response = await fetch(provider.baseUrl + '/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${provider.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.assign({
+          model: provider.model,
+          messages: [
+            { role: 'system', content: 'You are Barrister (Bharat Edition) answering a current/factual question using live search results.\nSTRICT GROUNDING: State ONLY facts that appear in the supplied search results. NEVER invent names, numbers, dates, scores, prices or statistics that are not in the results. If the results do not cover the question, say exactly: "I couldn\'t verify that from the available search results."\nSTYLE: direct first line, 120–300 words, cut-to-cut, no filler openers.' + langLine },
+            { role: 'user', content: `QUESTION: ${query}\n\nSEARCH RESULTS (the only facts you may use):\n${context}` }
+          ],
+          temperature: 0.2,
+          max_tokens: 700,
+          top_p: 0.95
+        }, provider.seed ? { seed: provider.seed } : {}))
+      });
+      if (!response.ok) {
+        lastError = webErrorMessage(response.status, provider.id + ' (generation)', response.statusText);
+        continue;
+      }
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || '';
+      return { ok: true, content };
+    } catch (err) {
+      lastError = provider.id + ' (generation): ' + err.message;
     }
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || '';
-    return { ok: true, content };
-  } catch (err) {
-    return { ok: false, error: 'Groq (generation): ' + err.message };
   }
+  return { ok: false, error: lastError || 'All providers failed for generation' };
 }
 
 // --- LangSearch Web Search API (api.langsearch.com/v1/web-search) ---
@@ -625,14 +634,14 @@ module.exports = async (req, res) => {
           'Authorization': `Bearer ${provider.apiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify(Object.assign({
           model: provider.model,
           messages: messages,
           temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
           max_tokens: maxTokens,
           top_p: 0.95,
           stream: !!stream
-        })
+        }, provider.seed ? { seed: provider.seed } : {}))
       });
       if (attempt.ok) { response = attempt; usedProvider = provider; break; }
       console.error(`[api/chat ${requestId}] provider ${provider.id} failed ${attempt.status} — trying next`);
@@ -692,14 +701,14 @@ module.exports = async (req, res) => {
             'Authorization': `Bearer ${provider.apiKey}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
+          body: JSON.stringify(Object.assign({
             model: provider.model,
             messages: messages,
             temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
             max_tokens: maxTokens,
             top_p: 0.95,
             stream: false
-          })
+          }, provider.seed ? { seed: provider.seed } : {}))
         });
         if (attempt.ok) { retryResponse = attempt; usedProvider = provider; break; }
       }

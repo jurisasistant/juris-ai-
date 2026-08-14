@@ -13,47 +13,60 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const groqApiKey = process.env.GROQ_API_KEY;
-  const hasKey = !!(groqApiKey && groqApiKey !== 'YOUR_GROQ_API_KEY_HERE');
+  // PRIMARY provider: NVIDIA NIM (z-ai/glm-5.2), fallback: Groq.
+  const nvidiaKey = process.env.NVIDIA_NIM_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
 
-  if (!hasKey) {
+  const primary = nvidiaKey
+    ? { id: 'nvidia', key: nvidiaKey, baseUrl: 'https://integrate.api.nvidia.com/v1', model: process.env.NVIDIA_MODEL || 'z-ai/glm-5.2' }
+    : (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE')
+      ? { id: 'groq', key: groqKey, baseUrl: 'https://api.groq.com/openai/v1', model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile' }
+      : null;
+
+  if (!primary) {
     return res.status(200).json({
       status: 'ok',
       ai: 'missing_key',
-      model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+      model: 'none'
     });
   }
 
-  // Key exists — verify it actually works (models list is free, no tokens).
+  // Verify the primary key works (models list is free, no tokens).
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/models', {
+    const response = await fetch(primary.baseUrl + '/models', {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${groqApiKey}` },
+      headers: { 'Authorization': `Bearer ${primary.key}` },
       signal: AbortSignal.timeout(8000)
     });
     if (response.ok) {
-      const data = await response.json();
-      const ids = (data && Array.isArray(data.data)) ? data.data.map((m) => m && m.id) : [];
-      const hasCompound = ids.includes('groq/compound');
-      const hasMini = ids.includes('groq/compound-mini');
+      let webSearch = !!process.env.LANGSEARCH_API_KEY ? 'langsearch' : 'none';
+      if (primary.id === 'groq') {
+        const data = await response.json();
+        const ids = (data && Array.isArray(data.data)) ? data.data.map((m) => m && m.id) : [];
+        const hasCompound = ids.includes('groq/compound');
+        const hasMini = ids.includes('groq/compound-mini');
+        if (hasCompound || hasMini) webSearch = 'groq';
+      }
       return res.status(200).json({
         status: 'ok',
-        ai: hasCompound || hasMini ? 'connected' : 'connected_no_compound',
-        webSearch: !!process.env.LANGSEARCH_API_KEY ? 'langsearch' : (hasCompound || hasMini ? 'groq' : 'none'),
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+        ai: 'connected',
+        provider: primary.id,
+        webSearch: webSearch,
+        model: primary.model
       });
     }
     return res.status(200).json({
       status: 'ok',
       ai: 'invalid_key',
-      model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+      provider: primary.id,
+      model: primary.model
     });
   } catch (err) {
-    // Key present but couldn't verify (network) — treat as connected-unknown
     return res.status(200).json({
       status: 'ok',
       ai: 'connected_unverified',
-      model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+      provider: primary.id,
+      model: primary.model
     });
   }
 };
