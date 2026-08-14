@@ -32,9 +32,13 @@ module.exports = async (req, res) => {
       signal: AbortSignal.timeout(8000)
     });
     if (response.ok) {
+      const data = await response.json();
+      const ids = (data && Array.isArray(data.data)) ? data.data.map((m) => m && m.id) : [];
+      const hasCompound = ids.includes('groq/compound');
+      const hasMini = ids.includes('groq/compound-mini');
       return res.status(200).json({
         status: 'ok',
-        ai: 'connected',
+        ai: hasCompound || hasMini ? 'connected' : 'connected_no_compound',
         model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
       });
     }

@@ -172,14 +172,32 @@ async function callGroqWebSearch(groqApiKey, messages, requestId, modelId) {
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error(`[api/chat ${requestId}] web search error ${response.status}`, errText.slice(0, 300));
-      return null;
+      let groqMsg = response.statusText;
+      try {
+        const j = JSON.parse(errText);
+        if (j && j.error && j.error.message) groqMsg = j.error.message;
+      } catch (e) { /* plain text error */ }
+      console.error(`[api/chat ${requestId}] web search error ${response.status}`, groqMsg.slice(0, 300));
+      return { reply: '', webSources: [], searched: false, error: `Groq API ${response.status}: ${groqMsg}` };
     }
 
     const data = await response.json();
     const message = data.choices?.[0]?.message || {};
     const content = message.content || '';
-    const rawResults = message.executed_tools?.[0]?.search_results?.results || [];
+    // Search results can appear in several shapes — collect them all.
+    const collected = [];
+    if (Array.isArray(message.executed_tools)) {
+      message.executed_tools.forEach((tm) => {
+        if (!tm || !tm.search_results) return;
+        const sr = Array.isArray(tm.search_results) ? tm.search_results : (tm.search_results.results || []);
+        if (Array.isArray(sr)) sr.forEach((x) => collected.push(x));
+      });
+    }
+    if (message.search_results) {
+      const sr = Array.isArray(message.search_results) ? message.search_results : (message.search_results.results || []);
+      if (Array.isArray(sr)) sr.forEach((x) => collected.push(x));
+    }
+    const rawResults = collected;
 
     // Only real search results become sources — the model can never invent them.
     const webSources = rawResults.slice(0, 8).map((r) => ({
@@ -188,9 +206,12 @@ async function callGroqWebSearch(groqApiKey, messages, requestId, modelId) {
       score: typeof r.score === 'number' ? Math.round(r.score * 100) / 100 : null
     })).filter((r) => r.url);
 
-    if (!content) return null;
+    if (!content && !rawResults.length) {
+      console.error(`[api/chat ${requestId}] web search: no content and no sources`);
+      return { reply: '', webSources: [], searched: false, error: 'Web search returned no content and no sources' };
+    }
     console.log(`[api/chat ${requestId}] web search done ms=${Date.now() - startTime} sources=${webSources.length}`);
-    return { reply: content, webSources, searched: webSources.length > 0, model: 'groq/compound' };
+    return { reply: content, webSources, searched: webSources.length > 0, model: 'groq/compound', error: null };
   } catch (err) {
     console.error(`[api/chat ${requestId}] web search failed`, err.message);
     return null;
@@ -316,6 +337,14 @@ module.exports = async (req, res) => {
         if (retry && retry.searched) webResult = retry;
         else if (!webResult) webResult = retry;
       }
+      if (webResult && webResult.error) {
+        return res.status(200).json({
+          reply: '',
+          webSources: [],
+          webSearched: false,
+          webError: webResult.error
+        });
+      }
       if (webResult) {
         console.log(`[api/chat ${requestId}] web search reply ms=${Date.now() - startTime}`);
         return res.status(200).json({
@@ -327,9 +356,10 @@ module.exports = async (req, res) => {
       }
       // Honest failure — never fabricate from model memory for current questions.
       return res.status(200).json({
-        reply: "I couldn't verify this from current sources. Please try again in a moment.",
+        reply: '',
         webSources: [],
-        webSearched: false
+        webSearched: false,
+        webError: 'Web search failed'
       });
     }
 

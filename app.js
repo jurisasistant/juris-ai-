@@ -3220,6 +3220,7 @@ async function checkBackendHealth() {
     AppState.backendStatus = data.ai || 'unknown';
     if (data.ai === 'connected') setStatus('ok', '🟢 Live AI connected');
     else if (data.ai === 'connected_unverified') setStatus('ok', '🟢 Live AI ready');
+    else if (data.ai === 'connected_no_compound') setStatus('warn', '🟠 Key valid, but the web-search model (groq/compound) is not enabled for this key — enable it in the Groq console or use a key with access');
     else if (data.ai === 'invalid_key') setStatus('warn', '🟠 Server key invalid — fix GROQ_API_KEY in Vercel env');
     else if (data.ai === 'missing_key') setStatus('warn', '🟠 AI key missing — add GROQ_API_KEY in Vercel env');
     else setStatus('warn', '🟠 Offline mode — backend not connected');
@@ -5594,13 +5595,18 @@ async function sendChatMessage(userText, options) {
       }
     }
     if (!webText) {
-      const reason = AppState.backendStatus === 'missing_key'
-        ? ' The server AI key (GROQ_API_KEY) is missing on this deployment.'
-        : AppState.backendStatus === 'invalid_key'
-          ? ' The server AI key (GROQ_API_KEY) is invalid or revoked — a new key is needed.'
-          : AppState.backendStatus === 'unreachable'
-            ? ' The backend endpoint is unreachable.'
-            : ' Live search did not return real sources.';
+      const webError = (webData && webData.webError) ? webData.webError : '';
+      let reason = webError
+        ? ' The search provider said: "' + webError + '".'
+        : AppState.backendStatus === 'missing_key'
+          ? ' The server AI key (GROQ_API_KEY) is missing on this deployment.'
+          : AppState.backendStatus === 'invalid_key'
+            ? ' The server AI key (GROQ_API_KEY) is invalid or revoked — a new key is needed.'
+            : AppState.backendStatus === 'connected_no_compound'
+              ? ' Your key is valid, but the web-search model (groq/compound) is not enabled for it — enable it in the Groq console or use another key.'
+              : AppState.backendStatus === 'unreachable'
+                ? ' The backend endpoint is unreachable.'
+                : ' Live search did not return real sources. If you just changed the key, redeploy and refresh the page.';
       webText = "I couldn't verify this from current web sources, so I won't answer from memory." + reason + " Ask a legal question instead — my verified legal library works offline.";
     }
 
