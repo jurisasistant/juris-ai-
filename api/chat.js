@@ -264,6 +264,14 @@ async function callGroqWebSearch(groqApiKey, messages, requestId, modelId) {
 // Per-instance cache: once a provider fails with a plan/access error (e.g. Groq
 // 413 for compound), skip it on subsequent calls for speed.
 const providerHealth = { compound: true, mini: true };
+// Per-instance provider cooldown: after a timeout/failure, a provider is
+// skipped for 3 minutes so healthy fallbacks answer instantly. Providers
+// are re-tried automatically after the cooldown expires (self-healing).
+const providerCooldown = {}; // providerId -> Date.now() of failure
+const PROVIDER_COOLDOWN_MS = 180000;
+function providerIsCoolingDown(id) {
+  return providerCooldown[id] && (Date.now() - providerCooldown[id]) < PROVIDER_COOLDOWN_MS;
+}
 
 function webErrorMessage(status, provider, message) {
   return `${provider}: ${status ? 'HTTP ' + status + ' ' : ''}${message}`;
@@ -278,6 +286,7 @@ async function generateGroundedWebAnswer(_ignoredKey, query, context, language, 
   const providerChain = getAIProvider(process.env);
   let lastError = '';
   for (const provider of providerChain) {
+    if (providerIsCoolingDown(provider.id)) continue;
     try {
       const response = await fetch(provider.baseUrl + '/chat/completions', {
         method: 'POST',
@@ -298,13 +307,16 @@ async function generateGroundedWebAnswer(_ignoredKey, query, context, language, 
         signal: AbortSignal.timeout(20000)
       });
       if (!response.ok) {
+        providerCooldown[provider.id] = Date.now();
         lastError = webErrorMessage(response.status, provider.id + ' (generation)', response.statusText);
         continue;
       }
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content || '';
+      delete providerCooldown[provider.id];
       return { ok: true, content };
     } catch (err) {
+      providerCooldown[provider.id] = Date.now();
       lastError = provider.id + ' (generation): ' + err.message;
     }
   }
@@ -629,6 +641,10 @@ module.exports = async (req, res) => {
     let response = null;
     let usedProvider = null;
     for (const provider of providerChain) {
+      if (providerIsCoolingDown(provider.id)) {
+        console.log(`[api/chat ${requestId}] provider ${provider.id} in cooldown — skipped`);
+        continue;
+      }
       try {
         const attempt = await fetch(provider.baseUrl + '/chat/completions', {
           method: 'POST',
@@ -646,9 +662,15 @@ module.exports = async (req, res) => {
           }, provider.seed ? { seed: provider.seed } : {})),
           signal: AbortSignal.timeout(20000) // NEVER let one provider hang the request
         });
-        if (attempt.ok) { response = attempt; usedProvider = provider; break; }
+        if (attempt.ok) {
+          response = attempt; usedProvider = provider;
+          delete providerCooldown[provider.id];
+          break;
+        }
+        providerCooldown[provider.id] = Date.now();
         console.error(`[api/chat ${requestId}] provider ${provider.id} failed ${attempt.status} — trying next`);
       } catch (err) {
+        providerCooldown[provider.id] = Date.now();
         console.error(`[api/chat ${requestId}] provider ${provider.id} fetch error (timeout/network) — trying next:`, err.message);
       }
     }
@@ -701,6 +723,7 @@ module.exports = async (req, res) => {
     if (needNonStreamRetry) {
       let retryResponse = null;
       for (const provider of providerChain) {
+        if (providerIsCoolingDown(provider.id)) continue;
         try {
           const attempt = await fetch(provider.baseUrl + '/chat/completions', {
             method: 'POST',
@@ -718,8 +741,14 @@ module.exports = async (req, res) => {
             }, provider.seed ? { seed: provider.seed } : {})),
             signal: AbortSignal.timeout(25000)
           });
-          if (attempt.ok) { retryResponse = attempt; usedProvider = provider; break; }
+          if (attempt.ok) {
+            retryResponse = attempt; usedProvider = provider;
+            delete providerCooldown[provider.id];
+            break;
+          }
+          providerCooldown[provider.id] = Date.now();
         } catch (err) {
+          providerCooldown[provider.id] = Date.now();
           console.error(`[api/chat ${requestId}] retry provider ${provider.id} error:`, err.message);
         }
       }
