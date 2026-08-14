@@ -162,7 +162,7 @@ function serverSideIntent(message) {
 
 // --- 🌐 LIVE WEB SEARCH (Groq built-in web search via groq/compound) ---
 // Server-side only. Real citations come from executed_tools[].search_results.
-async function callGroqWebSearch(groqApiKey, messages) {
+async function callGroqWebSearch(groqApiKey, messages, modelId) {
   try {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -171,7 +171,7 @@ async function callGroqWebSearch(groqApiKey, messages) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'groq/compound',
+        model: modelId || 'groq/compound',
         messages: messages,
         temperature: 0.2,
         max_tokens: 2048,
@@ -262,7 +262,12 @@ app.post('/api/chat', async (req, res) => {
         ...history.slice(-4),
         { role: 'user', content: message }
       ];
-      const webResult = await callGroqWebSearch(groqApiKey, webMessages);
+      let webResult = await callGroqWebSearch(groqApiKey, webMessages, 'groq/compound');
+      if (!webResult || !webResult.searched) {
+        const retry = await callGroqWebSearch(groqApiKey, webMessages, 'groq/compound-mini');
+        if (retry && retry.searched) webResult = retry;
+        else if (!webResult) webResult = retry;
+      }
       if (webResult) {
         return res.json({
           reply: webResult.reply,

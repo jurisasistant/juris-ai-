@@ -151,7 +151,7 @@ Use these sources as the authoritative basis for the legal answer. Do not stretc
 // --- 🌐 LIVE WEB SEARCH (Groq built-in web search via groq/compound) ---
 // Server-side only. The model searches the web itself and returns real
 // citations (executed_tools[].search_results) — never fabricated URLs.
-async function callGroqWebSearch(groqApiKey, messages, requestId) {
+async function callGroqWebSearch(groqApiKey, messages, requestId, modelId) {
   const startTime = Date.now();
   try {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -161,7 +161,7 @@ async function callGroqWebSearch(groqApiKey, messages, requestId) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'groq/compound',
+        model: modelId || 'groq/compound',
         messages: messages,
         temperature: 0.2,
         max_tokens: 2048,
@@ -309,7 +309,13 @@ module.exports = async (req, res) => {
         ...history.slice(-4),
         { role: 'user', content: message }
       ];
-      const webResult = await callGroqWebSearch(groqApiKey, webMessages, requestId);
+      let webResult = await callGroqWebSearch(groqApiKey, webMessages, requestId, 'groq/compound');
+      if (!webResult || !webResult.searched) {
+        // groq/compound may be unavailable on some accounts — retry with compound-mini.
+        const retry = await callGroqWebSearch(groqApiKey, webMessages, requestId, 'groq/compound-mini');
+        if (retry && retry.searched) webResult = retry;
+        else if (!webResult) webResult = retry;
+      }
       if (webResult) {
         console.log(`[api/chat ${requestId}] web search reply ms=${Date.now() - startTime}`);
         return res.status(200).json({

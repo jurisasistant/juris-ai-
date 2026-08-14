@@ -5547,18 +5547,23 @@ async function sendChatMessage(userText, options) {
       summary: buildConversationSummary(sessionMessages),
       language: lang
     });
-    let webText = webData && webData.reply ? webData.reply : '';
     const webSources = webData && Array.isArray(webData.webSources) ? webData.webSources : [];
+    const searched = !!(webData && webData.webSearched && webSources.length > 0);
 
-    // Link verification: URLs in the answer must exist in the actual search results.
-    if (webText) {
+    // ANTI-HALLUCINATION GATE: real data or nothing.
+    // The answer is only shown when an actual web search happened AND returned
+    // real sources. Model-memory answers without search results are discarded.
+    let webText = '';
+    if (searched && webData && webData.reply) {
+      webText = webData.reply;
+      // Link verification: URLs in the answer must exist in the actual search results.
       const linkCheck = verifyWebLinks(webText, webSources);
       if (linkCheck.removed.length) {
         webText = linkCheck.text + '\n\n🔗 **Link check:** removed ' + linkCheck.removed.length + ' unverified link(s) — only links from actual search results are shown.';
       }
     }
     if (!webText) {
-      webText = "I couldn't verify this from current sources. Please try again in a moment.";
+      webText = "I couldn't verify this from current web sources, so I won't answer from memory. Please try again in a moment — or ask a legal question (my verified legal library works even when live search is down).";
     }
 
     // LEGAL_CURRENT: hybrid — live web answer + legal evidence panel
@@ -5718,9 +5723,10 @@ async function sendChatMessage(userText, options) {
   }
 
   if (!aiText && !stoppedEarly) {
-    // Fallback: legal simulation engine OR general-knowledge engine OR casual engine
+    // Fallback: legal simulation engine OR general-knowledge engine OR casual engine.
+    // Legal/general offline answers are clearly labelled — they are NOT the live AI.
     aiText = legalIntent
-      ? getAILegalResponse(userText, AppState.jurisdiction)
+      ? '⚙️ **Offline answer** (live AI backend unreachable — this is my built-in verified legal engine):\n\n' + getAILegalResponse(userText, AppState.jurisdiction)
       : (backendIntent === 'general'
           ? getGeneralFallbackResponse(userText)
           : getCasualAIResponse(userText, detectedLang));
