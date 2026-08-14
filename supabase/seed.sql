@@ -1,8 +1,8 @@
 -- ============================================================================
 -- JURISAI BHARAT — SEED DATA (auto-generated from the verified legal library)
--- 88 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
+-- 89 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
+-- Run in Supabase SQL Editor (clears + reloads). Idempotent.
 -- ============================================================================
-\set ON_ERROR_STOP on
 begin;
 
 do $$
@@ -220,7 +220,7 @@ The Arbitration and Conciliation Act 1996 governs domestic and international com
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Negotiable Instruments Act Section 138: Cheque Bounce & Debt Recovery', 'statute', null, 'IN', null, null, null, ARRAY['cheque','bns','bnss']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Negotiable Instruments Act Section 138: Cheque Bounce & Debt Recovery', 'statute', null, 'IN', null, null, null, ARRAY['cheque','bns','bnss','compensation']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1377,7 +1377,7 @@ The Right to Information Act 2005 gives every citizen the right to information f
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Motor Vehicle Accident Claims — MVA 1988 & Compensation', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Motor Vehicle Accident Claims — MVA 1988 & Compensation', 'statute', null, 'IN', null, null, null, ARRAY['compensation']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1510,7 +1510,7 @@ The Industrial Disputes Act 1947 protects workmen — Bangalore Water Supply (19
   insert into public.legal_documents
     (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
   values
-    ('Cheque Bounce — Section 138 NI Act & Interim Compensation', 'statute', null, 'IN', null, null, null, ARRAY['cheque']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+    ('Cheque Bounce — Section 138 NI Act & Interim Compensation', 'statute', null, 'IN', null, null, null, ARRAY['cheque','compensation']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
   returning id into doc_id;
 
   insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
@@ -1935,9 +1935,30 @@ In Lily Thomas v. Union of India (2013), the Supreme Court struck down Section 8
       * **Public Interest Foundation v. Union of India (2019) 3 SCC 224:** Criminal antecedents disclosure by candidates.
     ', null, '{"kb_id":"kb-in-case-lily-thomas","category":"caselaw"}'::jsonb);
 
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Land Acquisition — LARR Act 2013 (Right to Fair Compensation)', 'statute', null, 'IN', null, null, null, ARRAY['constitution','land acquisition','larr','compensation']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'Fair compensation, Social Impact Assessment, consent and rehabilitation for land acquisition — and when acquisitions lapse (Section 24).
+
+The Right to Fair Compensation and Transparency in Land Acquisition, Rehabilitation and Resettlement Act 2013 (LARR Act) replaced the Land Acquisition Act 1894. Landowners get fair market value compensation (with 100% solatium and a rural multiplier), a mandatory Social Impact Assessment (SIA), consent requirements for public-private projects (70%) and private projects (80%), and rehabilitation & resettlement (R&R) entitlements. In Indore Development Authority v. Manoharlal (2020), a 5-judge Constitution Bench held that an acquisition does not lapse under Section 24(2) merely because compensation was not deposited — overruling Pune Municipal Corporation (2014).
+
+
+      * **LARR Act 2013 Section 24:** Acquisition lapses only where NEITHER possession was taken NOR compensation paid — Indore Development Authority (2020).
+      * **Section 26:** Determination of market value and the compensation award.
+      * **Section 31:** Payment of compensation before taking possession.
+      * **Section 38:** Public purpose — infrastructure, housing, planned development.
+    
+
+
+      * **Indore Development Authority v. Manoharlal (SC Constitution Bench 2020):** Section 24(2) lapsing re-interpreted — possession OR payment of compensation saves the acquisition.
+      * **Pune Municipal Corporation v. Harakchand Misirimal Solanki (2014):** Earlier view on lapsing — overruled in 2020.
+    ', 'LARR Act 2013 s.24, 26, 31, 38', '{"kb_id":"kb-in-civil-land-acquisition","category":"civil"}'::jsonb);
+
 end $$;
 
 commit;
--- ============================================================================
--- Verify: select count(*) from legal_documents;  -- expect 88
--- ============================================================================
+-- Verify: select count(*) from legal_documents;  -- expect 89
