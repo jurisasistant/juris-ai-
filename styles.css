@@ -43,6 +43,11 @@
   --sidebar-width: 270px;
   --sidebar-collapsed-width: 70px;
   --header-height: 64px;
+  /* Centralized device safe-area insets (single source of truth) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 
   /* Glass Shadow Recipe */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -2164,7 +2169,9 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     height: 100vh !important;
+    height: 100dvh !important;
     max-height: 100vh !important;
+    max-height: 100dvh !important;
     border-radius: 0 !important;
     border: none;
     padding: env(safe-area-inset-top, 16px) 1rem env(safe-area-inset-bottom, 16px) !important;
@@ -3684,6 +3691,74 @@ body.sidebar-open::before {
 .evidence-cite { border-left: none !important; }
 .evidence-removed { border-left: none !important; opacity: 0.85; }
 .evidence-live { background: transparent !important; }
+
+/* ============================================================
+   📱 ANDROID / iOS SAFE-AREA MOBILE SHELL (edge-to-edge compensation)
+   Root fix: the app must never draw under the system status bar
+   or navigation bar. Mobile-scoped — desktop is untouched.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* --- Top header: begins BELOW the status bar --- */
+  .top-navbar {
+    padding-top: var(--safe-top);
+    height: calc(var(--header-height) + var(--safe-top));
+  }
+  .sidebar-header {
+    padding-top: calc(1.25rem + var(--safe-top));
+  }
+  .sidebar .sidebar-nav {
+    padding-top: 0.25rem;
+  }
+  /* Sidebar overlay must also clear the status bar */
+  .sidebar {
+    padding-top: var(--safe-top);
+  }
+
+  /* --- Chat viewport: dynamic viewport height with vh fallback chain --- */
+  .chat-container-solo,
+  .chat-container {
+    height: calc(100vh - var(--header-height) - var(--safe-top) - 70px);
+    height: calc(100dvh - var(--header-height) - var(--safe-top) - 70px);
+    min-height: 380px;
+  }
+  .chat-messages-area {
+    padding: 1rem 0.75rem 0.75rem !important;
+  }
+
+  /* --- Composer: floats above the bottom nav, never behind it --- */
+  .chat-input-wrapper {
+    position: sticky;
+    bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 0.25rem !important;
+    background: transparent !important;
+    border-top: none !important;
+  }
+
+  /* --- Bottom navigation: fully clickable, above the Android gesture bar --- */
+  .mobile-bottom-nav {
+    height: calc(58px + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+
+  /* --- No double-safe-area padding on modals/drawers --- */
+  .modal-content {
+    padding-top: calc(1.5rem + var(--safe-top));
+  }
+
+  /* --- Landscape: keep everything reachable --- */
+  @media (orientation: landscape) {
+    .chat-container-solo,
+    .chat-container {
+      height: calc(100dvh - var(--header-height) - var(--safe-top) - 8px);
+      min-height: 260px;
+    }
+    .chat-messages-area {
+      padding-bottom: 0.5rem !important;
+    }
+  }
+}
 
 @media print {
   body * {
