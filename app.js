@@ -5100,6 +5100,7 @@ ${includeIP ? `<div class="doc-section">
 // --- DOM Initialization & Event Wiring ---
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  initKeyboardGuard();
   initNavigation();
   initKnowledgeBase();
   initChatEngine();
@@ -5288,6 +5289,22 @@ function initStatuteConverterBar() {
 }
 
 // --- 1. Theme Management ---
+// --- ⌨️ Keyboard guard: hide the fixed bottom nav while the keyboard is
+// open and let the composer float directly above it (Android behavior). ---
+function initKeyboardGuard() {
+  if (!window.visualViewport) return;
+  let lastHeight = window.visualViewport.height || 0;
+  window.visualViewport.addEventListener('resize', () => {
+    const vh = window.visualViewport.height || 0;
+    if (lastHeight && vh < lastHeight - 120) {
+      document.body.classList.add('keyboard-open');
+    } else if (lastHeight && vh > lastHeight + 120) {
+      document.body.classList.remove('keyboard-open');
+    }
+    lastHeight = vh;
+  });
+}
+
 function initTheme() {
   const themeBtn = document.getElementById('theme-toggle-btn');
   document.documentElement.setAttribute('data-theme', AppState.theme);

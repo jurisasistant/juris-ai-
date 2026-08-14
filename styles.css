@@ -3695,30 +3695,39 @@ body.sidebar-open::before {
 /* ============================================================
    📱 ANDROID / iOS SAFE-AREA MOBILE SHELL (edge-to-edge compensation)
    Root fix: the app must never draw under the system status bar
-   or navigation bar. Mobile-scoped — desktop is untouched.
+   or navigation bar. Every rule carries !important because several
+   legacy mobile rules use !important shorthand padding that would
+   otherwise reset the safe-area insets. Mobile-scoped only.
    ============================================================ */
 @media (max-width: 768px) {
   /* --- Top header: begins BELOW the status bar --- */
   .top-navbar {
-    padding-top: var(--safe-top);
-    height: calc(var(--header-height) + var(--safe-top));
+    padding-top: var(--safe-top) !important;
+    padding-left: max(0.5rem, var(--safe-left)) !important;
+    padding-right: max(0.5rem, var(--safe-right)) !important;
+    height: calc(var(--header-height) + var(--safe-top)) !important;
   }
   .sidebar-header {
-    padding-top: calc(1.25rem + var(--safe-top));
+    padding-top: calc(1.25rem + var(--safe-top)) !important;
   }
   .sidebar .sidebar-nav {
     padding-top: 0.25rem;
   }
   /* Sidebar overlay must also clear the status bar */
   .sidebar {
-    padding-top: var(--safe-top);
+    padding-top: var(--safe-top) !important;
   }
 
   /* --- Chat viewport: dynamic viewport height with vh fallback chain --- */
+  .app-container,
+  .main-wrapper {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
   .chat-container-solo,
   .chat-container {
-    height: calc(100vh - var(--header-height) - var(--safe-top) - 70px);
-    height: calc(100dvh - var(--header-height) - var(--safe-top) - 70px);
+    height: calc(100vh - var(--header-height) - var(--safe-top) - 70px) !important;
+    height: calc(100dvh - var(--header-height) - var(--safe-top) - 70px) !important;
     min-height: 380px;
   }
   .chat-messages-area {
@@ -3727,8 +3736,8 @@ body.sidebar-open::before {
 
   /* --- Composer: floats above the bottom nav, never behind it --- */
   .chat-input-wrapper {
-    position: sticky;
-    bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+    position: sticky !important;
+    bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
     padding-bottom: 0.25rem !important;
     background: transparent !important;
     border-top: none !important;
@@ -3736,22 +3745,31 @@ body.sidebar-open::before {
 
   /* --- Bottom navigation: fully clickable, above the Android gesture bar --- */
   .mobile-bottom-nav {
-    height: calc(58px + var(--safe-bottom));
-    padding-bottom: var(--safe-bottom);
-    padding-left: var(--safe-left);
-    padding-right: var(--safe-right);
+    height: calc(58px + var(--safe-bottom)) !important;
+    padding-bottom: var(--safe-bottom) !important;
+    padding-left: var(--safe-left) !important;
+    padding-right: var(--safe-right) !important;
+  }
+
+  /* --- Keyboard open: hide the fixed nav (native-app behavior),
+         composer floats directly above the keyboard --- */
+  body.keyboard-open .mobile-bottom-nav {
+    display: none !important;
+  }
+  body.keyboard-open .chat-input-wrapper {
+    bottom: var(--safe-bottom) !important;
   }
 
   /* --- No double-safe-area padding on modals/drawers --- */
   .modal-content {
-    padding-top: calc(1.5rem + var(--safe-top));
+    padding-top: calc(1.5rem + var(--safe-top)) !important;
   }
 
   /* --- Landscape: keep everything reachable --- */
   @media (orientation: landscape) {
     .chat-container-solo,
     .chat-container {
-      height: calc(100dvh - var(--header-height) - var(--safe-top) - 8px);
+      height: calc(100dvh - var(--header-height) - var(--safe-top) - 8px) !important;
       min-height: 260px;
     }
     .chat-messages-area {
