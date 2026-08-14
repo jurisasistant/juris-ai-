@@ -3427,7 +3427,7 @@ function applyEvidenceGate(answerText, pack) {
   if (pack.level === 'MEDIUM') {
     return answerText + '\n\n_📊 Evidence level: MEDIUM — grounded in the verified library, but check how it applies to your specific facts before relying on it._';
   }
-  const banner = '🛡️ **Evidence Gate (LOW):** I couldn\'t verify this sufficiently from the available legal sources, so I won\'t speculate.\n\nTry a case name, citation, Act, section, Article or legal issue — or ask in different words.';
+  const banner = '**Evidence Gate (LOW):** I couldn\'t verify this sufficiently from the available legal sources, so I won\'t speculate.\n\nTry a case name, citation, Act, section, Article or legal issue — or ask in different words.';
   return banner;
 }
 
@@ -5207,7 +5207,7 @@ function renderRemoteSearchCards(rows, grid) {
       <div class="kb-card-summary">${barristerEscape(String(r.excerpt || '').slice(0, 260))}${(r.excerpt || '').length > 260 ? '…' : ''}</div>
       ${courtLine}
       <div class="kb-card-footer">
-        ${r.source_url ? `<a class="btn-kb-read" href="${barristerEscape(r.source_url)}" target="_blank" rel="noopener noreferrer"><span>📖 Open source ↗</span></a>` : ''}
+        ${r.source_url ? `<a class="btn-kb-read" href="${barristerEscape(r.source_url)}" target="_blank" rel="noopener noreferrer"><span>` + iconSVG('document', 13) + ` Open source ↗</span></a>` : ''}
         <button class="btn-kb-ask-ai" data-live-ask="1"><span>` + iconSVG('robot', 13) + ` Ask AI about this</span></button>
       </div>
     `;
@@ -5251,7 +5251,7 @@ function initStatuteConverterBar() {
         <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">${data.old} ➔ <span style="color:#fbbf24;">${data.newSection}</span></div>
         <div style="font-size:0.84rem; color:var(--text-secondary); margin:0.4rem 0;"><strong>${data.title}:</strong> ${data.summary}</div>
         <div style="font-size:0.78rem; color:#c4b5fd; background:rgba(139,92,246,0.15); padding:0.4rem 0.65rem; border-radius:6px; margin-top:0.5rem;">
-          <strong>🏛️ Supreme Court Benchmark:</strong> ${data.precedent}
+          <strong>` + iconSVG('law', 12) + ` Supreme Court Benchmark:</strong> ${data.precedent}
         </div>
         <button id="converter-ask-ai-btn" style="margin-top:0.65rem; background:linear-gradient(135deg, #ff9933, #f59e0b); color:#fff; border:none; padding:0.38rem 0.85rem; border-radius:6px; font-weight:600; font-size:0.78rem; cursor:pointer;">
           ` + iconSVG('robot', 13) + ` Ask AI About This Provision
@@ -5440,7 +5440,7 @@ function renderKnowledgeBaseCards() {
   if (filtered.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-muted); background: var(--bg-tertiary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏛️</div>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">` + iconSVG('law', 28) + `</div>
         <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">No legal authorities matched your filter</div>
         <div style="font-size: 0.88rem; margin-top: 0.25rem;">Try clearing your search terms or selecting 'ALL' jurisdictions.</div>
       </div>
@@ -5464,7 +5464,7 @@ function renderKnowledgeBaseCards() {
       <div class="kb-card-statutes">${statutesHTML}</div>
       <div class="kb-card-footer">
         <button class="btn-kb-read" data-read-id="${article.id}">
-          <span>📖 Read Full Precedent</span>
+          <span>` + iconSVG('document', 13) + ` Read Full Precedent</span>
         </button>
         <button class="btn-kb-ask-ai" data-ask-id="${article.id}">
           <span>` + iconSVG('robot', 13) + ` Ask AI About This</span>
@@ -7024,7 +7024,7 @@ function initModals() {
         AppState.chatHistory = [];
         AppState.activeChatId = null;
         renderChatHistoryList();
-        alert('🗑️ All saved history and bookmarks have been cleared.');
+        alert('All saved history and bookmarks have been cleared.');
       }
     });
   }
@@ -7234,7 +7234,7 @@ function initSavedResearch() {
       list.unshift(item);
       localStorage.setItem('jurisai_saved_research', JSON.stringify(list));
       updateSavedUI();
-      alert('⭐ Saved to your Research Bookmarks Dashboard!');
+      alert('Saved to your Research Bookmarks Dashboard!');
     } else {
       alert('ℹ️ This authority is already saved in your Research Bookmarks.');
     }
@@ -7253,9 +7253,9 @@ function initSavedResearch() {
     if (list.length === 0) {
       savedGrid.innerHTML = `
         <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-muted); background: var(--bg-surface-elevated); border-radius: var(--radius-lg); border: 1px dashed var(--border-glass);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⭐</div>
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">` + iconSVG('saved', 28) + `</div>
           <div style="font-size: 16px; font-weight: 700; color: var(--text-primary);">No saved legal research items yet</div>
-          <div style="font-size: 13px; margin-top: 0.25rem;">Click '⭐ Save Research' on any precedent drawer or AI consultation to save it here.</div>
+          <div style="font-size: 13px; margin-top: 0.25rem;">Click Save Research on any precedent drawer or AI consultation to save it here.</div>
         </div>
       `;
       return;
@@ -7266,13 +7266,13 @@ function initSavedResearch() {
       card.className = 'kb-article-card';
       card.innerHTML = `
         <div class="kb-card-header">
-          <span class="kb-category-badge">🏛️ ${art.category || 'Indian Law'}</span>
-          <span class="kb-jurisdiction-badge">⭐ SAVED BOOKMARK</span>
+          <span class="kb-category-badge">` + iconSVG('law', 10) + ` ${art.category || 'Indian Law'}</span>
+          <span class="kb-jurisdiction-badge">` + iconSVG('saved', 10) + ` SAVED BOOKMARK</span>
         </div>
         <div class="kb-card-title">${art.title}</div>
         <div class="kb-card-summary">${art.summary || 'Verified Constitutional Authority'}</div>
         <div class="kb-card-footer">
-          <button class="btn-kb-read">📖 Reopen Authority</button>
+          <button class="btn-kb-read">` + iconSVG('document', 13) + ` Reopen Authority</button>
           <button class="btn-danger" style="padding:0.35rem 0.65rem;">Remove</button>
         </div>
       `;
@@ -7495,7 +7495,7 @@ function initLegalNodeGraph() {
 
       infoDisplay.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
-          <span style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase;">🕸️ ACTIVE NODE • ${data.file}</span>
+          <span style="font-size:11px; font-weight:700; color:var(--accent-gold); text-transform:uppercase;">` + iconSVG('share', 11) + ` ACTIVE NODE • ${data.file}</span>
           <span style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">OBSIDIAN VAULT LINK</span>
         </div>
         <div style="font-size:18px; font-weight:700; color:var(--text-primary);">${data.title}</div>
@@ -7807,12 +7807,12 @@ function initLegalGlossary() {
       const key = e.target.getAttribute('data-term') || e.target.textContent.toLowerCase().trim();
       const data = LEGAL_GLOSSARY_MAP[key] || LEGAL_GLOSSARY_MAP["res judicata"];
       if (titleEl && bodyEl) {
-        titleEl.innerHTML = `<span>📖</span><span>${data.term}</span>`;
+        titleEl.innerHTML = `<span>` + iconSVG('document', 13) + `</span><span>${data.term}</span>`;
         bodyEl.innerHTML = `
           <div style="font-size:16px; font-weight:700; color:var(--text-primary); margin-bottom:0.5rem;">${data.meaning}</div>
           <div style="font-size:13px; color:var(--text-secondary); margin:0.4rem 0;"><strong>Statutory Basis:</strong> ${data.basis}</div>
           <div style="font-size:13px; color:var(--accent-gold); background:rgba(201,162,39,0.12); padding:0.6rem 0.85rem; border-radius:8px; margin-top:0.75rem;">
-            <strong>🏛️ Landmark Benchmark:</strong> ${data.cases}
+            <strong>` + iconSVG('law', 12) + ` Landmark Benchmark:</strong> ${data.cases}
           </div>
         `;
         if (askBtn) {
