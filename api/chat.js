@@ -294,7 +294,8 @@ async function generateGroundedWebAnswer(_ignoredKey, query, context, language, 
           temperature: 0.2,
           max_tokens: 700,
           top_p: 0.95
-        }, provider.seed ? { seed: provider.seed } : {}))
+        }, provider.seed ? { seed: provider.seed } : {})),
+        signal: AbortSignal.timeout(20000)
       });
       if (!response.ok) {
         lastError = webErrorMessage(response.status, provider.id + ' (generation)', response.statusText);
@@ -628,23 +629,28 @@ module.exports = async (req, res) => {
     let response = null;
     let usedProvider = null;
     for (const provider of providerChain) {
-      const attempt = await fetch(provider.baseUrl + '/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${provider.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(Object.assign({
-          model: provider.model,
-          messages: messages,
-          temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
-          max_tokens: maxTokens,
-          top_p: 0.95,
-          stream: !!stream
-        }, provider.seed ? { seed: provider.seed } : {}))
-      });
-      if (attempt.ok) { response = attempt; usedProvider = provider; break; }
-      console.error(`[api/chat ${requestId}] provider ${provider.id} failed ${attempt.status} — trying next`);
+      try {
+        const attempt = await fetch(provider.baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${provider.apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(Object.assign({
+            model: provider.model,
+            messages: messages,
+            temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
+            max_tokens: maxTokens,
+            top_p: 0.95,
+            stream: !!stream
+          }, provider.seed ? { seed: provider.seed } : {})),
+          signal: AbortSignal.timeout(20000) // NEVER let one provider hang the request
+        });
+        if (attempt.ok) { response = attempt; usedProvider = provider; break; }
+        console.error(`[api/chat ${requestId}] provider ${provider.id} failed ${attempt.status} — trying next`);
+      } catch (err) {
+        console.error(`[api/chat ${requestId}] provider ${provider.id} fetch error (timeout/network) — trying next:`, err.message);
+      }
     }
 
     if (!response) {
@@ -695,22 +701,27 @@ module.exports = async (req, res) => {
     if (needNonStreamRetry) {
       let retryResponse = null;
       for (const provider of providerChain) {
-        const attempt = await fetch(provider.baseUrl + '/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${provider.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(Object.assign({
-            model: provider.model,
-            messages: messages,
-            temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
-            max_tokens: maxTokens,
-            top_p: 0.95,
-            stream: false
-          }, provider.seed ? { seed: provider.seed } : {}))
-        });
-        if (attempt.ok) { retryResponse = attempt; usedProvider = provider; break; }
+        try {
+          const attempt = await fetch(provider.baseUrl + '/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${provider.apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.assign({
+              model: provider.model,
+              messages: messages,
+              temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
+              max_tokens: maxTokens,
+              top_p: 0.95,
+              stream: false
+            }, provider.seed ? { seed: provider.seed } : {})),
+            signal: AbortSignal.timeout(25000)
+          });
+          if (attempt.ok) { retryResponse = attempt; usedProvider = provider; break; }
+        } catch (err) {
+          console.error(`[api/chat ${requestId}] retry provider ${provider.id} error:`, err.message);
+        }
       }
       if (!retryResponse) {
         return res.status(503).json({ error: 'All AI providers failed' });

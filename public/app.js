@@ -4152,7 +4152,17 @@ async function streamBackendChat(prompt, jurisdictionCode, opts = {}) {
         stream: true,
         temperature: Number(localStorage.getItem('jurisai_temperature')) || 0.2
       }),
-      signal: signal || undefined
+      signal: (() => {
+        // Combine the user's Stop signal with a 25s hard timeout so the
+        // stream can never hang the UI — fallbacks always get a chance.
+        const streamCtrl = new AbortController();
+        const timeoutId = setTimeout(() => streamCtrl.abort(), 25000);
+        if (signal) {
+          if (signal.aborted) streamCtrl.abort();
+          else signal.addEventListener('abort', () => { clearTimeout(timeoutId); streamCtrl.abort(); }, { once: true });
+        }
+        return streamCtrl.signal;
+      })()
     });
 
     lastChatHttpStatus = response.status;
@@ -6351,19 +6361,29 @@ async function callOpenAICloudAPI(prompt, jurisdictionCode, history = []) {
 async function tryWebSearchBackend(prompt, jurisdictionCode, opts = {}) {
   const { history = [], summary = '', language = 'en' } = opts;
   try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: prompt,
-        jurisdiction: jurisdictionCode,
-        history: history.slice(-4),
-        summary: summary,
-        language: language,
-        stream: false,
-        webSearch: true
-      })
-    });
+    const wCtrl = new AbortController();
+    const wTimer = setTimeout(() => wCtrl.abort(), 45000);
+    let response;
+    try {
+      response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: prompt,
+          jurisdiction: jurisdictionCode,
+          history: history.slice(-4),
+          summary: summary,
+          language: language,
+          stream: false,
+          webSearch: true
+        }),
+        signal: wCtrl.signal
+      });
+    } catch (err) {
+      clearTimeout(wTimer);
+      return null;
+    }
+    clearTimeout(wTimer);
     if (!response.ok) return null;
     return await response.json();
   } catch (err) {
@@ -6375,23 +6395,33 @@ async function tryWebSearchBackend(prompt, jurisdictionCode, opts = {}) {
 async function tryBackendServerChat(prompt, jurisdictionCode, opts = {}) {
   const { history = [], summary = '', mode = 'instant', asOfDate = '2026-08-11', advocateMode = 'senior_advocate', language = 'en', retrievedSources = [] } = opts;
   try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: prompt,
-        jurisdiction: jurisdictionCode,
-        history: history.slice(-8),
-        summary: summary,
-        mode: mode,
-        asOfDate: asOfDate,
-        advocateMode: advocateMode,
-        language: language,
-        retrievedSources: retrievedSources,
-        stream: false,
-        temperature: Number(localStorage.getItem('jurisai_temperature')) || 0.2
-      })
-    });
+    const nCtrl = new AbortController();
+    const nTimer = setTimeout(() => nCtrl.abort(), 45000);
+    let response;
+    try {
+      response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: prompt,
+          jurisdiction: jurisdictionCode,
+          history: history.slice(-8),
+          summary: summary,
+          mode: mode,
+          asOfDate: asOfDate,
+          advocateMode: advocateMode,
+          language: language,
+          retrievedSources: retrievedSources,
+          stream: false,
+          temperature: Number(localStorage.getItem('jurisai_temperature')) || 0.2
+        }),
+        signal: nCtrl.signal
+      });
+    } catch (err) {
+      clearTimeout(nTimer);
+      return null;
+    }
+    clearTimeout(nTimer);
     lastChatHttpStatus = response.status;
     if (!response.ok) return null;
     const data = await response.json();
@@ -6452,7 +6482,16 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
 
   if (isTyping && !contentText) {
     if (elementId) bubbleDiv.id = elementId;
-    bubbleDiv.innerHTML = '<span style="opacity:0.6;font-style:italic;">' + iconSVG('comment', 13) + ' Barrister is thinking…</span>';
+    bubbleDiv.innerHTML = '<span class="typing-indicator" style="opacity:0.6;font-style:italic;">' + iconSVG('comment', 13) + ' Barrister is thinking…</span>';
+    // ⏱️ Failsafe watchdog: if no content arrives within 25s (hang, timeout,
+    // or unexpected error), replace the thinking bubble with a retry —
+    // the user is never left staring at "thinking" forever.
+    setTimeout(() => {
+      const el = elementId ? document.getElementById(elementId) : null;
+      if (el && el.querySelector('.typing-indicator')) {
+        el.innerHTML = '<div class="chat-error-box">⚖️ This is taking longer than usual — the reply may have been interrupted.</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
+      }
+    }, 25000);
   } else if (role === 'user') {
     bubbleDiv.textContent = contentText;
   } else {

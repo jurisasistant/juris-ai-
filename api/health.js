@@ -41,6 +41,33 @@ module.exports = async (req, res) => {
     if (response.ok) {
       let webSearch = !!process.env.LANGSEARCH_API_KEY ? 'langsearch' : 'none';
       let aiState = 'connected';
+      let chatProbe = null;
+      // Deep check: POST a 1-token completion with a 12s cap to prove the
+      // provider actually answers chat requests (not just /models).
+      try {
+        const t0 = Date.now();
+        const probe = await fetch(primary.baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${primary.key}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: primary.model,
+            messages: [{ role: 'user', content: 'say ok' }],
+            max_tokens: 5,
+            temperature: 0
+          }),
+          signal: AbortSignal.timeout(12000)
+        });
+        chatProbe = {
+          ok: probe.ok,
+          latencyMs: Date.now() - t0,
+          status: probe.status
+        };
+      } catch (err) {
+        chatProbe = { ok: false, latencyMs: 12000, error: String(err && err.message || err).slice(0, 80) };
+      }
       if (primary.id === 'groq') {
         const data = await response.json();
         const ids = (data && Array.isArray(data.data)) ? data.data.map((m) => m && m.id) : [];
@@ -54,7 +81,8 @@ module.exports = async (req, res) => {
         ai: aiState,
         provider: primary.id,
         webSearch: webSearch,
-        model: primary.model
+        model: primary.model,
+        chatProbe: chatProbe
       });
     }
     return res.status(200).json({
