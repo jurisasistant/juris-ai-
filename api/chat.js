@@ -114,6 +114,35 @@ function rateLimited(ip) {
   return false;
 }
 
+// ==========================================================================
+// 🤖 AI PROVIDER ABSTRACTION
+//    Groq is the primary provider. If NVIDIA_NIM_API_KEY is set (and
+//    GROQ fails), NVIDIA's OpenAI-compatible NIM endpoint is used as a
+//    fallback — no hardcoded provider anywhere in the request layer.
+// ==========================================================================
+function getAIProvider(env) {
+  const providers = [];
+  const groqKey = env.GROQ_API_KEY;
+  if (groqKey && groqKey !== 'YOUR_GROQ_API_KEY_HERE') {
+    providers.push({
+      id: 'groq',
+      baseUrl: 'https://api.groq.com/openai/v1',
+      apiKey: groqKey,
+      model: env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+    });
+  }
+  const nvidiaKey = env.NVIDIA_NIM_API_KEY;
+  if (nvidiaKey) {
+    providers.push({
+      id: 'nvidia',
+      baseUrl: 'https://integrate.api.nvidia.com/v1',
+      apiKey: nvidiaKey,
+      model: env.NVIDIA_MODEL || 'meta/llama-3.3-70b-instruct'
+    });
+  }
+  return providers;
+}
+
 // --- Server-side fallback intent classification (if client omits intent) ---
 function serverSideIntent(message) {
   const q = String(message || '').toLowerCase().trim();
@@ -453,10 +482,10 @@ module.exports = async (req, res) => {
     const groqApiKey = process.env.GROQ_API_KEY;
     const groqModel = model || process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 
-    if (!groqApiKey) {
+    if (getAIProvider(process.env).length === 0) {
       return res.status(503).json({
-        error: 'Groq API Key missing in environment variables.',
-        fallbackNotice: 'Server API key not set. Use client key in settings or simulation mode.'
+        error: 'No AI provider configured.',
+        fallbackNotice: 'Set GROQ_API_KEY (and optionally NVIDIA_NIM_API_KEY) in environment variables.'
       });
     }
 
@@ -585,33 +614,43 @@ module.exports = async (req, res) => {
 
     console.log(`[api/chat ${requestId}] start model=${groqModel} stream=${!!stream} mode=${mode} lang=${language}`);
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${groqApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: groqModel,
-        messages: messages,
-        temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
-        max_tokens: maxTokens,
-        top_p: 0.95,
-        stream: !!stream
-      })
-    });
+    // Provider chain: Groq → NVIDIA NIM (if configured). Never hardcoded.
+    const providerChain = getAIProvider(process.env);
+    let response = null;
+    let usedProvider = null;
+    for (const provider of providerChain) {
+      const attempt = await fetch(provider.baseUrl + '/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${provider.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: provider.model,
+          messages: messages,
+          temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
+          max_tokens: maxTokens,
+          top_p: 0.95,
+          stream: !!stream
+        })
+      });
+      if (attempt.ok) { response = attempt; usedProvider = provider; break; }
+      console.error(`[api/chat ${requestId}] provider ${provider.id} failed ${attempt.status} — trying next`);
+    }
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error(`[api/chat ${requestId}] Groq error ${response.status}`, errText.slice(0, 300));
-      return res.status(response.status).json({
-        error: `Groq API Error: ${response.statusText}`,
-        details: errText.slice(0, 500)
+    if (!response) {
+      console.error(`[api/chat ${requestId}] all providers failed`);
+      return res.status(503).json({
+        error: 'All AI providers failed',
+        details: 'Groq and any configured fallback provider were unreachable.'
       });
     }
 
     // ---- Streaming: pipe Groq SSE tokens straight through ----
-    if (stream) {
+    // Harden: if the provider returned no readable body (hosting/provider quirk),
+    // fall through to the NON-STREAMING path below instead of sending an empty
+    // stream. Never send headers until we know the stream is usable.
+    if (stream && response.body && typeof response.body.getReader === 'function') {
       res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache, no-transform');
       res.setHeader('Connection', 'keep-alive');
@@ -620,19 +659,54 @@ module.exports = async (req, res) => {
 
       const decoder = new TextDecoder();
       const reader = response.body.getReader();
+      let chunksForwarded = 0;
+      console.log(`[api/chat ${requestId}] stream started`);
       try {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = typeof TextDecoder !== 'undefined' ? decoder.decode(value, { stream: true }) : value.toString();
           res.write(chunk);
+          chunksForwarded++;
         }
       } catch (streamErr) {
-        console.error(`[api/chat ${requestId}] stream error`, streamErr.message);
+        console.error(`[api/chat ${requestId}] stream error after ${chunksForwarded} chunks`, streamErr.message);
       }
       res.end();
-      console.log(`[api/chat ${requestId}] stream done ms=${Date.now() - startTime}`);
+      console.log(`[api/chat ${requestId}] stream done ms=${Date.now() - startTime} chunks=${chunksForwarded}`);
       return;
+    }
+    let needNonStreamRetry = false;
+    if (stream && (!response.body || typeof response.body.getReader !== 'function')) {
+      // Stream requested but body unusable → make a FRESH non-stream request.
+      console.error(`[api/chat ${requestId}] stream body unavailable — falling back to non-streaming`);
+      needNonStreamRetry = true;
+    }
+
+    if (needNonStreamRetry) {
+      let retryResponse = null;
+      for (const provider of providerChain) {
+        const attempt = await fetch(provider.baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${provider.apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: provider.model,
+            messages: messages,
+            temperature: Number.isFinite(finalTemperature) ? finalTemperature : 0.2,
+            max_tokens: maxTokens,
+            top_p: 0.95,
+            stream: false
+          })
+        });
+        if (attempt.ok) { retryResponse = attempt; usedProvider = provider; break; }
+      }
+      if (!retryResponse) {
+        return res.status(503).json({ error: 'All AI providers failed' });
+      }
+      response = retryResponse;
     }
 
     const data = await response.json();
@@ -643,7 +717,8 @@ module.exports = async (req, res) => {
 
     res.status(200).json({
       reply: replyText,
-      model: groqModel,
+      model: usedProvider ? usedProvider.model : groqModel,
+      provider: usedProvider ? usedProvider.id : 'groq',
       jurisdiction: jurisdiction,
       usage: usage
     });
@@ -653,3 +728,7 @@ module.exports = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error while communicating with Groq API.' });
   }
 };
+
+// Vercel Hobby plan defaults to a 10s function timeout which kills long
+// streams/generations. 60s gives streaming + web-search cascade headroom.
+module.exports.maxDuration = 60;

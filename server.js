@@ -567,7 +567,9 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // ---- Streaming: pipe Groq SSE tokens straight through ----
-    if (stream) {
+    // Harden: no readable body → fall through to non-streaming instead of
+    // sending an empty stream. Never send headers until the stream is usable.
+    if (stream && response.body && typeof response.body.getReader === 'function') {
       res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache, no-transform');
       res.setHeader('Connection', 'keep-alive');
@@ -576,16 +578,23 @@ app.post('/api/chat', async (req, res) => {
 
       const decoder = new TextDecoder();
       const reader = response.body.getReader();
+      let chunksForwarded = 0;
+      console.log('Stream started');
       try {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           res.write(decoder.decode(value, { stream: true }));
+          chunksForwarded++;
         }
       } catch (streamErr) {
-        console.error('Stream error:', streamErr.message);
+        console.error('Stream error after ' + chunksForwarded + ' chunks:', streamErr.message);
       }
+      console.log('Stream done ms chunks=' + chunksForwarded);
       return res.end();
+    }
+    if (stream) {
+      console.error('Stream body unavailable — falling back to non-streaming');
     }
 
     const data = await response.json();

@@ -4172,29 +4172,38 @@ async function streamBackendChat(prompt, jurisdictionCode, opts = {}) {
     let full = '';
     let buffer = '';
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const parts = buffer.split('\n');
-      buffer = parts.pop() || '';
-      for (const line of parts) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith('data:')) continue;
-        const payload = trimmed.slice(5).trim();
-        if (!payload || payload === '[DONE]') continue;
-        try {
-          const json = JSON.parse(payload);
-          if (json.error) return null;
-          const delta = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
-          if (delta) {
-            full += delta;
-            if (onDelta) onDelta(delta);
-          }
-        } catch (e) { /* partial SSE chunk — keep reading */ }
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        // Handle \r\n and \n line boundaries; one network chunk ≠ one SSE event.
+        const parts = buffer.split(/\r?\n/);
+        buffer = parts.pop() || '';
+        for (const line of parts) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('data:')) continue;
+          const payload = trimmed.slice(5).trim();
+          if (!payload || payload === '[DONE]') continue;
+          try {
+            const json = JSON.parse(payload);
+            if (json.error) {
+              // Provider returned an error mid-stream — keep what we have.
+              return full.length >= 40 ? full : null;
+            }
+            const delta = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
+            if (delta) {
+              full += delta;
+              if (onDelta) onDelta(delta);
+            }
+          } catch (e) { /* partial SSE chunk — keep reading */ }
+        }
       }
+      return full || null;
+    } catch (err) {
+      // Mid-stream failure: a partial answer is better than an error.
+      return full.length >= 40 ? full : null;
     }
-    return full || null;
   } catch (err) {
     return null;
   }
@@ -6160,14 +6169,36 @@ async function sendChatMessage(userText, options) {
     } catch (err) { /* keep prior error */ }
   }
 
+  // FINAL fallback: minimal-payload request (no sources/history) — rules out
+  // payload-size issues, long-context timeouts, and cold-start retry races.
+  if (!aiText && !stoppedEarly) {
+    try {
+      const minimal = await tryBackendServerChat(userText, AppState.jurisdiction, {
+        history: [],
+        summary: '',
+        mode: AppState.researchMode || 'instant',
+        asOfDate: AppState.asOfDate || '2026-08-11',
+        advocateMode: advocateMode,
+        language: lang,
+        retrievedSources: [],
+        intent: backendIntent
+      });
+      if (minimal) { aiText = minimal; backendError = ''; backendReached = true; }
+    } catch (err) { /* all paths exhausted */ }
+  }
+
   if (!aiText && !stoppedEarly) {
     if (legalIntent) {
       // NO automated legal templates. Live AI or nothing — clean error + retry.
       if (stopGenBtn) stopGenBtn.style.display = 'none';
-      const reasonText = lastChatHttpStatus === 429
+      const friendly = lastChatHttpStatus === 429
         ? 'too many requests right now — wait a minute and try again'
-        : (backendError || 'no reply from the AI');
-      targetElement.innerHTML = '<div class="chat-error-box">' + iconSVG('law', 14) + ' Couldn\'t reach the live AI (' + barristerEscape(reasonText) + ').</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
+        : lastChatHttpStatus >= 500
+          ? 'the AI service is busy — please try again in a moment'
+          : (backendError && String(backendError).includes('aborted'))
+            ? 'the connection was interrupted — please try again'
+            : 'the response took too long — please try again';
+      targetElement.innerHTML = '<div class="chat-error-box">' + iconSVG('law', 14) + ' Couldn\'t get a reply (' + barristerEscape(friendly) + ').</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
       return;
     }
     // Non-legal: general-knowledge engine or natural casual engine (no legal templates)
