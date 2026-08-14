@@ -20,7 +20,8 @@ const AppState = {
   kbSearchTerm: '',
   kbCourtFilter: '',
   kbYearFilter: '',
-  kbTypeFilter: ''
+  kbTypeFilter: '',
+  backendStatus: 'unknown'
 };
 
 // ==========================================================================
@@ -3206,6 +3207,28 @@ function buildAIBubbleHTML(htmlContent, pack, intent) {
   return `<div class="ai-bubble-header"><span class="ai-legal-tag">⚖️ Legal Analysis</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
 }
 
+// --- 🩺 BACKEND HEALTH — self-diagnosis shown in the composer footer ---
+async function checkBackendHealth() {
+  const el = document.getElementById('ai-status-indicator');
+  const setStatus = (cls, text) => {
+    if (el) { el.className = 'ai-status-indicator ' + cls; el.textContent = text; }
+  };
+  try {
+    const response = await fetch('/api/health', { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    if (!response.ok) throw new Error('health endpoint failed');
+    const data = await response.json();
+    AppState.backendStatus = data.ai || 'unknown';
+    if (data.ai === 'connected') setStatus('ok', '🟢 Live AI connected');
+    else if (data.ai === 'connected_unverified') setStatus('ok', '🟢 Live AI ready');
+    else if (data.ai === 'invalid_key') setStatus('warn', '🟠 Server key invalid — fix GROQ_API_KEY in Vercel env');
+    else if (data.ai === 'missing_key') setStatus('warn', '🟠 AI key missing — add GROQ_API_KEY in Vercel env');
+    else setStatus('warn', '🟠 Offline mode — backend not connected');
+  } catch (err) {
+    AppState.backendStatus = 'unreachable';
+    setStatus('warn', '🟠 Offline mode — /api/chat unreachable');
+  }
+}
+
 // --- Audit log (internal metadata for hallucination debugging) ---
 function logAuditEvent(entry) {
   try {
@@ -3664,7 +3687,14 @@ function getGeneralFallbackResponse(prompt) {
   for (const entry of GENERAL_OFFLINE_KB) {
     if (entry.re.test(q)) return entry.a;
   }
-  return "I can't answer that reliably right now — the live AI backend isn't reachable from this device. Ask again when the backend is connected, or try a legal question (my legal library works offline).";
+  const reason = AppState.backendStatus === 'missing_key'
+    ? ' (the server key GROQ_API_KEY is missing on this deployment)'
+    : AppState.backendStatus === 'invalid_key'
+      ? ' (the server key GROQ_API_KEY is invalid — check its value in Vercel)'
+      : AppState.backendStatus === 'unreachable'
+        ? ' (the /api/chat endpoint is unreachable)'
+        : '';
+  return "I can't answer that reliably right now — the live AI backend isn't connected on this deployment" + reason + ". Fix that in Vercel (env key + redeploy), or try a legal question — my verified legal library works offline.";
 }
 
 // --- Natural casual replies: English / Hinglish / Hindi ---
@@ -4745,6 +4775,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderChatHistoryList();
   renderKnowledgeBaseCards();
   initLegalSearchEngine();
+  checkBackendHealth();
 });
 
 // ==========================================================================
@@ -5726,7 +5757,7 @@ async function sendChatMessage(userText, options) {
     // Fallback: legal simulation engine OR general-knowledge engine OR casual engine.
     // Legal/general offline answers are clearly labelled — they are NOT the live AI.
     aiText = legalIntent
-      ? '⚙️ **Offline answer** (live AI backend unreachable — this is my built-in verified legal engine):\n\n' + getAILegalResponse(userText, AppState.jurisdiction)
+      ? '⚙️ **Offline answer** (live AI backend not connected' + (AppState.backendStatus === 'missing_key' ? ' — server key missing' : '') + ' — this is my built-in verified legal engine):\n\n' + getAILegalResponse(userText, AppState.jurisdiction)
       : (backendIntent === 'general'
           ? getGeneralFallbackResponse(userText)
           : getCasualAIResponse(userText, detectedLang));
