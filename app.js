@@ -5594,7 +5594,14 @@ async function sendChatMessage(userText, options) {
       }
     }
     if (!webText) {
-      webText = "I couldn't verify this from current web sources, so I won't answer from memory. Please try again in a moment — or ask a legal question (my verified legal library works even when live search is down).";
+      const reason = AppState.backendStatus === 'missing_key'
+        ? ' The server AI key (GROQ_API_KEY) is missing on this deployment.'
+        : AppState.backendStatus === 'invalid_key'
+          ? ' The server AI key (GROQ_API_KEY) is invalid or revoked — a new key is needed.'
+          : AppState.backendStatus === 'unreachable'
+            ? ' The backend endpoint is unreachable.'
+            : ' Live search did not return real sources.';
+      webText = "I couldn't verify this from current web sources, so I won't answer from memory." + reason + " Ask a legal question instead — my verified legal library works offline.";
     }
 
     // LEGAL_CURRENT: hybrid — live web answer + legal evidence panel
