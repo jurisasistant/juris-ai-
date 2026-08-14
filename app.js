@@ -6192,10 +6192,12 @@ async function sendChatMessage(userText, options) {
     if (citationCheck.removed.length) {
       checkedText += '\n\n**Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
     }
-    if (pack.level === 'LOW' && backendReached) {
-      // Live AI answered but the law isn't in the verified library:
-      // show the answer with an honest tag — never silently claim verification.
-      trustText = checkedText + '\n\n⚖️ **Note:** the live AI answered this, but I couldn\'t verify it against my legal library. Please cross-check this before relying on it.';
+    if (pack.level === 'LOW' && backendReached && pack.sourceCount > 0) {
+      // Weak-but-present evidence: show the answer with an honest tag.
+      trustText = checkedText + '\n\n**Note:** the live AI answered this, but my verified legal library has only partial coverage here. Please cross-check before relying on it.';
+    } else if (pack.level === 'LOW' && backendReached && pack.sourceCount === 0) {
+      // ZERO verified sources — never answer from memory (anti-hallucination).
+      trustText = 'I will provide you with the relevant information based on the verified legal sources — but my verified legal library does not cover this question, so I won\'t answer it from memory. Please rephrase it as a specific Article, section, Act, or Supreme Court case.';
     } else {
       trustText = applyEvidenceGate(checkedText, pack);
     }
@@ -6411,11 +6413,6 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
   const msgDiv = document.createElement('div');
   msgDiv.className = `chat-message ${role}`;
 
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = `avatar ${role === 'user' ? 'user-avatar' : 'ai-avatar'}`;
-  avatarDiv.textContent = role === 'user' ? 'U' : 'K';
-  avatarDiv.title = role === 'user' ? 'You' : 'Barrister AI (Bharat)';
-
   const contentWrapper = document.createElement('div');
   contentWrapper.className = 'message-content-wrapper';
 
@@ -6472,38 +6469,6 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
       if (lastUser) sendChatMessage(lastUser, { isRegenerate: true });
     });
 
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'msg-action-btn';
-    saveBtn.setAttribute('data-action', 'save');
-    saveBtn.setAttribute('aria-label', 'Save answer');
-    saveBtn.innerHTML = iconSVG('saved', 14) + ' <span>Save</span>';
-    saveBtn.addEventListener('click', () => {
-      const session = AppState.chatHistory.find((c) => c.id === AppState.activeChatId);
-      const msgs = session ? session.messages : [];
-      let question = 'Legal research note';
-      for (let i = msgs.length - 1; i >= 0; i--) {
-        if (msgs[i].role === 'user') { question = msgs[i].content; break; }
-      }
-      try {
-        const list = JSON.parse(localStorage.getItem('jurisai_saved_research') || '[]');
-        const id = 'ai_msg_saved_' + Date.now();
-        if (!list.some((x) => x.id === id)) {
-          list.unshift({
-            id: id,
-            title: String(question).slice(0, 60),
-            type: 'chat',
-            date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
-            content: bubbleDiv.innerText
-          });
-          localStorage.setItem('jurisai_saved_research', JSON.stringify(list));
-        }
-        saveBtn.innerHTML = iconSVG('shield', 14) + ' <span>Saved</span>';
-      } catch (err) {
-        saveBtn.innerHTML = iconSVG('shield', 14) + ' <span>Saved</span>';
-      }
-      setTimeout(() => (saveBtn.innerHTML = iconSVG('saved', 14) + ' <span>Save</span>'), 2000);
-    });
-
     const speakBtn = document.createElement('button');
     speakBtn.className = 'msg-action-btn';
     speakBtn.setAttribute('aria-label', 'Read answer aloud');
@@ -6528,43 +6493,14 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
       stopBtn.style.display = 'none';
     });
 
-    const printOpinionBtn = document.createElement('button');
-    printOpinionBtn.className = 'msg-action-btn';
-    printOpinionBtn.setAttribute('aria-label', 'Print legal opinion');
-    printOpinionBtn.innerHTML = iconSVG('print', 14) + ' <span>Print Legal Opinion</span>';
-    printOpinionBtn.addEventListener('click', () => {
-      window.print();
-    });
-
-    const counterArgBtn = document.createElement('button');
-    counterArgBtn.className = 'btn-ai-action-special';
-    counterArgBtn.setAttribute('aria-label', 'Find counter-argument');
-    counterArgBtn.innerHTML = iconSVG('law', 14) + ' <span>Find Counter-Argument</span>';
-    counterArgBtn.addEventListener('click', () => {
-      sendChatMessage(`Give me the strongest constitutional counter-argument against the legal position above, citing opposing Supreme Court of India benches and statutory exceptions.`);
-    });
-
-    const casesBtn = document.createElement('button');
-    casesBtn.className = 'btn-ai-action-special';
-    casesBtn.setAttribute('aria-label', 'Find supporting and contrary judgments');
-    casesBtn.innerHTML = iconSVG('contrary', 14) + ' <span>Supporting / Contrary Judgments</span>';
-    casesBtn.addEventListener('click', () => {
-      sendChatMessage(`Identify landmark Supreme Court of India judgments supporting this proposition, and any contrary or distinguishing benches.`);
-    });
-
     actionsBar.appendChild(stopGenBtn);
     actionsBar.appendChild(copyBtn);
     actionsBar.appendChild(regenerateBtn);
-    actionsBar.appendChild(saveBtn);
     actionsBar.appendChild(speakBtn);
     actionsBar.appendChild(stopBtn);
-    actionsBar.appendChild(printOpinionBtn);
-    actionsBar.appendChild(counterArgBtn);
-    actionsBar.appendChild(casesBtn);
     contentWrapper.appendChild(actionsBar);
   }
 
-  msgDiv.appendChild(avatarDiv);
   msgDiv.appendChild(contentWrapper);
   messagesArea.appendChild(msgDiv);
 
