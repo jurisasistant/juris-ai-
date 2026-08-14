@@ -3683,19 +3683,22 @@ const GENERAL_OFFLINE_KB = [
   { re: /first president of india/i, a: 'The first President of India was **Dr. Rajendra Prasad**.' }
 ];
 
-function getGeneralFallbackResponse(prompt) {
+function getGeneralFallbackResponse(prompt, backendError) {
   const q = String(prompt || '');
   for (const entry of GENERAL_OFFLINE_KB) {
     if (entry.re.test(q)) return entry.a;
   }
-  const reason = AppState.backendStatus === 'missing_key'
-    ? ' (the server key GROQ_API_KEY is missing on this deployment)'
-    : AppState.backendStatus === 'invalid_key'
-      ? ' (the server key GROQ_API_KEY is invalid — check its value in Vercel)'
-      : AppState.backendStatus === 'unreachable'
-        ? ' (the /api/chat endpoint is unreachable)'
-        : '';
-  return "I can't answer that reliably right now — the live AI backend isn't connected on this deployment" + reason + ". Fix that in Vercel (env key + redeploy), or try a legal question — my verified legal library works offline.";
+  let reason = '';
+  if (backendError) {
+    reason = ' (' + backendError + ')';
+  } else if (AppState.backendStatus === 'missing_key') {
+    reason = ' (the server key GROQ_API_KEY is missing on this deployment)';
+  } else if (AppState.backendStatus === 'invalid_key') {
+    reason = ' (the server key GROQ_API_KEY is invalid — check its value in Vercel)';
+  } else if (AppState.backendStatus === 'unreachable') {
+    reason = ' (the /api/chat endpoint is unreachable from this device)';
+  }
+  return "I can't answer that reliably right now — the live AI backend isn't connected from this device" + reason + ". Try again in a moment (or hard-refresh the page), or ask a legal question — my verified legal library works offline.";
 }
 
 // --- Natural casual replies: English / Hinglish / Hindi ---
@@ -5731,6 +5734,7 @@ async function sendChatMessage(userText, options) {
     });
   };
 
+  let backendError = '';
   try {
     const streamed = await streamBackendChat(userText, AppState.jurisdiction, {
       history: currentSession.messages,
@@ -5745,12 +5749,15 @@ async function sendChatMessage(userText, options) {
       onDelta: (delta) => { aiText += delta; scheduleRender(); }
     });
     if (streamed) aiText = streamed;
+    else backendError = 'stream returned no reply';
   } catch (err) {
     aiText = '';
+    backendError = 'stream error: ' + (err && err.message ? err.message.slice(0, 80) : String(err).slice(0, 80));
   }
   stoppedEarly = controller.signal.aborted;
 
   if (!aiText && !stoppedEarly) {
+    // One retry on the non-streaming path (also covers cold starts)
     try {
       aiText = await tryBackendServerChat(userText, AppState.jurisdiction, {
         history: currentSession.messages,
@@ -5762,18 +5769,23 @@ async function sendChatMessage(userText, options) {
         retrievedSources: retrievedSources,
         intent: backendIntent
       });
+      if (!aiText) backendError = backendError || 'backend returned empty reply';
     } catch (err) {
       aiText = '';
+      backendError = backendError || 'backend error: ' + (err && err.message ? err.message.slice(0, 80) : String(err).slice(0, 80));
     }
   }
 
   if (!aiText && !stoppedEarly) {
     // Fallback: legal simulation engine OR general-knowledge engine OR casual engine.
     // Legal/general offline answers are clearly labelled — they are NOT the live AI.
+    const offlineWhy = backendError
+      ? ' (' + backendError + ')'
+      : (AppState.backendStatus === 'missing_key' ? ' — server key missing' : '');
     aiText = legalIntent
-      ? '⚙️ **Offline answer** (live AI backend not connected' + (AppState.backendStatus === 'missing_key' ? ' — server key missing' : '') + ' — this is my built-in verified legal engine):\n\n' + getAILegalResponse(userText, AppState.jurisdiction)
+      ? '⚙️ **Offline answer** (live AI backend not connected' + offlineWhy + ' — this is my built-in verified legal engine):\n\n' + getAILegalResponse(userText, AppState.jurisdiction)
       : (backendIntent === 'general'
-          ? getGeneralFallbackResponse(userText)
+          ? getGeneralFallbackResponse(userText, backendError)
           : getCasualAIResponse(userText, detectedLang));
   }
 
