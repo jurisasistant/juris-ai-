@@ -4942,18 +4942,14 @@ function initNavigation() {
 
   if (toggleBtn && sidebar) {
     toggleBtn.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        sidebar.classList.toggle('mobile-open');
-      } else {
-        sidebar.classList.toggle('collapsed');
-      }
+      document.body.classList.toggle('sidebar-open');
     });
   }
 
   document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('mobile-open')) {
+    if (sidebar && document.body.classList.contains('sidebar-open')) {
       if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-        sidebar.classList.remove('mobile-open');
+        document.body.classList.remove('sidebar-open');
       }
     }
   });
@@ -4966,9 +4962,7 @@ function initNavigation() {
 
       switchView(targetView);
 
-      if (window.innerWidth <= 768 && sidebar) {
-        sidebar.classList.remove('mobile-open');
-      }
+      document.body.classList.remove('sidebar-open');
     });
   });
 }
@@ -5493,7 +5487,6 @@ async function sendChatMessage(userText, options) {
 
   const currentSession = AppState.chatHistory.find((c) => c.id === AppState.activeChatId);
   if (!currentSession) return;
-  const backendIntent = channel === 'STATIC_GENERAL' ? 'general' : intent;
 
   if (isRegenerate) {
     // Replace/version the previous answer — do not duplicate the user message.
@@ -5523,6 +5516,7 @@ async function sendChatMessage(userText, options) {
   const intent = classifyIntent(userText, sessionMessages);
   const legalIntent = isLegalIntent(intent);
   const channel = classifyQuery(userText);
+  const backendIntent = channel === 'STATIC_GENERAL' ? 'general' : intent;
 
   const detectedLang = detectLanguage(userText);
   const lang = (detectedLang !== 'en') ? detectedLang : (localStorage.getItem('jurisai_language') || 'en');

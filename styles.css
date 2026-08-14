@@ -3437,6 +3437,33 @@ body {
   .welcome-title { font-size: 1.5rem; }
 }
 
+/* ============================================================
+   🚪 SIDEBAR HIDDEN BY DEFAULT (clean chat-only view)
+   Opens as a slide-over with backdrop when the ☰ menu is tapped.
+   ============================================================ */
+.sidebar {
+  transform: translateX(-105%);
+  z-index: 120;
+}
+body.sidebar-open .sidebar {
+  transform: translateX(0);
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.22);
+}
+.main-wrapper {
+  margin-left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+body.sidebar-open::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 12, 0.38);
+  z-index: 110;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
 @media print {
   body * {
     visibility: hidden;
