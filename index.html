@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="JurisAI Bharat">
   <meta name="theme-color" content="#080B12">
-  <link rel="stylesheet" href="styles.css?v=1786698868634">
+  <link rel="stylesheet" href="styles.css?v=1786699568678">
 </head>
 <body>
 
@@ -19,7 +19,7 @@
     <aside class="sidebar" id="app-sidebar">
       <div class="sidebar-header">
         <a href="#" class="logo-container">
-          <div class="logo-icon">⚖️</div>
+          <div class="logo-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
           <span class="logo-text">JurisAI <span style="color: var(--accent-gold);">Bharat</span></span>
         </a>
       </div>
@@ -105,6 +105,7 @@
 <div class="sidebar-footer">
         <div class="sidebar-sakshamfit-text" style="font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.4;">
           🇮🇳 Made with ❤️ by <strong>sakshamfit</strong> • JurisAI Bharat v6.0
+          <div style="font-size: 9px; opacity: 0.75; margin-top: 4px;">Icons: Comment icons created by Ilham Fitrotul Hayat — Flaticon</div>
         </div>
       </div>
     </aside>
@@ -151,8 +152,8 @@
             <div class="chat-input-wrapper">
               <form id="chat-form">
                 <div class="chat-input-box">
-                  <button type="button" class="mode-toggle-btn composer-mode-btn active" data-mode="instant" title="Quick answer">⚡</button>
-                  <button type="button" class="mode-toggle-btn composer-mode-btn" data-mode="deep" title="Deep research with more sources">🔎</button>
+                  <button type="button" class="mode-toggle-btn composer-mode-btn active" data-mode="instant" title="Quick answer" aria-label="Quick answer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
+                  <button type="button" class="mode-toggle-btn composer-mode-btn" data-mode="deep" title="Deep research with more sources" aria-label="Deep research"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></button>
                   <textarea class="chat-textarea" id="chat-input-textarea" placeholder="Type something..." rows="2"></textarea>
                   <button type="submit" class="send-btn" title="Send">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
@@ -161,7 +162,7 @@
               </form>
               <div class="input-footer-info">
                 <span class="ai-status-indicator" id="ai-status-indicator">…</span>
-                <span>⚖️ Barrister can make mistakes — verify important legal advice.</span>
+                <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Barrister can make mistakes — verify important legal advice.</span>
               </div>
             </div>
 
@@ -192,7 +193,7 @@
         <!-- Filter and Search Bar -->
         <div class="knowledge-controls-bar">
           <div class="knowledge-search-input-wrapper">
-            <span>🔍</span>
+            <span aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
             <input type="text" class="knowledge-search-input" id="kb-search-input" placeholder="Search Bharatiya statutes, Supreme Court benches, or articles (e.g. 'Puttaswamy', 'Article 32', 'BNS 2023', 'POSH')...">
           </div>
 
@@ -253,7 +254,7 @@
             <option value="statute">Statutes</option>
             <option value="constitution">Constitution</option>
           </select>
-          <button type="button" class="live-search-btn" id="live-search-btn" title="Search the live Supabase legal corpus">🌐 Search live corpus</button>
+          <button type="button" class="live-search-btn" id="live-search-btn" title="Search the live Supabase legal corpus" aria-label="Search the live legal corpus"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Search live corpus</button>
         </div>
         <div class="live-search-status" id="live-search-status" style="display:none;"></div>
         <div class="knowledge-grid" id="kb-articles-grid">
@@ -286,7 +287,7 @@
             <div class="const-part-title">Fundamental Rights (The Golden Triangle)</div>
             <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Article 14 (Equality before Law & Non-arbitrariness), Article 19(1)(a)/(g) (Freedom of Speech, Assembly & Profession), and Article 21 (Protection of Life, Personal Liberty & Privacy under Maneka Gandhi & Puttaswamy).</p>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
-              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & Puttaswamy ruling.">🤖 Ask Barrister About Part III</button>
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & Puttaswamy ruling."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask Barrister About Part III</button>
             </div>
           </div>
 
@@ -295,7 +296,7 @@
             <div class="const-part-title">Constitutional Writs & Judicial Review</div>
             <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">The heart and soul of the Constitution. Direct enforcement of Fundamental Rights before the Supreme Court (Art. 32) and High Courts (Art. 226) via Habeas Corpus, Mandamus, Certiorari, Prohibition, and Quo Warranto.</p>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
-              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="What are the 5 Constitutional Writs under Article 32 & 226 of the Indian Constitution, and when can Mandamus be filed?">🤖 Ask Barrister About Writs</button>
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="What are the 5 Constitutional Writs under Article 32 & 226 of the Indian Constitution, and when can Mandamus be filed?"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask Barrister About Writs</button>
             </div>
           </div>
 
@@ -304,7 +305,7 @@
             <div class="const-part-title">Basic Structure Doctrine & Amending Power</div>
             <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Parliament's power to amend the Constitution under Article 368 is subject to the inviolable Basic Structure Doctrine established in Kesavananda Bharati v. State of Kerala (1973 13-Judge Bench).</p>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
-              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973).">🤖 Ask Barrister About Basic Structure</button>
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973)."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask Barrister About Basic Structure</button>
             </div>
           </div>
 
@@ -313,7 +314,7 @@
             <div class="const-part-title">Directive Principles & Fundamental Duties</div>
             <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Governance obligations of the State (welfare, living wage, equal pay, free legal aid under Art. 39A) and the 11 Fundamental Duties of citizens under Article 51A.</p>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
-              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain the relationship between Directive Principles of State Policy (DPSP) and Fundamental Rights in Indian constitutional law.">🤖 Ask Barrister About DPSP</button>
+              <button class="btn-kb-ask-ai" style="width:100%; justify-content:center;" data-prompt="Explain the relationship between Directive Principles of State Policy (DPSP) and Fundamental Rights in Indian constitutional law."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask Barrister About DPSP</button>
             </div>
           </div>
         </div>
@@ -326,7 +327,7 @@
         <div class="knowledge-header">
           <div class="knowledge-title-row">
             <div class="knowledge-title-main">
-              <span>⚖️</span>
+              <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span>
               <span>Bharatiya Criminal Sanhitas: Old vs. New Law Comparator</span>
             </div>
             <div class="knowledge-stats-badge">
@@ -457,7 +458,7 @@
               <span>Shreya Singhal (2015)</span>
             </div>
             <div class="node-circle-card" data-node="bns152">
-              <span>⚖️</span>
+              <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span>
               <span>BNS 152 (Sovereignty)</span>
             </div>
             <div class="node-circle-card hub" data-node="sec27">
@@ -494,7 +495,7 @@
               <span class="statute-pill">[[BNSS-2023-Section-35-Arrest-Notice]]</span>
             </div>
             <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Explain how Article 21 connects to Maneka Gandhi, Puttaswamy, and the DPDP Act 2023 under Indian constitutional law.">🤖 Open Connected Nodes in Barrister AI</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Explain how Article 21 connects to Maneka Gandhi, Puttaswamy, and the DPDP Act 2023 under Indian constitutional law."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Open Connected Nodes in Barrister AI</button>
             </div>
           </div>
         </div>
@@ -561,7 +562,7 @@
 
           <div class="document-preview-panel">
             <div class="panel-header">
-              <span style="font-size: 14px; font-weight: 700; color: var(--text-primary);">📄 Statutory Draft Live Preview</span>
+              <span style="font-size: 14px; font-weight: 700; color: var(--text-primary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Statutory Draft Live Preview</span>
               <div style="display: flex; gap: 0.5rem;">
                 <button class="btn-secondary" id="copy-draft-btn">📋 Copy Draft</button>
                 <button class="btn-primary" onclick="window.print();">🖨️ Print / Save PDF</button>
@@ -608,7 +609,7 @@
             </div>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
               <button class="btn-kb-read" style="flex:1; justify-content:center;" onclick="window.print();">🖨️ Export PDF / Memo</button>
-              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Analyze the enforceability of a non-compete clause in an employment contract under Section 27 of the Indian Contract Act 1872.">🤖 Open in Chat</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Analyze the enforceability of a non-compete clause in an employment contract under Section 27 of the Indian Contract Act 1872."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Open in Chat</button>
             </div>
           </div>
 
@@ -626,7 +627,7 @@
             </div>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
               <button class="btn-kb-read" style="flex:1; justify-content:center;" onclick="window.print();">🖨️ Export PDF / Memo</button>
-              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & the Puttaswamy Privacy ruling.">🤖 Open in Chat</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & the Puttaswamy Privacy ruling."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Open in Chat</button>
             </div>
           </div>
 
@@ -644,7 +645,7 @@
             </div>
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
               <button class="btn-kb-read" style="flex:1; justify-content:center;" onclick="window.print();">🖨️ Export PDF / Memo</button>
-              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="What is the step-by-step statutory procedure and timeline to file a Cheque Bounce case under Section 138 of the Negotiable Instruments Act in India?">🤖 Open in Chat</button>
+              <button class="btn-kb-ask-ai" style="flex:1; justify-content:center;" data-prompt="What is the step-by-step statutory procedure and timeline to file a Cheque Bounce case under Section 138 of the Negotiable Instruments Act in India?"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Open in Chat</button>
             </div>
           </div>
         </div>
@@ -708,11 +709,11 @@
           <div class="panel-card">
             <div class="panel-header">
               <div class="panel-title">
-                <span>🔍</span>
+                <span aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
                 <span>Contract & Document Input</span>
               </div>
               <button class="btn-primary" id="analyze-doc-btn">
-                <span>⚡ Analyze Indian Risk</span>
+                <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyze Indian Risk</span>
               </button>
             </div>
 
@@ -929,7 +930,7 @@
         <button class="btn-secondary" id="why-case-btn" style="color:var(--accent-gold); border-color:var(--accent-gold);">Why is this relevant?</button>
         <button class="btn-secondary" id="open-case-compare-btn">⚖️ Compare Case Precedent</button>
         <button class="btn-secondary" data-close-modal="kb-detail-drawer">Close Authority</button>
-        <button class="btn-primary" id="kb-drawer-ask-ai-btn">🤖 Ask AI About This Authority</button>
+        <button class="btn-primary" id="kb-drawer-ask-ai-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask AI About This Authority</button>
       </div>
     </div>
   </div>
@@ -983,7 +984,7 @@
 
       <div class="modal-footer">
         <button class="btn-secondary" data-close-modal="case-compare-modal">Close Comparison</button>
-        <button class="btn-primary" id="compare-ask-ai-btn">🤖 Ask Barrister to Distinguish Both Precedents</button>
+        <button class="btn-primary" id="compare-ask-ai-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask Barrister to Distinguish Both Precedents</button>
       </div>
     </div>
   </div>
@@ -1050,6 +1051,7 @@
         <!-- PROMINENT FOOTER ATTRIBUTION (Made with sakshamfit) -->
         <div class="sakshamfit-badge">
           <span>🇮🇳 Made with ❤️ by</span> <strong>sakshamfit</strong> <span>• JurisAI Bharat Enterprise v5.6</span>
+          <div style="font-size: 10px; opacity: 0.75; margin-top: 4px;">Icons: Comment icons created by Ilham Fitrotul Hayat — Flaticon</div>
         </div>
 
       </div>
@@ -1131,12 +1133,12 @@
 
       <div class="modal-footer">
         <button class="btn-secondary" data-close-modal="glossary-modal">Close Glossary</button>
-        <button class="btn-primary" id="glossary-ask-ai-btn">🤖 Ask Barrister About This Term</button>
+        <button class="btn-primary" id="glossary-ask-ai-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> Ask Barrister About This Term</button>
       </div>
     </div>
   </div>
 
   <!-- Main App Script -->
-  <script src="app.js?v=1786698868634"></script>
+  <script src="app.js?v=1786699568678"></script>
 </body>
 </html>

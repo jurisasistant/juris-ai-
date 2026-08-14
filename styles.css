@@ -3760,6 +3760,55 @@ body.sidebar-open::before {
   }
 }
 
+/* ============================================================
+   🎨 PROFESSIONAL ICON SYSTEM — alignment, status dot, touch
+   ============================================================ */
+.ui-icon {
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -2px;
+}
+/* Status indicator dot (replaces emoji circles) */
+.ai-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.ai-status-indicator .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+  flex-shrink: 0;
+}
+/* Icon labels inside evidence source types stay aligned */
+.evidence-source-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Mobile: ~44px touch targets for icon-only controls */
+@media (max-width: 768px) {
+  .composer-mode-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .send-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .msg-action-btn {
+    min-height: 44px;
+    padding: 0.4rem 0.65rem;
+  }
+  .btn-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 @media print {
   body * {
     visibility: hidden;

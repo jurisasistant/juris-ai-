@@ -2,6 +2,15 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🎨 Professional Icon System
+
+Primary UI icons are clean inline SVG vectors (consistent 24px grid, 2px stroke, `currentColor` so they adapt to light/dark themes) — **no emojis as UI icons**. Covers: chat/comment, search, saved, law, documents, settings, notifications, share, copy, regenerate, read-aloud, analyzer, RTI, menu, send, stop, print, evidence badges, and status dots. Every icon button carries an `aria-label` and mobile controls keep ~44px touch targets.
+
+The `UI_ICONS` registry in `app.js` is drop-in ready for licensed Flaticon assets — replace any entry with a downloaded Flaticon SVG.
+
+**Attribution:** Comment icons created by Ilham Fitrotul Hayat — Flaticon (credited in the app footer and Settings).
+
+---
 ## 🧹 Clean ChatGPT-Style Front
 
 The interface is now a single, centered chat column like ChatGPT / LM Arena:

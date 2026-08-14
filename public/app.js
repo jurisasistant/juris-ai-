@@ -3491,8 +3491,8 @@ function buildEvidencePanel(pack) {
       const primary = (s.weight >= 1);
       const official = !!(s.official_source && String(s.official_source).length > 0);
       const typeLabel = remote
-        ? '🌐 LIVE' + (official ? ' · OFFICIAL' : '') + ' · ' + (primary ? 'PRIMARY' : 'AUTHORITY')
-        : '📚 DATABASE · VERIFIED · ' + (primary ? 'PRIMARY' : 'AUTHORITY');
+        ? iconSVG('globe', 10) + ' LIVE' + (official ? ' · OFFICIAL' : '') + ' · ' + (primary ? 'PRIMARY' : 'AUTHORITY')
+        : iconSVG('document', 10) + ' DATABASE · VERIFIED · ' + (primary ? 'PRIMARY' : 'AUTHORITY');
       const courtLine = (s.court || s.judgment_date) ? `<div class="evidence-source-statutes">${barristerEscape([s.court, s.judgment_date].filter(Boolean).join(' · '))}</div>` : '';
       const openAction = remote && s.source_url
         ? `<a class="evidence-source-open" href="${barristerEscape(s.source_url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>`
@@ -3511,15 +3511,15 @@ function buildEvidencePanel(pack) {
     parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Evidence used (retrieved from the legal corpus)</div>${items}</div>`);
   }
   if (pack.verifiedCites && pack.verifiedCites.length) {
-    const cites = pack.verifiedCites.map((c) => `<div class="evidence-source-item evidence-cite"><span class="evidence-source-type">⚖️ VERIFIED</span><div class="evidence-source-text"><div class="evidence-source-title">${barristerEscape(c.name)}</div><div class="evidence-source-statutes">${barristerEscape(c.cite)}</div></div></div>`).join('');
+    const cites = pack.verifiedCites.map((c) => `<div class="evidence-source-item evidence-cite"><span class="evidence-source-type">` + iconSVG('shield', 10) + ` VERIFIED</span><div class="evidence-source-text"><div class="evidence-source-title">${barristerEscape(c.name)}</div><div class="evidence-source-statutes">${barristerEscape(c.cite)}</div></div></div>`).join('');
     parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Citation check: passed</div>${cites}</div>`);
   }
   if (pack.removedCites && pack.removedCites.length) {
-    const removed = pack.removedCites.map((c) => `<div class="evidence-source-item evidence-removed"><span class="evidence-source-type">🚫 REMOVED</span><div class="evidence-source-text"><div class="evidence-source-statutes">${barristerEscape(c)}</div></div></div>`).join('');
+    const removed = pack.removedCites.map((c) => `<div class="evidence-source-item evidence-removed"><span class="evidence-source-type">` + iconSVG('stop', 10) + ` REMOVED</span><div class="evidence-source-text"><div class="evidence-source-statutes">${barristerEscape(c)}</div></div></div>`).join('');
     parts.push(`<div class="evidence-panel-section"><div class="evidence-panel-label">Unverified citations removed</div>${removed}</div>`);
   }
   if (!parts.length) return '';
-  return `<details class="evidence-panel"><summary>🔍 Why this answer? <span class="evidence-summary-note">${pack.sourceCount || 0} verified source${pack.sourceCount === 1 ? '' : 's'}</span></summary><div class="evidence-panel-body">${parts.join('')}</div></details>`;
+  return `<details class="evidence-panel"><summary>` + iconSVG('search', 13) + ` Why this answer? <span class="evidence-summary-note">${pack.sourceCount || 0} verified source${pack.sourceCount === 1 ? '' : 's'}</span></summary><div class="evidence-panel-body">${parts.join('')}</div></details>`;
 }
 
 function buildAIBubbleHTML(htmlContent, pack, intent) {
@@ -3530,31 +3530,34 @@ function buildAIBubbleHTML(htmlContent, pack, intent) {
   }
   let badge = '';
   if (pack && pack.level && pack.level !== 'CONV') {
-    badge = `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">🛡️ ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`;
+    badge = `<span class="evidence-badge evidence-${pack.level.toLowerCase()}">` + iconSVG('shield', 10) + ` ${pack.level}${pack.level !== 'LOW' && pack.sourceCount ? ' · ' + pack.sourceCount + ' sources' : ''}</span>`;
   }
-  return `<div class="ai-bubble-header"><span class="ai-legal-tag">⚖️ Legal Analysis</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
+  return `<div class="ai-bubble-header"><span class="ai-legal-tag">` + iconSVG('law', 11) + ` Legal Analysis</span>${badge}</div>` + htmlContent + buildEvidencePanel(pack);
 }
 
 // --- 🩺 BACKEND HEALTH — self-diagnosis shown in the composer footer ---
 async function checkBackendHealth() {
   const el = document.getElementById('ai-status-indicator');
   const setStatus = (cls, text) => {
-    if (el) { el.className = 'ai-status-indicator ' + cls; el.textContent = text; }
+    if (el) {
+      el.className = 'ai-status-indicator ' + cls;
+      el.innerHTML = '<span class="status-dot" aria-hidden="true"></span>' + text;
+    }
   };
   try {
     const response = await fetch('/api/health', { method: 'GET', headers: { 'Content-Type': 'application/json' } });
     if (!response.ok) throw new Error('health endpoint failed');
     const data = await response.json();
     AppState.backendStatus = data.ai || 'unknown';
-    if (data.ai === 'connected') setStatus('ok', '🟢 Live AI connected');
-    else if (data.ai === 'connected_unverified') setStatus('ok', '🟢 Live AI ready');
-    else if (data.ai === 'connected_no_compound') setStatus('warn', '🟠 Key valid, but the web-search model (groq/compound) is not enabled for this key — enable it in the Groq console or use a key with access');
-    else if (data.ai === 'invalid_key') setStatus('warn', '🟠 Server key invalid — fix GROQ_API_KEY in Vercel env');
-    else if (data.ai === 'missing_key') setStatus('warn', '🟠 AI key missing — add GROQ_API_KEY in Vercel env');
-    else setStatus('warn', '🟠 Offline mode — backend not connected');
+    if (data.ai === 'connected') setStatus('ok', 'Live AI connected');
+    else if (data.ai === 'connected_unverified') setStatus('ok', 'Live AI ready');
+    else if (data.ai === 'connected_no_compound') setStatus('warn', 'Key valid, but the web-search model (groq/compound) is not enabled for this key — enable it in the Groq console or use a key with access');
+    else if (data.ai === 'invalid_key') setStatus('warn', 'Server key invalid — fix GROQ_API_KEY in Vercel env');
+    else if (data.ai === 'missing_key') setStatus('warn', 'AI key missing — add GROQ_API_KEY in Vercel env');
+    else setStatus('warn', 'Offline mode — backend not connected');
   } catch (err) {
     AppState.backendStatus = 'unreachable';
-    setStatus('warn', '🟠 Offline mode — /api/chat unreachable');
+    setStatus('warn', 'Offline mode — /api/chat unreachable');
   }
 }
 
@@ -3795,14 +3798,14 @@ function buildWebSourcesSection(webSources) {
   if (!webSources || !webSources.length) return '';
   const items = webSources.slice(0, 6).map((s) => `
     <div class="evidence-source-item evidence-live">
-      <span class="evidence-source-type">🌐 WEB</span>
+      <span class="evidence-source-type">` + iconSVG('globe', 10) + ` WEB</span>
       <div class="evidence-source-text">
         <div class="evidence-source-title">${barristerEscape(s.title)}</div>
         <div class="evidence-source-statutes"><a href="${barristerEscape(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-gold); word-break:break-all;">${barristerEscape(s.url)}</a></div>
       </div>
       <a class="evidence-source-open" href="${barristerEscape(s.url)}" target="_blank" rel="noopener noreferrer">Open ↗</a>
     </div>`).join('');
-  return `<details class="evidence-panel" open><summary>🌐 Web sources <span class="evidence-summary-note">${webSources.length} live</span></summary><div class="evidence-panel-body">${items}</div></details>`;
+  return `<details class="evidence-panel" open><summary>` + iconSVG('globe', 13) + ` Web sources <span class="evidence-summary-note">${webSources.length} live</span></summary><div class="evidence-panel-body">${items}</div></details>`;
 }
 
 // ==========================================================================
@@ -5205,7 +5208,7 @@ function renderRemoteSearchCards(rows, grid) {
       ${courtLine}
       <div class="kb-card-footer">
         ${r.source_url ? `<a class="btn-kb-read" href="${barristerEscape(r.source_url)}" target="_blank" rel="noopener noreferrer"><span>📖 Open source ↗</span></a>` : ''}
-        <button class="btn-kb-ask-ai" data-live-ask="1"><span>🤖 Ask AI about this</span></button>
+        <button class="btn-kb-ask-ai" data-live-ask="1"><span>` + iconSVG('robot', 13) + ` Ask AI about this</span></button>
       </div>
     `;
     card.querySelector('[data-live-ask]').addEventListener('click', () => {
@@ -5242,7 +5245,7 @@ function initStatuteConverterBar() {
       const data = BHARATIYA_STATUTE_MAP[foundKey];
       popup.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
-          <span style="font-size:0.75rem; color:#ff9933; font-weight:700; text-transform:uppercase;">⚖️ INSTANT STATUTE MAPPING</span>
+          <span style="font-size:0.75rem; color:#ff9933; font-weight:700; text-transform:uppercase;">` + iconSVG('law', 12) + ` INSTANT STATUTE MAPPING</span>
           <button id="close-converter-popup" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">✕</button>
         </div>
         <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">${data.old} ➔ <span style="color:#fbbf24;">${data.newSection}</span></div>
@@ -5251,7 +5254,7 @@ function initStatuteConverterBar() {
           <strong>🏛️ Supreme Court Benchmark:</strong> ${data.precedent}
         </div>
         <button id="converter-ask-ai-btn" style="margin-top:0.65rem; background:linear-gradient(135deg, #ff9933, #f59e0b); color:#fff; border:none; padding:0.38rem 0.85rem; border-radius:6px; font-weight:600; font-size:0.78rem; cursor:pointer;">
-          🤖 Ask AI About This Provision
+          ` + iconSVG('robot', 13) + ` Ask AI About This Provision
         </button>
       `;
       popup.classList.add('active');
@@ -5464,7 +5467,7 @@ function renderKnowledgeBaseCards() {
           <span>📖 Read Full Precedent</span>
         </button>
         <button class="btn-kb-ask-ai" data-ask-id="${article.id}">
-          <span>🤖 Ask AI About This</span>
+          <span>` + iconSVG('robot', 13) + ` Ask AI About This</span>
         </button>
       </div>
     `;
@@ -5511,7 +5514,7 @@ function openKnowledgeDrawer(article) {
     </div>
 
     <div class="kb-detail-section">
-      <div class="kb-section-header">⚖️ Governing Statutes & Constitutional References</div>
+      <div class="kb-section-header">` + iconSVG('law', 13) + ` Governing Statutes & Constitutional References</div>
       <div class="kb-statute-box">
         ${article.governingStatutes}
       </div>
@@ -5919,7 +5922,7 @@ async function sendChatMessage(userText, options) {
   // Server-side Groq web search; legal questions may still add RAG evidence.
   if (channel === 'WEB_GENERAL' || channel === 'WEB_CURRENT' || channel === 'LEGAL_CURRENT') {
     if (targetElement) {
-      targetElement.innerHTML = '<span style="opacity:0.8;font-style:italic;">🌐 Searching the web…</span>';
+      targetElement.innerHTML = '<span style="opacity:0.8;font-style:italic;">' + iconSVG('globe', 13) + ' Searching the web…</span>';
     }
     const webData = await tryWebSearchBackend(userText, AppState.jurisdiction, {
       history: sessionMessages,
@@ -5938,7 +5941,7 @@ async function sendChatMessage(userText, options) {
       // Link verification: URLs in the answer must exist in the actual search results.
       const linkCheck = verifyWebLinks(webText, webSources);
       if (linkCheck.removed.length) {
-        webText = linkCheck.text + '\n\n🔗 **Link check:** removed ' + linkCheck.removed.length + ' unverified link(s) — only links from actual search results are shown.';
+        webText = linkCheck.text + '\n\n**Link check:** removed ' + linkCheck.removed.length + ' unverified link(s) — only links from actual search results are shown.';
       }
     }
     if (!webText) {
@@ -6147,7 +6150,7 @@ async function sendChatMessage(userText, options) {
       const reasonText = lastChatHttpStatus === 429
         ? 'too many requests right now — wait a minute and try again'
         : (backendError || 'no reply from the AI');
-      targetElement.innerHTML = '<div class="chat-error-box">⚖️ Couldn\'t reach the live AI (' + barristerEscape(reasonText) + ').</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
+      targetElement.innerHTML = '<div class="chat-error-box">' + iconSVG('law', 14) + ' Couldn\'t reach the live AI (' + barristerEscape(reasonText) + ').</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
       return;
     }
     // Non-legal: general-knowledge engine or natural casual engine (no legal templates)
@@ -6158,7 +6161,7 @@ async function sendChatMessage(userText, options) {
 
   if (!aiText) {
     if (stopGenBtn) stopGenBtn.style.display = 'none';
-    targetElement.innerHTML = '<div class="chat-error-box">⚖️ JurisAI couldn\'t complete that response. Please check your connection.</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
+    targetElement.innerHTML = '<div class="chat-error-box">' + iconSVG('law', 14) + ' JurisAI couldn\'t complete that response. Please check your connection.</div><button type="button" class="retry-chat-btn" data-retry="1">Try again</button>';
     return;
   }
 
@@ -6170,7 +6173,7 @@ async function sendChatMessage(userText, options) {
     pack.removedCites = citationCheck.removed;
     let checkedText = citationCheck.cleanedText;
     if (citationCheck.removed.length) {
-      checkedText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
+      checkedText += '\n\n**Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
     }
     if (pack.level === 'LOW' && backendReached) {
       // Live AI answered but the law isn't in the verified library:
@@ -6192,14 +6195,14 @@ async function sendChatMessage(userText, options) {
     logAuditEvent({ query: userText, intent: intent, level: pack.level, sourceCount: pack.sourceCount, sources: pack.sources.slice(0, 5).map((s) => String(s.title || '').slice(0, 70)), unsupported: pack.unsupportedClaims || 0 });
   }
   if (stoppedEarly) {
-    trustText += '\n\n_⏹️ Generation stopped by you — showing what was completed._';
+    trustText += '\n\n_Generation stopped by you — showing what was completed._';
   }
 
   if (backendIntent === 'general' && !legalIntent) {
     // General answers never carry sources — strip any link the model invented.
     const linkCheck = verifyWebLinks(trustText, []);
     if (linkCheck.removed.length) {
-      trustText = linkCheck.text + '\n\n🔗 **Link check:** removed ' + linkCheck.removed.length + ' unverified link(s).';
+      trustText = linkCheck.text + '\n\n**Link check:** removed ' + linkCheck.removed.length + ' unverified link(s).';
     }
   }
   const formattedHTML = formatLegalMarkdown(trustText);
@@ -6348,6 +6351,42 @@ async function tryBackendServerChat(prompt, jurisdictionCode, opts = {}) {
   }
 }
 
+// ==========================================================================
+// 🎨 PROFESSIONAL ICON SYSTEM
+// Clean 24px stroke vectors (stroke=currentColor → adapts to light/dark),
+// consistent 2px weight. Emojis are no longer used as primary UI icons.
+// To use licensed Flaticon assets, replace any entry in UI_ICONS with the
+// downloaded Flaticon SVG. Attribution: see footer/README credits.
+// ==========================================================================
+const UI_ICONS = {
+  comment: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  saved: '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+  law: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+  document: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+  copy: '<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  regenerate: '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/>',
+  readaloud: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  print: '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  contrary: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>',
+  robot: '<path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>',
+  zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  deep: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  rti: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  menu: '<line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/>'
+};
+
+function iconSVG(name, size) {
+  const body = UI_ICONS[name] || UI_ICONS.document;
+  return '<svg class="ui-icon" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + body + '</svg>';
+}
+
 function appendMessageUI(role, contentText, elementId = null, isTyping = false) {
   const messagesArea = document.getElementById('chat-messages-area');
   if (!messagesArea) return;
@@ -6368,7 +6407,7 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
 
   if (isTyping && !contentText) {
     if (elementId) bubbleDiv.id = elementId;
-    bubbleDiv.innerHTML = `<span style="opacity:0.6;font-style:italic;">✦ Barrister is thinking…</span>`;
+    bubbleDiv.innerHTML = '<span style="opacity:0.6;font-style:italic;">' + iconSVG('comment', 13) + ' Barrister is thinking…</span>';
   } else if (role === 'user') {
     bubbleDiv.textContent = contentText;
   } else {
@@ -6384,25 +6423,28 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
 
     const copyBtn = document.createElement('button');
     copyBtn.className = 'msg-action-btn';
-    copyBtn.innerHTML = `📋 Copy`;
+    copyBtn.setAttribute('aria-label', 'Copy answer');
+    copyBtn.innerHTML = iconSVG('copy', 14) + ' <span>Copy</span>';
     copyBtn.addEventListener('click', () => {
       const textToCopy = bubbleDiv.innerText;
       navigator.clipboard.writeText(textToCopy);
-      copyBtn.innerHTML = `✅ Copied!`;
-      setTimeout(() => (copyBtn.innerHTML = `📋 Copy`), 2000);
+      copyBtn.innerHTML = iconSVG('shield', 14) + ' <span>Copied!</span>';
+      setTimeout(() => (copyBtn.innerHTML = iconSVG('copy', 14) + ' <span>Copy</span>'), 2000);
     });
 
     const stopGenBtn = document.createElement('button');
     stopGenBtn.className = 'msg-action-btn stop-gen-btn';
     stopGenBtn.setAttribute('data-action', 'stopgen');
-    stopGenBtn.innerHTML = `⏹️ Stop generating`;
+    stopGenBtn.setAttribute('aria-label', 'Stop generating');
+    stopGenBtn.innerHTML = iconSVG('stop', 14) + ' <span>Stop generating</span>';
     stopGenBtn.style.display = 'none';
     stopGenBtn.style.color = 'var(--error)';
 
     const regenerateBtn = document.createElement('button');
     regenerateBtn.className = 'msg-action-btn';
     regenerateBtn.setAttribute('data-action', 'regenerate');
-    regenerateBtn.innerHTML = `🔄 Regenerate`;
+    regenerateBtn.setAttribute('aria-label', 'Regenerate answer');
+    regenerateBtn.innerHTML = iconSVG('regenerate', 14) + ' <span>Regenerate</span>';
     regenerateBtn.addEventListener('click', () => {
       const session = AppState.chatHistory.find((c) => c.id === AppState.activeChatId);
       const msgs = session ? session.messages : [];
@@ -6416,7 +6458,8 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
     const saveBtn = document.createElement('button');
     saveBtn.className = 'msg-action-btn';
     saveBtn.setAttribute('data-action', 'save');
-    saveBtn.innerHTML = `📌 Save`;
+    saveBtn.setAttribute('aria-label', 'Save answer');
+    saveBtn.innerHTML = iconSVG('saved', 14) + ' <span>Save</span>';
     saveBtn.addEventListener('click', () => {
       const session = AppState.chatHistory.find((c) => c.id === AppState.activeChatId);
       const msgs = session ? session.messages : [];
@@ -6437,20 +6480,22 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
           });
           localStorage.setItem('jurisai_saved_research', JSON.stringify(list));
         }
-        saveBtn.innerHTML = `✅ Saved`;
+        saveBtn.innerHTML = iconSVG('shield', 14) + ' <span>Saved</span>';
       } catch (err) {
-        saveBtn.innerHTML = `✅ Saved`;
+        saveBtn.innerHTML = iconSVG('shield', 14) + ' <span>Saved</span>';
       }
-      setTimeout(() => (saveBtn.innerHTML = `📌 Save`), 2000);
+      setTimeout(() => (saveBtn.innerHTML = iconSVG('saved', 14) + ' <span>Save</span>'), 2000);
     });
 
     const speakBtn = document.createElement('button');
     speakBtn.className = 'msg-action-btn';
-    speakBtn.innerHTML = `🔊 Read Aloud`;
+    speakBtn.setAttribute('aria-label', 'Read answer aloud');
+    speakBtn.innerHTML = iconSVG('readaloud', 14) + ' <span>Read Aloud</span>';
 
     const stopBtn = document.createElement('button');
     stopBtn.className = 'msg-action-btn';
-    stopBtn.innerHTML = `⏹️ Stop`;
+    stopBtn.setAttribute('aria-label', 'Stop reading');
+    stopBtn.innerHTML = iconSVG('stop', 14) + ' <span>Stop</span>';
     stopBtn.style.display = 'none';
     stopBtn.style.color = 'var(--error)';
 
@@ -6462,27 +6507,30 @@ function appendMessageUI(role, contentText, elementId = null, isTyping = false) 
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      speakBtn.innerHTML = `🔊 Read Aloud`;
+      speakBtn.innerHTML = iconSVG('readaloud', 14) + ' <span>Read Aloud</span>';
       stopBtn.style.display = 'none';
     });
 
     const printOpinionBtn = document.createElement('button');
     printOpinionBtn.className = 'msg-action-btn';
-    printOpinionBtn.innerHTML = `🖨️ Print Legal Opinion`;
+    printOpinionBtn.setAttribute('aria-label', 'Print legal opinion');
+    printOpinionBtn.innerHTML = iconSVG('print', 14) + ' <span>Print Legal Opinion</span>';
     printOpinionBtn.addEventListener('click', () => {
       window.print();
     });
 
     const counterArgBtn = document.createElement('button');
     counterArgBtn.className = 'btn-ai-action-special';
-    counterArgBtn.innerHTML = `⚖️ Find Counter-Argument`;
+    counterArgBtn.setAttribute('aria-label', 'Find counter-argument');
+    counterArgBtn.innerHTML = iconSVG('law', 14) + ' <span>Find Counter-Argument</span>';
     counterArgBtn.addEventListener('click', () => {
       sendChatMessage(`Give me the strongest constitutional counter-argument against the legal position above, citing opposing Supreme Court of India benches and statutory exceptions.`);
     });
 
     const casesBtn = document.createElement('button');
     casesBtn.className = 'btn-ai-action-special';
-    casesBtn.innerHTML = `🔍 Supporting / Contrary Judgments`;
+    casesBtn.setAttribute('aria-label', 'Find supporting and contrary judgments');
+    casesBtn.innerHTML = iconSVG('contrary', 14) + ' <span>Supporting / Contrary Judgments</span>';
     casesBtn.addEventListener('click', () => {
       sendChatMessage(`Identify landmark Supreme Court of India judgments supporting this proposition, and any contrary or distinguishing benches.`);
     });
