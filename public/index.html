@@ -34,80 +34,53 @@
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-section-title">Research Workspace</div>
+        <button class="sidebar-new-chat-btn" id="sidebar-new-chat-btn">
+          <span>＋</span> New chat
+        </button>
+
+        <div class="chats-header-row">
+          <div class="nav-section-title">Chats</div>
+          <button class="chats-clear-btn" id="clear-chat-btn" title="Clear all chats">Clear</button>
+        </div>
+        <div class="history-list" id="chat-history-list">
+          <!-- Chat sessions rendered via JS -->
+        </div>
+
+        <div class="nav-section-title">Tools</div>
 
         <a class="nav-link active" data-view="chat-view">
           <span class="nav-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
           </span>
-          <span class="nav-text">Barrister AI Assistant</span>
-          <span class="nav-badge">Barrister 70B</span>
+          <span class="nav-text">Barrister</span>
+        </a>
+
+        <a class="nav-link" data-view="knowledge-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          <span class="nav-text">Law Library</span>
         </a>
 
         <a class="nav-link" data-view="const-view">
           <span class="nav-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
           </span>
-          <span class="nav-text">Constitution Explorer</span>
-          <span class="nav-badge">Samvidhan</span>
+          <span class="nav-text">Constitution</span>
         </a>
 
         <a class="nav-link" data-view="sanhita-view">
           <span class="nav-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
           </span>
-          <span class="nav-text">BNS / BNSS / BSA</span>
-          <span class="nav-badge">New Laws</span>
+          <span class="nav-text">BNS / BNSS</span>
         </a>
 
-        <a class="nav-link" data-view="knowledge-view">
-          <span class="nav-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </span>
-          <span class="nav-text">Case Law Precedents</span>
-          <span class="nav-badge">32 Statutes</span>
-        </a>
-
-        <a class="nav-link" data-view="graph-view">
-          <span class="nav-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-          </span>
-          <span class="nav-text">Legal Node Graph</span>
-          <span class="nav-badge">Obsidian</span>
-        </a>
-
-        <a class="nav-link" data-view="drafting-view">
-          <span class="nav-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
-          </span>
-          <span class="nav-text">Legal Drafting Suite</span>
-          <span class="nav-badge">AI Draft</span>
-        </a>
-
-        <a class="nav-link" data-view="workspace-view">
-          <span class="nav-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-          </span>
-          <span class="nav-text">Research Workspaces</span>
-          <span class="nav-badge">Projects</span>
-        </a>
-
-        <a class="nav-link" data-view="saved-view">
-          <span class="nav-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-          </span>
-          <span class="nav-text">Saved & History</span>
-          <span class="nav-badge" id="saved-count-badge">0</span>
-        </a>
-
-        <div class="nav-section-title">Legal Tools Suite</div>
-        
         <a class="nav-link" data-view="analyzer-view">
           <span class="nav-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           </span>
           <span class="nav-text">Document Analyzer</span>
-          <span class="nav-badge">Risk AI</span>
         </a>
 
         <a class="nav-link" data-view="generator-view">
@@ -121,32 +94,26 @@
           <span class="nav-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
           </span>
-          <span class="nav-text">RTI & Statutory FAQ</span>
+          <span class="nav-text">RTI & Rights</span>
         </a>
 
-        <div class="nav-section-title">Configuration</div>
+        <a class="nav-link" data-view="saved-view">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          </span>
+          <span class="nav-text">Saved</span>
+        </a>
 
         <a class="nav-link" id="open-settings-btn">
           <span class="nav-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
           </span>
-          <span class="nav-text">AI Engine Settings</span>
+          <span class="nav-text">Settings</span>
         </a>
       </nav>
-
-      <div class="sidebar-footer">
-        <div class="jurisdiction-box" id="jurisdiction-switcher" title="Click to cycle legal jurisdiction">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span id="current-jurisdiction-flag" style="font-size: 1.15rem;">🇮🇳</span>
-            <div>
-              <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">JURISDICTION</div>
-              <div id="current-jurisdiction-name" style="font-weight: 700; color: var(--text-primary); font-size: 13px;">IN (India — Bharat)</div>
-            </div>
-          </div>
-          <span style="color: var(--accent-gold); font-size: 11px; font-weight: 700;">CHANGE</span>
-        </div>
-        <div class="sidebar-sakshamfit-text" style="font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.4;">
-          🇮🇳 Made with ❤️ by <strong>sakshamfit</strong> • JurisAI Bharat Enterprise v6.0
+<div class="sidebar-footer">
+        <div class="sidebar-sakshamfit-text" style="font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.4;">
+          🇮🇳 Made with ❤️ by <strong>sakshamfit</strong> • JurisAI Bharat v6.0
         </div>
       </div>
     </aside>
@@ -164,27 +131,6 @@
         </div>
 
         <div class="navbar-right">
-          <!-- Command Palette Button (⌘K / Ctrl+K) -->
-          <button class="cmd-palette-btn" id="open-cmd-palette-btn" title="Press ⌘K or Ctrl+K to open search">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span>🔍</span>
-              <span>Search...</span>
-            </div>
-            <span class="cmd-shortcut-badge">⌘K</span>
-          </button>
-
-          <!-- As-of-Date Legal Research Selector (MVP Feature 6) -->
-          <div class="as-of-date-pill" title="Research statutory position as of selected date">
-            <span>📅</span>
-            <select id="as-of-date-select">
-              <option value="2026-08-11">As of: 11 Aug 2026</option>
-              <option value="2024-07-01">As of: 1 July 2024</option>
-              <option value="2023-08-11">As of: 11 Aug 2023</option>
-              <option value="2017-08-24">As of: 24 Aug 2017</option>
-            </select>
-          </div>
-
-
           <button class="btn-icon" id="theme-toggle-btn" title="Toggle Dark / Light Theme">
             <span id="theme-icon-display"></span>
           </button>
@@ -195,76 +141,35 @@
            VIEW 1: AI RESEARCH WORKSPACE (#chat-view) — Design System Section 7 & 8
            ====================================================================== -->
       <section class="view-section active" id="chat-view">
-        <div class="chat-container">
-
-          <!-- Left Chat Sessions Sidebar -->
-          <div class="chat-sidebar">
-            <div class="chat-sidebar-header">
-              <span style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Research Sessions</span>
-              <div style="display: flex; gap: 0.4rem;">
-                <button class="btn-secondary" id="new-chat-btn" style="padding: 0.35rem 0.7rem; font-size: 12px;">+ New</button>
-                <button class="btn-danger" id="clear-chat-btn" style="padding: 0.35rem 0.65rem; font-size: 12px;" title="Clear History">Clear</button>
-              </div>
-            </div>
-            <div class="history-list" id="chat-history-list">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
+        <div class="chat-container chat-container-solo">
 
           <!-- Main Chat Panel -->
-          <div class="chat-main">
-            <!-- Explain Like I'm... Persona & Language Selector Toolbar (MVP Feature 6 & 18) -->
-            <div class="chat-persona-toolbar">
-              <div class="persona-group">
-                <button class="persona-btn active" data-persona="advocate">👨‍⚖️ Advocate</button>
-                <button class="persona-btn" data-persona="student">🎓 Law Student</button>
-                <button class="persona-btn" data-persona="citizen">👤 Citizen</button>
-                <button class="persona-btn" data-persona="business">🧑‍💼 Business</button>
-              </div>
-              <div class="language-group">
-                <button class="language-btn active" data-lang="en">English</button>
-                <button class="language-btn" data-lang="hi">हिन्दी</button>
-                <button class="language-btn" data-lang="hinglish">Hinglish</button>
-              </div>
-            </div>
+          <div class="chat-main chat-main-solo">
 
             <div class="chat-messages-area" id="chat-messages-area">
-              
-              <!-- Clean Home Greeting (Section 7 Spec) -->
+
+              <!-- Clean Home Greeting -->
               <div class="chat-welcome" id="chat-welcome-screen">
-                <span class="welcome-badge">🇮🇳 BARRISTER • BHARATIYA LEGAL RESEARCH AI</span>
-                <h1 class="welcome-title">Ask Barrister about Indian Law.</h1>
-                <p class="welcome-subtitle">AI assistant for Indian Constitutional law, BNS/BNSS 2023, and Supreme Court research.</p>
-                
-                <!-- Quick Resource Pills -->
-                <div class="quick-resource-pills">
-                  <button class="resource-pill" data-query="Explain Fundamental Rights under Articles 14, 19, and 21 of the Indian Constitution & Puttaswamy ruling.">§ Constitution (Samvidhan)</button>
-                  <button class="resource-pill" data-query="What are the key changes in Bharatiya Nyaya Sanhita (BNS 2023) replacing IPC 1860?">§ BNS 2023 (Offenses)</button>
-                  <button class="resource-pill" data-query="Explain BNSS 2023 e-FIR registration and Arnesh Kumar police arrest notice rules.">§ BNSS 2023 (Procedure)</button>
-                  <button class="resource-pill" data-query="How does Bharatiya Sakshya Adhiniyam (BSA 2023 Section 63) change electronic evidence?">§ BSA 2023 (Evidence)</button>
-                  <button class="resource-pill" data-query="Explain the Basic Structure Doctrine in Kesavananda Bharati v. State of Kerala (1973).">§ Supreme Court Case Law</button>
-                </div>
+                <h1 class="welcome-title" id="welcome-title">Barrister this side 👋</h1>
+                <p class="welcome-subtitle" id="welcome-subtitle">How may I help you?</p>
               </div>
 
             </div>
 
             <!-- Chat Input Composer -->
             <div class="chat-input-wrapper">
-              <!-- Deep Research vs. Instant Answer Mode Toggle (MVP Feature 1) -->
-              <div class="research-mode-toggle">
-                <button type="button" class="mode-toggle-btn active" data-mode="instant">⚡ Instant Answer</button>
-                <button type="button" class="mode-toggle-btn" data-mode="deep">⚖️ Deep Research Mode</button>
-              </div>
               <form id="chat-form">
                 <div class="chat-input-box">
+                  <button type="button" class="mode-toggle-btn composer-mode-btn active" data-mode="instant" title="Quick answer">⚡</button>
+                  <button type="button" class="mode-toggle-btn composer-mode-btn" data-mode="deep" title="Deep research with more sources">🔎</button>
                   <textarea class="chat-textarea" id="chat-input-textarea" placeholder="Type something..." rows="2"></textarea>
-                  <button type="submit" class="send-btn" title="Send Question">
+                  <button type="submit" class="send-btn" title="Send">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </button>
                 </div>
               </form>
               <div class="input-footer-info">
-                <span>⚡ Powered by Barrister AI • Made with ❤️ by sakshamfit</span>
+                <span>⚖️ Barrister can make mistakes — verify important legal advice.</span>
               </div>
             </div>
 

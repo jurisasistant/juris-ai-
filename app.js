@@ -5,7 +5,7 @@
 
 // --- Global Application State ---
 const AppState = {
-  currentView: 'knowledge-view', // Launch into Bharatiya Constitution & Law Library
+  currentView: 'chat-view', // Launch straight into clean ChatGPT-style chat
   jurisdiction: 'IN', // Default: IN (India - Bharatiya Samvidhan, BNS/BNSS/BSA & Central Acts)
   theme: localStorage.getItem('jurisai_theme_bright') || 'light',
   groqModel: 'llama-3.3-70b-versatile',
@@ -4997,7 +4997,7 @@ function switchView(viewId) {
   if (titleDisplay) {
     const titleMap = {
       'knowledge-view': '🇮🇳 Indian Constitution & Law Library',
-      'chat-view': 'AI Legal Adviser & Chat (Bharat)',
+      'chat-view': 'Barrister',
       'analyzer-view': 'Contract & Document Risk Analyzer',
       'generator-view': 'Legal Document Generator (INR / Bharat)',
       'rights-view': 'Statutory Rights & RTI FAQ'
@@ -5216,7 +5216,8 @@ function initChatEngine() {
   const chatForm = document.getElementById('chat-form');
   const chatInput = document.getElementById('chat-input-textarea');
   const promptCards = document.querySelectorAll('.prompt-card, .resource-pill');
-  const newChatBtn = document.getElementById('new-chat-btn');
+  const newChatBtn = document.getElementById('new-chat-btn') || document.getElementById('sidebar-new-chat-btn');
+  const sidebarNewChatBtn = document.getElementById('sidebar-new-chat-btn');
   const clearChatBtn = document.getElementById('clear-chat-btn');
   const personaBtns = document.querySelectorAll('.persona-btn');
   const langBtns = document.querySelectorAll('.language-btn');
@@ -5289,6 +5290,11 @@ function initChatEngine() {
 
   if (newChatBtn) {
     newChatBtn.addEventListener('click', () => {
+      startNewChatSession();
+    });
+  }
+  if (sidebarNewChatBtn && sidebarNewChatBtn !== newChatBtn) {
+    sidebarNewChatBtn.addEventListener('click', () => {
       startNewChatSession();
     });
   }
@@ -5437,6 +5443,18 @@ function applyPersonaAndLanguageUI() {
     else if (isHinglish && hinglishNames[idx]) el.textContent = hinglishNames[idx];
     else if (enNames[idx]) el.textContent = enNames[idx];
   });
+
+  // Clean ChatGPT-style greeting — mirrors the user's language
+  const welcomeTitle = document.getElementById('welcome-title');
+  const welcomeSub = document.getElementById('welcome-subtitle');
+  if (welcomeTitle) {
+    welcomeTitle.textContent = isHi ? "बैरिस्टर इस तरफ़ 👋" : "Barrister this side 👋";
+  }
+  if (welcomeSub) {
+    welcomeSub.textContent = isHi ? "मैं आपकी कैसे मदद कर सकता हूँ?"
+      : isHinglish ? "Bataiye, main kaise help kar sakta hoon?"
+      : "How may I help you?";
+  }
 
   // Update mobile bottom nav
   const mobileNavs = document.querySelectorAll('.mobile-bottom-nav span:not([style])');

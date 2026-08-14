@@ -2,6 +2,17 @@
 ### Powered by Groq Llama-3.3-70B-Versatile (Enterprise Samvidhan Edition v6.0)
 **Designed & Developed with ❤️ by sakshamfit**
 
+## 🧹 Clean ChatGPT-Style Front
+
+The interface is now a single, centered chat column like ChatGPT / LM Arena:
+
+- **Opens straight into chat** — "Barrister this side 👋 · How may I help you?" (mirrors English/Hindi/Hinglish), with just the composer below.
+- **One left sidebar** — New chat button, chat sessions, and a compact tool list (Law Library, Constitution, BNS/BNSS, Analyzer, Builder, RTI, Saved, Settings). No badges, no clutter.
+- **Navbar** — just the menu, page title, and theme toggle. Search/date controls removed from the top.
+- **Composer** — tiny ⚡/🔎 mode toggles inside the input box, "Type something..." placeholder, and a single honest footer line: *"Barrister can make mistakes — verify important legal advice."*
+- Every feature (legal RAG, web search, analyzer, drafting, workspaces) remains available from the sidebar — nothing was removed, only decluttered.
+
+---
 ## 🧮 Any-Question Engine (deterministic answers, zero hallucination)
 
 Literally any query is now routed to the right engine:
