@@ -40,16 +40,18 @@ module.exports = async (req, res) => {
     });
     if (response.ok) {
       let webSearch = !!process.env.LANGSEARCH_API_KEY ? 'langsearch' : 'none';
+      let aiState = 'connected';
       if (primary.id === 'groq') {
         const data = await response.json();
         const ids = (data && Array.isArray(data.data)) ? data.data.map((m) => m && m.id) : [];
         const hasCompound = ids.includes('groq/compound');
         const hasMini = ids.includes('groq/compound-mini');
         if (hasCompound || hasMini) webSearch = 'groq';
+        else if (!process.env.LANGSEARCH_API_KEY) aiState = 'connected_no_compound';
       }
       return res.status(200).json({
         status: 'ok',
-        ai: 'connected',
+        ai: aiState,
         provider: primary.id,
         webSearch: webSearch,
         model: primary.model
