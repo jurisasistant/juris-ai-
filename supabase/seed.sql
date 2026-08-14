@@ -1,6 +1,6 @@
 -- ============================================================================
 -- JURISAI BHARAT — SEED DATA (auto-generated from the verified legal library)
--- 89 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
+-- 97 verified authorities: Constitution, BNS/BNSS/BSA, Central Acts, SC judgments
 -- Run in Supabase SQL Editor (clears + reloads). Idempotent.
 -- ============================================================================
 begin;
@@ -1958,7 +1958,182 @@ The Right to Fair Compensation and Transparency in Land Acquisition, Rehabilitat
       * **Pune Municipal Corporation v. Harakchand Misirimal Solanki (2014):** Earlier view on lapsing — overruled in 2020.
     ', 'LARR Act 2013 s.24, 26, 31, 38', '{"kb_id":"kb-in-civil-land-acquisition","category":"civil"}'::jsonb);
 
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Emergency Provisions — Articles 352, 356 & 360', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'National emergency, Presidents rule and financial emergency — with the 44th Amendment limits and non-suspendable rights.
+
+Article 352 empowers the President to proclaim a national emergency on war, external aggression or armed rebellion (internal disturbance removed by the 44th Amendment). During emergency, Article 19 freedoms may be suspended, but Articles 20 and 21 cannot be suspended even then. Article 356 (Presidents rule) is governed by S.R. Bommai (1994) — judicial review and floor test. Article 360 covers financial emergency (never proclaimed). The 44th Amendment (1978) reversed the ADM Jabalpur position by making Article 21 non-suspendable.
+
+
+      * **Article 352:** National emergency — war, external aggression, armed rebellion.
+      * **Article 356:** Failure of constitutional machinery in a State.
+      * **Article 360:** Financial emergency.
+    
+
+
+      * **S.R. Bommai v. Union of India (1994) 3 SCC 1:** Article 356 judicial review and secularism as basic structure.
+      * **ADM Jabalpur v. Shivkant Shukla (1976) 2 SCC 521:** Repudiated emergency ruling — Article 21 cannot be suspended.
+    ', 'Const. India Art. 352, 356, 360', '{"kb_id":"kb-in-const-emergency","category":"constitution"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Citizenship — Articles 5–11 & the Citizenship Act 1955', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'Who is an Indian citizen — birth, descent, registration and naturalisation, and the CAA 2019 amendments.
+
+Articles 5-11 define citizenship at the commencement of the Constitution, leaving further law to Parliament. The Citizenship Act 1955 provides citizenship by birth, descent, registration and naturalisation. The Citizenship (Amendment) Act 2019 (CAA) fast-tracks citizenship for persecuted non-Muslim minorities (Hindus, Sikhs, Buddhists, Jains, Parsis, Christians) from Afghanistan, Bangladesh and Pakistan who entered India before 31 December 2014. The Act does not apply to the North-East excluded areas and does not affect Indian citizens. The NRC (National Register of Citizens) is a separate verification exercise.
+
+
+      * **Article 9:** Voluntarily acquiring foreign citizenship ends Indian citizenship.
+      * **Citizenship Act 1955 Sections 3-6A:** Acquisition by birth, descent, registration, naturalisation.
+      * **CAA 2019:** Fast-track citizenship for specified minorities from three neighbouring countries.
+    
+
+
+      * **Constitutionality of CAA 2019:** Pending before the Supreme Court (challenge based on Articles 14 and 15).
+      * **Sarbananda Sonowal v. Union of India (2005):** Illegal Migrants (Determination by Tribunals) Act struck down — Foreigners Act governs.
+    ', 'Const. India Art. 5-11', '{"kb_id":"kb-in-const-citizenship","category":"constitution"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Ordinances — Articles 123 & 213 (Ordinance-Making Power)', 'constitution', null, 'IN', null, null, null, ARRAY['rti']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'President and Governor ordinances are temporary laws — limits on repromulgation and justiciability.
+
+Article 123 empowers the President to promulgate ordinances when Parliament is not in session; Article 213 gives Governors the same power for state legislatures. Ordinances lapse six weeks after reassembly unless approved. In D.C. Wadhwa v. State of Bihar (1987), the Supreme Court condemned repeated repromulgation of ordinances without legislative approval as a fraud on the Constitution. Krishna Kumar Singh (2017) held that repromulgated ordinances without legislative consideration are unconstitutional, and that ordinance-making is subject to judicial review on malafides.
+
+
+      * **Article 123:** President s ordinance power — requires ministerial advice.
+      * **Article 213:** Governor s ordinance power — President s prior instructions in some cases.
+    
+
+
+      * **D.C. Wadhwa v. State of Bihar (1987) 1 SCC 378:** Repromulgation of ordinances is unconstitutional.
+      * **Krishna Kumar Singh v. State of Bihar (2017) 3 SCC 1:** 7-judge bench — ordinances cannot be repromulgated without legislative scrutiny.
+    ', 'Const. India Art. 123, 213', '{"kb_id":"kb-in-const-ordinances","category":"constitution"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Article 311 — Civil Servants Protection (Dismissal & Removal)', 'constitution', null, 'IN', null, null, null, ARRAY['rti','constitution']::text[], 'https://legislative.gov.in/constitution-of-india/', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'No dismissal by a subordinate authority; a reasonable opportunity of defence before removal — with exceptions.
+
+Article 311(1) bars removal or dismissal of a civil servant by an authority subordinate to the appointing authority. Article 311(2) requires a reasonable opportunity to be heard in a departmental inquiry (charge-sheet, evidence, defence, report). The 42nd Amendment removed the second-stage opportunity to show cause against the penalty, but the inquiry protection remains. Union of India v. Tulsiram Patel (1985) held the hearing right can be dispensed with where a criminal conviction exists or where holding an inquiry is impracticable.
+
+
+      * **Article 311(1):** No removal/dismissal by a subordinate authority.
+      * **Article 311(2):** Reasonable opportunity of defence before dismissal, removal or reduction in rank.
+    
+
+
+      * **Union of India v. Tulsiram Patel (1985) 3 SCC 398:** When the hearing right can be dispensed with.
+      * **Maneka Gandhi (1978) 1 SCC 248:** Fair procedure applies to Article 311 inquiries too.
+    ', 'Const. India Art. 311', '{"kb_id":"kb-in-const-art311","category":"constitution"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('SC/ST (Prevention of Atrocities) Act 1989', 'statute', null, 'IN', null, null, null, ARRAY['bail','fir']::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'Special protection against caste atrocities — immediate FIR, no anticipatory bail, special courts.
+
+The Scheduled Castes and Scheduled Tribes (Prevention of Atrocities) Act 1989 criminalizes caste-based atrocities — offences range from forced labour and land dispossession to assaults and social boycott (Section 3). Key procedural features: immediate FIR registration, arrest without warrant, and Section 18 barring anticipatory bail. Subhash Kashinath Mahajan (2018) introduced a preliminary inquiry safeguard, which Parliament reversed by the 2018 Amendment — FIR registration is now mandatory again and preliminary inquiry prohibited.
+
+
+      * **SC/ST Act Section 3:** Punishments for atrocities.
+      * **Section 18:** No anticipatory bail for SC/ST Act offences.
+      * **2018 Amendment:** Mandatory FIR; no preliminary inquiry before registration.
+    
+
+
+      * **Subhash Kashinath Mahajan v. State of Maharashtra (2018) 6 SCC 454:** Preliminary inquiry direction — nullified by the 2018 Amendment.
+      * **Prithvi Raj Chauhan v. Union of India (2020):** Section 18 anticipatory bail bar upheld with a pre-arrest judicial check.
+    ', 'SC/ST Act 1989 s.3, 14, 18', '{"kb_id":"kb-in-cr-scst-act","category":"criminal"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Prevention of Corruption Act 1988', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'Bribery by public servants — the 2018 amendment requires sanction before investigation and protects honest decisions.
+
+The Prevention of Corruption Act 1988 criminalizes public servants taking bribes (Section 7), criminal misconduct (Section 13) and bribing public servants (Section 8, after 2018). The 2018 Amendment made bribe-giving an offence with a defence for victims reporting under compulsion, required prior sanction (Section 17A) before investigating public servants for decisions taken in discharge of duty, and rationalized the definition of criminal misconduct. Special courts try PC Act offences.
+
+
+      * **Section 7:** Public servant taking gratification — 3 to 7 years.
+      * **Section 13:** Criminal misconduct by a public servant.
+      * **Section 17A:** Prior sanction before inquiry into official decisions (2018 Amendment).
+    
+
+
+      * **C.K. Jaffer Sharief v. State (2013):** Sanction protects honest official acts.
+      * **Narendra Champaklal Trivedi (2012):** Proof of demand and acceptance essential for bribery.
+    ', 'Prevention of Corruption Act 1988 s.7, 13, 17A', '{"kb_id":"kb-in-cr-poc-act","category":"criminal"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Environment Protection Act 1986 & Pollution Law', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'Framework environmental law — pollution control, environmental clearances, and absolute liability for hazardous industry.
+
+The Environment (Protection) Act 1986 is India s umbrella environment law — the Central Government can set emission and effluent standards, restrict polluting industries, and require environmental clearances for projects. The Air Act 1981, Water Act 1974 and Noise Rules supplement it. M.C. Mehta (1987) created absolute liability for hazardous industries and read a clean environment into Article 21; Vellore Citizens (1996) adopted the precautionary principle and polluter-pays principle; the National Green Tribunal (NGT) Act 2010 provides fast environmental adjudication.
+
+
+      * **EPA 1986 Section 3:** Central Government powers to protect the environment.
+      * **Section 15:** Penalties for non-compliance — extended by amendment.
+      * **NGT Act 2010:** National Green Tribunal for environmental disputes.
+    
+
+
+      * **M.C. Mehta v. Union of India (1987) 1 SCC 395:** Absolute liability for hazardous industries.
+      * **Vellore Citizens Welfare Forum v. Union of India (1996) 5 SCC 647:** Precautionary principle + polluter pays.
+      * **T.N. Godavarman Thirumulpad (1997) 2 SCC 267:** Forest conservation.
+    ', 'Environment (Protection) Act 1986', '{"kb_id":"kb-in-civil-environment-act","category":"civil"}'::jsonb);
+
+  insert into public.legal_documents
+    (title, document_type, court, jurisdiction, judgment_date, citation, bench, keywords, source_url, official_source, authority_level, verified)
+  values
+    ('Juvenile Justice Act 2015 — Children in Conflict with Law', 'statute', null, 'IN', null, null, null, ARRAY[NULL]::text[], 'https://www.indiacode.nic.in', 'India Code', 'primary', true)
+  returning id into doc_id;
+
+  insert into public.legal_chunks (document_id, chunk_text, section_number, metadata)
+  values (doc_id, 'Children below 18 are tried before the Juvenile Justice Board — with the 16-18 serious-offence adult-trial exception.
+
+The Juvenile Justice (Care and Protection of Children) Act 2015 treats persons below 18 as children in conflict with the law, tried by the Juvenile Justice Board (not criminal courts), with reformative measures. After the 2012 Nirbhaya case, the Act allows juveniles aged 16-18 to be tried as adults where the Juvenile Justice Board, after a preliminary assessment, finds they committed a heinous offence (minimum 7 years imprisonment) with adult understanding. Convicted juveniles are kept in special homes, not adult prisons. Section 19 bars disqualification of children for past offences.
+
+
+      * **JJ Act Section 15:** Preliminary assessment for heinous offences (16-18 years).
+      * **Section 18:** No joint trial of children with adults; no prison for children.
+      * **Section 19:** Past juvenile records do not disqualify from employment.
+    
+
+
+      * **Salil Bali v. Union of India (2013) 7 SCC 705:** Constitutionality of the 16-18 adult-trial provision upheld (pending larger review).
+      * **Pratap Singh v. State of Jharkhand (2005):** Age determination is based on the date of the offence.
+    ', 'JJ Act 2015 s.15, 18, 19', '{"kb_id":"kb-in-cr-jj-act","category":"criminal"}'::jsonb);
+
 end $$;
 
 commit;
--- Verify: select count(*) from legal_documents;  -- expect 89
+-- Verify: select count(*) from legal_documents;  -- expect 97

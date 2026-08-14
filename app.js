@@ -872,6 +872,125 @@ const BHARATIYA_STATUTE_MAP = {
     title: "Examination of Witnesses by Police",
     summary: "Police may examine witnesses during investigation; statements are not signed but can be used for contradiction.",
     precedent: "S.161 statements cannot be used as substantive evidence — only for contradictions."
+  },
+  "300": {
+    old: "IPC Section 300 (Murder)",
+    newSection: "BNS 2023 Section 101",
+    title: "Murder",
+    summary: "Culpable homicide with intention to cause death or injury sufficient to cause death — death or life imprisonment.",
+    precedent: "Reg. v. Govinda (1876) — The line between murder (S.300) and culpable homicide (S.299) is the degree of intention."
+  },
+  "304a": {
+    old: "IPC Section 304A (Death by Negligence)",
+    newSection: "BNS 2023 Section 106",
+    title: "Causing Death by Negligence",
+    summary: "Rash or negligent act causing death — up to 2 years, or 5 years in hit-and-run cases under BNS.",
+    precedent: "Jacob Mathew v. State of Punjab (SC 2005) — Criminal negligence requires gross disregard of life and safety."
+  },
+  "279": {
+    old: "IPC Section 279 (Rash Driving)",
+    newSection: "BNS 2023 Section 281",
+    title: "Rash Driving or Riding on a Public Way",
+    summary: "Driving in a manner dangerous to the public — up to 6 months or fine.",
+    precedent: "State of Karnataka v. Satish (SC 1998) — Rashness requires actual risk to human life, not mere speed."
+  },
+  "337": {
+    old: "IPC Sections 337-338 (Causing Hurt by Endangering Life)",
+    newSection: "BNS 2023 Section 125",
+    title: "Causing Hurt by Act Endangering Life or Personal Safety",
+    summary: "Rash or negligent acts causing hurt (337) or grievous hurt (338) — up to 6 months/2 years.",
+    precedent: "Mens rea is not required — negligence suffices for these provisions."
+  },
+  "380": {
+    old: "IPC Section 380 (Theft in Dwelling House)",
+    newSection: "BNS 2023 Section 305",
+    title: "Theft in a Dwelling House, Tent or Vessel",
+    summary: "Theft committed in a human dwelling or on a vessel — up to 7 years.",
+    precedent: "Aggravated theft due to the place of commission."
+  },
+  "411": {
+    old: "IPC Section 411 (Receiving Stolen Property)",
+    newSection: "BNS 2023 Section 317(2)",
+    title: "Dishonestly Receiving Stolen Property",
+    summary: "Receiving or retaining stolen property knowing it to be stolen — up to 3 years.",
+    precedent: "Knowledge that the property was stolen at the time of receipt is essential."
+  },
+  "448": {
+    old: "IPC Section 448 (House Trespass)",
+    newSection: "BNS 2023 Section 329(4)",
+    title: "House Trespass",
+    summary: "Entering or remaining in another's property unlawfully — up to 1 year.",
+    precedent: "House trespass requires unlawful entry with intent to commit an offence or intimidate."
+  },
+  "494": {
+    old: "IPC Section 494 (Bigamy)",
+    newSection: "BNS 2023 Section 82",
+    title: "Marrying Again During Lifetime of Husband or Wife",
+    summary: "Second marriage while the first spouse lives and the first marriage is valid — up to 7 years.",
+    precedent: "Sarla Mudgal v. Union of India (SC 1995) — Conversion to Islam does not dissolve the first marriage."
+  },
+  "509": {
+    old: "IPC Section 509 (Insulting Modesty of a Woman)",
+    newSection: "BNS 2023 Section 79",
+    title: "Word, Gesture or Act Intending to Insult Modesty",
+    summary: "Words, sounds or gestures intruding on a woman's privacy — up to 3 years under BNS.",
+    precedent: "Rupan Deol Bajaj v. K.P.S. Gill (SC 1995) — Outraging modesty does not require physical contact."
+  },
+  "354b": {
+    old: "IPC Section 354B (Assault to Disrobe)",
+    newSection: "BNS 2023 Section 76",
+    title: "Assault or Use of Force to Disrobe a Woman",
+    summary: "Assault with intent to disrobe or compel a woman to be naked — 3 to 7 years.",
+    precedent: "Added by the Criminal Law (Amendment) Act 2013 after the Nirbhaya case."
+  },
+  "354c": {
+    old: "IPC Section 354C (Voyeurism)",
+    newSection: "BNS 2023 Section 77",
+    title: "Voyeurism",
+    summary: "Watching or capturing a woman in a private act without consent — 1 to 3 years (5 for repeat).",
+    precedent: "First-time voyeurism conviction requires proof of non-consensual observation or capture."
+  },
+  "370": {
+    old: "IPC Section 370 (Human Trafficking)",
+    newSection: "BNS 2023 Section 143",
+    title: "Trafficking of Persons",
+    summary: "Recruiting, transporting or exploiting persons for forced labour or exploitation — 7 years to life.",
+    precedent: "Budhadev Karmaskar v. State of West Bengal (SC 2011) — Rehabilitation of trafficking victims is a state duty."
+  },
+  "366a": {
+    old: "IPC Section 366A (Procuration of Minor Girl)",
+    newSection: "BNS 2023 Section 96",
+    title: "Procuration of Minor Girl",
+    summary: "Inducing a minor girl to illicit intercourse — up to 10 years.",
+    precedent: "Strict liability provision — inducement of a minor is sufficient."
+  },
+  "120a": {
+    old: "IPC Section 120A (Criminal Conspiracy)",
+    newSection: "BNS 2023 Section 61(1)",
+    title: "Criminal Conspiracy — Definition",
+    summary: "Agreement of two or more persons to do an illegal act — punished like the conspired offence.",
+    precedent: "State (NCT of Delhi) v. Navjot Sandhu (SC 2005) — Conspiracy can be proved by circumstantial evidence."
+  },
+  "193": {
+    old: "IPC Section 193 (Perjury)",
+    newSection: "BNS 2023 Section 229",
+    title: "False Evidence (Perjury)",
+    summary: "Giving or fabricating false evidence in a judicial proceeding — up to 7 years.",
+    precedent: "Perjury requires intentional falsehood in a judicial proceeding."
+  },
+  "326a": {
+    old: "IPC Section 326A (Acid Attack)",
+    newSection: "BNS 2023 Section 124",
+    title: "Acid Attack — Causing Grievous Hurt by Acid",
+    summary: "Throwing or administering acid causing permanent damage — minimum 10 years, up to life.",
+    precedent: "Laxmi v. Union of India (SC 2014) — Compensation and restrictions on acid sale directed."
+  },
+  "498": {
+    old: "IPC Section 498 (Enticing Married Woman)",
+    newSection: "BNS 2023 Section 84",
+    title: "Enticing or Detaining a Married Woman with Criminal Intent",
+    summary: "Taking or detaining a married woman with intent for illicit intercourse — up to 2 years.",
+    precedent: "Intent of illicit intercourse is the essence of the offence."
   }
 };
 
@@ -2879,6 +2998,174 @@ const KNOWLEDGE_BASE_ARTICLES = [
       'Compensation disputes go to the Collector / Land Acquisition Rehabilitation and Resettlement Authority under the 2013 Act.'
     ],
     askAIPrompt: 'Explain land acquisition law in India under the LARR Act 2013 — compensation, consent, rehabilitation, and when acquisitions lapse.'
+  },
+
+  {
+    id: 'kb-in-const-emergency',
+    title: 'Emergency Provisions — Articles 352, 356 & 360',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 352, 356, 360', 'ADM Jabalpur (1976) 2 SCC 521', '44th Amendment 1978 safeguards'],
+    summary: 'National emergency, Presidents rule and financial emergency — with the 44th Amendment limits and non-suspendable rights.',
+    executiveSummary: 'Article 352 empowers the President to proclaim a national emergency on war, external aggression or armed rebellion (internal disturbance removed by the 44th Amendment). During emergency, Article 19 freedoms may be suspended, but Articles 20 and 21 cannot be suspended even then. Article 356 (Presidents rule) is governed by S.R. Bommai (1994) — judicial review and floor test. Article 360 covers financial emergency (never proclaimed). The 44th Amendment (1978) reversed the ADM Jabalpur position by making Article 21 non-suspendable.',
+    governingStatutes: `
+      * **Article 352:** National emergency — war, external aggression, armed rebellion.
+      * **Article 356:** Failure of constitutional machinery in a State.
+      * **Article 360:** Financial emergency.
+    `,
+    landmarkPrecedents: `
+      * **S.R. Bommai v. Union of India (1994) 3 SCC 1:** Article 356 judicial review and secularism as basic structure.
+      * **ADM Jabalpur v. Shivkant Shukla (1976) 2 SCC 521:** Repudiated emergency ruling — Article 21 cannot be suspended.
+    `,
+    complianceChecklist: ['Articles 20-21 remain enforceable even during a national emergency.', 'Emergency proclamations require parliamentary approval within 1 month (2 for 356).', 'Cite Bommai for any Presidents rule challenge.'],
+    askAIPrompt: 'Explain the emergency provisions of the Indian Constitution — Articles 352, 356 and 360.'
+  },
+  {
+    id: 'kb-in-const-citizenship',
+    title: 'Citizenship — Articles 5–11 & the Citizenship Act 1955',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 5-11', 'Citizenship Act 1955', 'CAA 2019'],
+    summary: 'Who is an Indian citizen — birth, descent, registration and naturalisation, and the CAA 2019 amendments.',
+    executiveSummary: 'Articles 5-11 define citizenship at the commencement of the Constitution, leaving further law to Parliament. The Citizenship Act 1955 provides citizenship by birth, descent, registration and naturalisation. The Citizenship (Amendment) Act 2019 (CAA) fast-tracks citizenship for persecuted non-Muslim minorities (Hindus, Sikhs, Buddhists, Jains, Parsis, Christians) from Afghanistan, Bangladesh and Pakistan who entered India before 31 December 2014. The Act does not apply to the North-East excluded areas and does not affect Indian citizens. The NRC (National Register of Citizens) is a separate verification exercise.',
+    governingStatutes: `
+      * **Article 9:** Voluntarily acquiring foreign citizenship ends Indian citizenship.
+      * **Citizenship Act 1955 Sections 3-6A:** Acquisition by birth, descent, registration, naturalisation.
+      * **CAA 2019:** Fast-track citizenship for specified minorities from three neighbouring countries.
+    `,
+    landmarkPrecedents: `
+      * **Constitutionality of CAA 2019:** Pending before the Supreme Court (challenge based on Articles 14 and 15).
+      * **Sarbananda Sonowal v. Union of India (2005):** Illegal Migrants (Determination by Tribunals) Act struck down — Foreigners Act governs.
+    `,
+    complianceChecklist: ['CAA applies only to non-Muslim minorities from Afghanistan/Bangladesh/Pakistan who entered before 31-12-2014.', 'NRC is document-based verification under the Citizenship Act/1955 Rules.', 'Citizenship cases go to the Foreigners Tribunals under the Foreigners Act 1946.'],
+    askAIPrompt: 'Explain Indian citizenship law — Articles 5 to 11, the Citizenship Act 1955, and what the CAA 2019 actually does.'
+  },
+  {
+    id: 'kb-in-const-ordinances',
+    title: 'Ordinances — Articles 123 & 213 (Ordinance-Making Power)',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 123, 213', 'D.C. Wadhwa (1987) 1 SCC 378', 'Krishna Kumar Singh (2017) 3 SCC 1'],
+    summary: 'President and Governor ordinances are temporary laws — limits on repromulgation and justiciability.',
+    executiveSummary: 'Article 123 empowers the President to promulgate ordinances when Parliament is not in session; Article 213 gives Governors the same power for state legislatures. Ordinances lapse six weeks after reassembly unless approved. In D.C. Wadhwa v. State of Bihar (1987), the Supreme Court condemned repeated repromulgation of ordinances without legislative approval as a fraud on the Constitution. Krishna Kumar Singh (2017) held that repromulgated ordinances without legislative consideration are unconstitutional, and that ordinance-making is subject to judicial review on malafides.',
+    governingStatutes: `
+      * **Article 123:** President s ordinance power — requires ministerial advice.
+      * **Article 213:** Governor s ordinance power — President s prior instructions in some cases.
+    `,
+    landmarkPrecedents: `
+      * **D.C. Wadhwa v. State of Bihar (1987) 1 SCC 378:** Repromulgation of ordinances is unconstitutional.
+      * **Krishna Kumar Singh v. State of Bihar (2017) 3 SCC 1:** 7-judge bench — ordinances cannot be repromulgated without legislative scrutiny.
+    `,
+    complianceChecklist: ['An ordinance lapses 6 weeks after the legislature reassembles.', 'Repeated repromulgation without tabling is unconstitutional (Wadhwa).', 'Ordinances can be challenged on malafides before courts.'],
+    askAIPrompt: 'Explain the ordinance-making power under Articles 123 and 213 — and the limits on repromulgation.'
+  },
+  {
+    id: 'kb-in-const-art311',
+    title: 'Article 311 — Civil Servants Protection (Dismissal & Removal)',
+    category: 'Indian Constitution',
+    categoryCode: 'constitution',
+    jurisdiction: 'IN',
+    statutes: ['Const. India Art. 311', 'Tulsiram Patel (1985) 3 SCC 398', 'Constitutional protection for public servants'],
+    summary: 'No dismissal by a subordinate authority; a reasonable opportunity of defence before removal — with exceptions.',
+    executiveSummary: 'Article 311(1) bars removal or dismissal of a civil servant by an authority subordinate to the appointing authority. Article 311(2) requires a reasonable opportunity to be heard in a departmental inquiry (charge-sheet, evidence, defence, report). The 42nd Amendment removed the second-stage opportunity to show cause against the penalty, but the inquiry protection remains. Union of India v. Tulsiram Patel (1985) held the hearing right can be dispensed with where a criminal conviction exists or where holding an inquiry is impracticable.',
+    governingStatutes: `
+      * **Article 311(1):** No removal/dismissal by a subordinate authority.
+      * **Article 311(2):** Reasonable opportunity of defence before dismissal, removal or reduction in rank.
+    `,
+    landmarkPrecedents: `
+      * **Union of India v. Tulsiram Patel (1985) 3 SCC 398:** When the hearing right can be dispensed with.
+      * **Maneka Gandhi (1978) 1 SCC 248:** Fair procedure applies to Article 311 inquiries too.
+    `,
+    complianceChecklist: ['Departmental inquiries must follow natural justice (charge-sheet → inquiry → report → penalty).', 'Conviction cases can bypass inquiry but must follow due process.', 'Reduction in rank, dismissal and removal — not transfers or suspensions — attract Article 311.'],
+    askAIPrompt: 'Explain Article 311 — protection of civil servants from arbitrary dismissal and removal.'
+  },
+  {
+    id: 'kb-in-cr-scst-act',
+    title: 'SC/ST (Prevention of Atrocities) Act 1989',
+    category: 'Criminal Law (BNS/BNSS)',
+    categoryCode: 'criminal',
+    jurisdiction: 'IN',
+    statutes: ['SC/ST Act 1989 s.3, 14, 18', 'Subhash Kashinath Mahajan (2018) 6 SCC 454', '2018 Amendment restoring rigor'],
+    summary: 'Special protection against caste atrocities — immediate FIR, no anticipatory bail, special courts.',
+    executiveSummary: 'The Scheduled Castes and Scheduled Tribes (Prevention of Atrocities) Act 1989 criminalizes caste-based atrocities — offences range from forced labour and land dispossession to assaults and social boycott (Section 3). Key procedural features: immediate FIR registration, arrest without warrant, and Section 18 barring anticipatory bail. Subhash Kashinath Mahajan (2018) introduced a preliminary inquiry safeguard, which Parliament reversed by the 2018 Amendment — FIR registration is now mandatory again and preliminary inquiry prohibited.',
+    governingStatutes: `
+      * **SC/ST Act Section 3:** Punishments for atrocities.
+      * **Section 18:** No anticipatory bail for SC/ST Act offences.
+      * **2018 Amendment:** Mandatory FIR; no preliminary inquiry before registration.
+    `,
+    landmarkPrecedents: `
+      * **Subhash Kashinath Mahajan v. State of Maharashtra (2018) 6 SCC 454:** Preliminary inquiry direction — nullified by the 2018 Amendment.
+      * **Prithvi Raj Chauhan v. Union of India (2020):** Section 18 anticipatory bail bar upheld with a pre-arrest judicial check.
+    `,
+    complianceChecklist: ['Police must register the FIR immediately — no preliminary inquiry.', 'Anticipatory bail is barred (Section 18) subject to Prithvi Raj Chauhan checks.', 'Special courts handle trials with victim and witness protection.'],
+    askAIPrompt: 'Explain the SC/ST (Prevention of Atrocities) Act 1989 — offences, FIR rules and the anticipatory bail bar.'
+  },
+  {
+    id: 'kb-in-cr-poc-act',
+    title: 'Prevention of Corruption Act 1988',
+    category: 'Criminal Law (BNS/BNSS)',
+    categoryCode: 'criminal',
+    jurisdiction: 'IN',
+    statutes: ['Prevention of Corruption Act 1988 s.7, 13, 17A', '2018 Amendment', 'CBI / Lokayukta jurisdiction'],
+    summary: 'Bribery by public servants — the 2018 amendment requires sanction before investigation and protects honest decisions.',
+    executiveSummary: 'The Prevention of Corruption Act 1988 criminalizes public servants taking bribes (Section 7), criminal misconduct (Section 13) and bribing public servants (Section 8, after 2018). The 2018 Amendment made bribe-giving an offence with a defence for victims reporting under compulsion, required prior sanction (Section 17A) before investigating public servants for decisions taken in discharge of duty, and rationalized the definition of criminal misconduct. Special courts try PC Act offences.',
+    governingStatutes: `
+      * **Section 7:** Public servant taking gratification — 3 to 7 years.
+      * **Section 13:** Criminal misconduct by a public servant.
+      * **Section 17A:** Prior sanction before inquiry into official decisions (2018 Amendment).
+    `,
+    landmarkPrecedents: `
+      * **C.K. Jaffer Sharief v. State (2013):** Sanction protects honest official acts.
+      * **Narendra Champaklal Trivedi (2012):** Proof of demand and acceptance essential for bribery.
+    `,
+    complianceChecklist: ['Bribery requires proof of demand + acceptance + recovery.', 'Section 17A sanction applies to investigations of official decisions.', 'Bribe-givers coerced to pay have a statutory defence after 2018.'],
+    askAIPrompt: 'Explain the Prevention of Corruption Act 1988 — bribery, criminal misconduct and the 2018 amendments.'
+  },
+  {
+    id: 'kb-in-civil-environment-act',
+    title: 'Environment Protection Act 1986 & Pollution Law',
+    category: 'Civil & Property Law',
+    categoryCode: 'civil',
+    jurisdiction: 'IN',
+    statutes: ['Environment (Protection) Act 1986', 'M.C. Mehta (1987) 1 SCC 395', 'Vellore Citizens (1996) 5 SCC 647'],
+    summary: 'Framework environmental law — pollution control, environmental clearances, and absolute liability for hazardous industry.',
+    executiveSummary: 'The Environment (Protection) Act 1986 is India s umbrella environment law — the Central Government can set emission and effluent standards, restrict polluting industries, and require environmental clearances for projects. The Air Act 1981, Water Act 1974 and Noise Rules supplement it. M.C. Mehta (1987) created absolute liability for hazardous industries and read a clean environment into Article 21; Vellore Citizens (1996) adopted the precautionary principle and polluter-pays principle; the National Green Tribunal (NGT) Act 2010 provides fast environmental adjudication.',
+    governingStatutes: `
+      * **EPA 1986 Section 3:** Central Government powers to protect the environment.
+      * **Section 15:** Penalties for non-compliance — extended by amendment.
+      * **NGT Act 2010:** National Green Tribunal for environmental disputes.
+    `,
+    landmarkPrecedents: `
+      * **M.C. Mehta v. Union of India (1987) 1 SCC 395:** Absolute liability for hazardous industries.
+      * **Vellore Citizens Welfare Forum v. Union of India (1996) 5 SCC 647:** Precautionary principle + polluter pays.
+      * **T.N. Godavarman Thirumulpad (1997) 2 SCC 267:** Forest conservation.
+    `,
+    complianceChecklist: ['Pollution complaints go to the State Pollution Control Board, NGT, or both.', 'Hazardous industries face absolute liability — no defences.', 'Environmental clearance is mandatory for listed projects.'],
+    askAIPrompt: 'Explain the Environment Protection Act 1986 — pollution control, environmental clearances and liability.'
+  },
+  {
+    id: 'kb-in-cr-jj-act',
+    title: 'Juvenile Justice Act 2015 — Children in Conflict with Law',
+    category: 'Criminal Law (BNS/BNSS)',
+    categoryCode: 'criminal',
+    jurisdiction: 'IN',
+    statutes: ['JJ Act 2015 s.15, 18, 19', 'Juvenile Justice Board', '16-18 age serious offences'],
+    summary: 'Children below 18 are tried before the Juvenile Justice Board — with the 16-18 serious-offence adult-trial exception.',
+    executiveSummary: 'The Juvenile Justice (Care and Protection of Children) Act 2015 treats persons below 18 as children in conflict with the law, tried by the Juvenile Justice Board (not criminal courts), with reformative measures. After the 2012 Nirbhaya case, the Act allows juveniles aged 16-18 to be tried as adults where the Juvenile Justice Board, after a preliminary assessment, finds they committed a heinous offence (minimum 7 years imprisonment) with adult understanding. Convicted juveniles are kept in special homes, not adult prisons. Section 19 bars disqualification of children for past offences.',
+    governingStatutes: `
+      * **JJ Act Section 15:** Preliminary assessment for heinous offences (16-18 years).
+      * **Section 18:** No joint trial of children with adults; no prison for children.
+      * **Section 19:** Past juvenile records do not disqualify from employment.
+    `,
+    landmarkPrecedents: `
+      * **Salil Bali v. Union of India (2013) 7 SCC 705:** Constitutionality of the 16-18 adult-trial provision upheld (pending larger review).
+      * **Pratap Singh v. State of Jharkhand (2005):** Age determination is based on the date of the offence.
+    `,
+    complianceChecklist: ['Age at the date of offence decides juvenile status.', 'Juveniles are kept in observation/special homes, never adult jails.', 'Juvenile records must not be disclosed (Section 74).'],
+    askAIPrompt: 'Explain the Juvenile Justice Act 2015 — who is a juvenile and when can a 16-18 year old be tried as an adult?'
   }
 ];
 
@@ -2998,7 +3285,15 @@ const VERIFIED_CASE_INDEX = [
   { name: 'S.P. Sampath Kumar v. Union of India', cite: '(1987) 1 SCC 124', tokens: ['sampath kumar', 'tribunal'] },
   { name: 'Madras Bar Association v. Union of India', cite: '(2014) 10 SCC 1', tokens: ['madras bar', 'ntt'] },
   { name: 'Rojer Mathew v. South Indian Bank', cite: '(2020) 6 SCC 1', tokens: ['rojer mathew', 'tribunals'] },
-  { name: 'Indore Development Authority v. Manoharlal', cite: '(2020) 8 SCC 129', tokens: ['indore development', 'land acquisition', 'larr', 'lapsing'] }
+  { name: 'Indore Development Authority v. Manoharlal', cite: '(2020) 8 SCC 129', tokens: ['indore development', 'land acquisition', 'larr', 'lapsing'] },
+  { name: 'D.C. Wadhwa v. State of Bihar', cite: '(1987) 1 SCC 378', tokens: ['wadhwa', 'ordinance', 'repromulgation'] },
+  { name: 'Krishna Kumar Singh v. State of Bihar', cite: '(2017) 3 SCC 1', tokens: ['krishna kumar singh', 'ordinance'] },
+  { name: 'Union of India v. Tulsiram Patel', cite: '(1985) 3 SCC 398', tokens: ['tulsiram patel', 'article 311'] },
+  { name: 'Subhash Kashinath Mahajan v. State of Maharashtra', cite: '(2018) 6 SCC 454', tokens: ['subhash kashinath', 'sc st act'] },
+  { name: 'Prithvi Raj Chauhan v. Union of India', cite: '(2020) 4 SCC 727', tokens: ['prithvi raj chauhan', 'sc st'] },
+  { name: 'State of Bihar v. Sachchidanand Kishore Prasad Sinha', cite: 'AIR 1995 SC 1018', tokens: ['sc st act 1989'] },
+  { name: 'Sarbananda Sonowal v. Union of India', cite: '(2005) 5 SCC 665', tokens: ['sarbananda sonowal', 'citizenship', 'imdt'] },
+  { name: 'Laxmi v. Union of India', cite: '(2014) 4 SCC 427', tokens: ['laxmi acid', 'acid attack'] }
 ];
 
 // Indian legal citation patterns the verifier scans for.
@@ -3303,23 +3598,27 @@ const CASUAL_PHRASES = [
 ];
 
 const LEGAL_PHRASES = [
-  "article", "section", "constitution", "samvidhan", "bns", "bnss", "bsa", "ipc", "crpc",
-  "supreme court", "high court", "session court", "district court", "tribunal",
+  "article", "section", "act", "code", "statute", "ordinance", "sanhita", "adhiniyam", "regulation", "rules",
+  "constitution", "samvidhan", "bns", "bnss", "bsa", "ipc", "crpc",
+  "supreme court", "high court", "session court", "sessions court", "district court", "tribunal",
   "writ", "habeas corpus", "mandamus", "certiorari", "quo warranto",
   "bail", "fir", "police", "arrest", "custody", "detention",
   "law", "legal", "lawyer", "advocate", "attorney", "court", "judge", "judgment", "judgement",
-  "precedent", "case law", "jurisprudence", "statute", "ordinance",
-  "case", "cases", "verdict", "ruling", "decide", "decided", "bench", "pil",
-  "contract", "divorce", "alimony", "maintenance", "custody of",
-  "property dispute", "cheque", "check bounce", "petition", "sue", "lawsuit", "litigation",
-  "fundamental right", "dpdp", "posh", "rti", "pmla", "gst", "tax law",
-  "offence", "offense", "crime", "criminal", "civil suit", "murder", "theft", "robbery",
-  "defamation", "harassment", "succession", "inheritance", "arbitration",
-  "company law", "labour law", "labor law", "tenant", "landlord", "eviction",
+  "precedent", "case law", "jurisprudence", "bench", "pil", "verdict", "ruling",
+  "contract", "divorce", "alimony", "maintenance", "custody",
+  "property", "cheque", "check bounce", "petition", "sue", "lawsuit", "litigation", "plaint",
+  "fundamental right", "dpdp", "posh", "rti", "pmla", "gst", "tax", "income tax",
+  "offence", "offense", "crime", "criminal", "civil", "murder", "theft", "robbery", "rape", "kidnapping",
+  "defamation", "harassment", "succession", "inheritance", "arbitration", "insolvency", "bankruptcy",
+  "company", "partnership", "llp", "labour", "labor", "tenant", "landlord", "eviction", "lease", "rent",
   "stamp duty", "registration", "notary", "affidavit", "power of attorney",
-  "trademark", "copyright", "patent", "cyber law", "evidence", "trial", "appeal",
-  "jurisdiction", "amendment", "parliament", "legislature", "government notification",
-  "land acquisition", "larr", "compensation", "rehabilitation", "resettlement", "public purpose", "acquisition"
+  "trademark", "copyright", "patent", "cyber", "evidence", "trial", "appeal", "warrant",
+  "jurisdiction", "amendment", "parliament", "legislature", "notification", "notification",
+  "land acquisition", "larr", "compensation", "rehabilitation", "resettlement", "public purpose", "acquisition",
+  "insurance", "banking", "motor vehicle", "accident", "consumer", "environment", "pollution",
+  "adoption", "will", "guardianship", "dowry", "domestic violence", "talaq", "marriage",
+  "citizenship", "election", "emergency", "president rule", "anti defection",
+  "petition", "application", "complaint", "legal notice", "notice"
 ];
 
 // Known Indian case names → strong case-law research signals
@@ -3364,6 +3663,13 @@ function classifyIntent(message, sessionMessages) {
   // 2. Case-name / case-law patterns — the strongest legal-research signals
   if (/\bv\.\s|\bvs\.?\s|\bversus\b|\bv\s+[a-z]\w*/i.test(q)) return 'legal_research';
   if (CASE_NAME_TRIGGERS.some((n) => q.includes(n))) return 'legal_research';
+
+  // 2.5 DRAFTING INTENT — write/petition/application/letter requests
+  if (/\b(write|draft|prepare|make|create|format)\b.*\b(petition|notice|application|letter|complaint|affidavit|agreement|plaint|reply|appeal|will|deed|mou|power of attorney|rti|fir|writ)\b/i.test(q) ||
+      /\b(petition|application|complaint letter|legal notice)\s+(for|to|against|letter)\b/i.test(q) ||
+      /\b(rti application|writ petition|anticipatory bail application|bail application)\b/i.test(q)) {
+    return 'drafting';
+  }
 
   // 3. Hinglish legal phrases — legal intent in Roman Hindi
   const HINGLISH_LEGAL = ["jamanat","girftari","girafftari","kanoon","kanun","mukadma","muqadma","dafa","dhara","talaq","dahej","chori","hatya","balatkar","vivad","adhikar","adhikaar","haq","jameen","zameen","jaaydad","jaydad","sampatti","vasiyat","saza","saja","ilzaam","gawah","saboot","vakeel","wakeel","kachehri","nafka","gujara","kabza","kiraya","makaan","udhaar","karz","rasid","warrant","cheque","fir","police","judge","appeal","saza","dand","jurmana","harzana","muaavza","mauvza","pension","naukri","salary","tanakhwa"];
@@ -5773,6 +6079,7 @@ async function sendChatMessage(userText, options) {
   };
 
   let backendError = '';
+  let backendReached = false;
   try {
     const streamed = await streamBackendChat(userText, AppState.jurisdiction, {
       history: currentSession.messages,
@@ -5786,7 +6093,7 @@ async function sendChatMessage(userText, options) {
       signal: controller.signal,
       onDelta: (delta) => { aiText += delta; scheduleRender(); }
     });
-    if (streamed) aiText = streamed;
+    if (streamed) { aiText = streamed; backendReached = true; }
     else backendError = 'stream returned no reply';
   } catch (err) {
     aiText = '';
@@ -5807,11 +6114,30 @@ async function sendChatMessage(userText, options) {
         retrievedSources: retrievedSources,
         intent: backendIntent
       });
+      if (aiText) backendReached = true;
       if (!aiText) backendError = backendError || 'backend returned empty reply';
     } catch (err) {
       aiText = '';
       backendError = backendError || 'backend error: ' + (err && err.message ? err.message.slice(0, 80) : String(err).slice(0, 80));
     }
+  }
+
+  // One delayed retry — heals transient failures (rate limits, cold starts)
+  if (!aiText && !stoppedEarly) {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const retried = await tryBackendServerChat(userText, AppState.jurisdiction, {
+        history: currentSession.messages,
+        summary: buildConversationSummary(currentSession.messages),
+        mode: AppState.researchMode || 'instant',
+        asOfDate: AppState.asOfDate || '2026-08-11',
+        advocateMode: advocateMode,
+        language: lang,
+        retrievedSources: retrievedSources,
+        intent: backendIntent
+      });
+      if (retried) { aiText = retried; backendError = ''; backendReached = true; }
+    } catch (err) { /* keep prior error */ }
   }
 
   if (!aiText && !stoppedEarly) {
@@ -5846,7 +6172,13 @@ async function sendChatMessage(userText, options) {
     if (citationCheck.removed.length) {
       checkedText += '\n\n🔎 **Citation check:** removed ' + citationCheck.removed.length + ' unverified citation(s) — ' + citationCheck.removed.slice(0, 3).join('; ') + '. Barrister only cites sources it can verify against its legal library.';
     }
-    trustText = applyEvidenceGate(checkedText, pack);
+    if (pack.level === 'LOW' && backendReached) {
+      // Live AI answered but the law isn't in the verified library:
+      // show the answer with an honest tag — never silently claim verification.
+      trustText = checkedText + '\n\n⚖️ **Note:** the live AI answered this, but I couldn\'t verify it against my legal library. Please cross-check this before relying on it.';
+    } else {
+      trustText = applyEvidenceGate(checkedText, pack);
+    }
     // Pass 5: claim-level verification — legal claims must trace to evidence
     if (pack.level === 'HIGH' || pack.level === 'MEDIUM') {
       const claimCheck = verifyClaimsAgainstEvidence(trustText, pack);
