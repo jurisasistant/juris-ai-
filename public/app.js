@@ -3786,6 +3786,9 @@ function getCasualAIResponse(prompt, lang) {
   ]);
 }
 
+// --- HTTP status tracker (for accurate offline messages) ---
+let lastChatHttpStatus = 0;
+
 // --- Streaming client: browser → /api/chat (SSE) → Groq ---
 async function streamBackendChat(prompt, jurisdictionCode, opts = {}) {
   const { history = [], summary = '', mode = 'instant', asOfDate = '2026-08-11', advocateMode = 'senior_advocate', language = 'en', retrievedSources = [], signal, onDelta } = opts;
@@ -3809,6 +3812,7 @@ async function streamBackendChat(prompt, jurisdictionCode, opts = {}) {
       signal: signal || undefined
     });
 
+    lastChatHttpStatus = response.status;
     if (!response.ok) return null;
     const contentType = response.headers.get('content-type') || '';
 
@@ -5966,6 +5970,7 @@ async function tryBackendServerChat(prompt, jurisdictionCode, opts = {}) {
         temperature: Number(localStorage.getItem('jurisai_temperature')) || 0.2
       })
     });
+    lastChatHttpStatus = response.status;
     if (!response.ok) return null;
     const data = await response.json();
     return data.reply || null;
