@@ -413,6 +413,53 @@ const LegalSearchService = (() => {
   return { normalize, extractEntities, expandQuery, normalizeHinglish, correctSpelling, detectCitation: (q) => extractEntities(q).mode === 'citation', SYNONYMS };
 })();
 
+// --- 🧠 CONVERSATION MEMORY — Supabase sync layer ---
+// localStorage remains the offline source of truth; Supabase syncs sessions
+// across devices (security-definer functions scope by device_id server-side).
+function getDeviceId() {
+  let id = localStorage.getItem('jurisai_device_id');
+  if (!id) {
+    id = 'dev_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    localStorage.setItem('jurisai_device_id', id);
+  }
+  return id;
+}
+
+function supabaseRPC(fnName, params) {
+  const base = String(SUPABASE_CONFIG.url).replace(/\/$/, '');
+  return fetch(base + '/rest/v1/rpc/' + fnName, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_CONFIG.anonKey,
+      'Authorization': 'Bearer ' + SUPABASE_CONFIG.anonKey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params || {})
+  });
+}
+
+// Fire-and-forget: persist one exchange to Supabase (never blocks the UI).
+function syncExchangeToSupabase(question, answer, intent, evidenceLevel) {
+  if (!isSupabaseConfigured()) return;
+  try {
+    supabaseRPC('save_conversation', {
+      p_device_id: getDeviceId(),
+      p_title: smartConversationTitle(question),
+      p_role: 'user',
+      p_content: question,
+      p_intent: intent || null
+    }).catch(() => {});
+    supabaseRPC('save_conversation', {
+      p_device_id: getDeviceId(),
+      p_title: smartConversationTitle(question),
+      p_role: 'assistant',
+      p_content: answer,
+      p_intent: intent || null,
+      p_evidence_level: evidenceLevel || null
+    }).catch(() => {});
+  } catch (err) { /* memory sync is best-effort */ }
+}
+
 // --- Live corpus search: browser → Supabase PostgREST → hybrid retrieval ---
 const SUPABASE_SEARCH_CACHE = new Map(); // key → { rows, ts } (TTL 10 min)
 
@@ -6021,6 +6068,7 @@ async function sendChatMessage(userText, options) {
 
     currentSession.messages.push({ role: 'ai', content: webText, intent: 'web' });
     localStorage.setItem('jurisai_chat_history', JSON.stringify(AppState.chatHistory));
+    syncExchangeToSupabase(userText, webText, 'web', null);
     renderChatHistoryList();
     return;
   }
@@ -6276,6 +6324,8 @@ async function sendChatMessage(userText, options) {
     currentSession.title = smartConversationTitle(userText);
   }
   localStorage.setItem('jurisai_chat_history', JSON.stringify(AppState.chatHistory));
+  // 🧠 Memory: sync this exchange to Supabase (cross-device history)
+  syncExchangeToSupabase(userText, trustText, intent, pack ? pack.level : null);
   renderChatHistoryList();
 }
 
